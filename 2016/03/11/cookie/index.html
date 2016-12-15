@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-person-128.png">
+    <link rel="alternate" type="application/atom+xml" title="FrankXiong" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        cookie详解｜FrankXiong&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://frankxiong.xyz/2016/03/11/cookie/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//oi7ywoutt.bkt.clouddn.com/headimg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    FrankXiong
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="//oi7ywoutt.bkt.clouddn.com/landscape-01.png">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('//oi7ywoutt.bkt.clouddn.com/landscape-01.png')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>cookie详解</h1>
+                    
+                    <span class="meta">
+                         作者 Frank Xiong
+                        <span>
+                          日期 2016-03-11
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#JavaScript"
+                           title="JavaScript">JavaScript</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            cookie详解
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <blockquote>
+<p><strong>前言：</strong></p>
+<ul>
+<li>Cookie是指web浏览器存储的少量数据，它与具体的web站点相关。Cookie数据会自动在浏览器和服务器之间传输，因此服务器端也可以读写存储在客户端的Cookie值。在JavaScript中，Cookie用于保存状态，以及为浏览器提供一种身份识别机制。</li>
+<li>检测Cookie是否可用：navigator.cookieEnabled</li>
+</ul>
+</blockquote>
+<h3 id="Cookie的有效期和作用域"><a href="#Cookie的有效期和作用域" class="headerlink" title="Cookie的有效期和作用域"></a>Cookie的有效期和作用域</h3><p>　　Cookie默认的有效期很短暂，只能持续在浏览器的会话期间。如果想要延长Cookie的有效期，可以通过设置max-age属性。<br>　　Cookie的作用域和localStorage类似，也是通过文档源和文档路径来确定。<strong>默认情况下，Cookie对于创建它的页面，以及与该页面同目录或子目录下的其他web页面可见</strong>。可以通过设置Cookie的path属性来修改Cookie的作用域，如果把path设为“/”，就等同于让Cookie拥有了localStorage的作用域，即整个文档源。<br>　　Cookie的作用域默认限制在文档源之内，如果想实现同一服务器之下不同子域的跨域访问Cookie，如a.example.com想访问b.example.com设置的Cookie，这时候就可以通过设置Cookie的domain属性来实现。在a.example.com下的一个页面设置了Cookie，将其path设为“/”，并将domain设为“.example.com”，这样该Cookie就对example.com域下的所有页面可见。<br>　　同时要注意的是，Cookie的<strong>domain只能设置为当前服务器的域</strong>。如想实现Cookie在不同父域下的跨域访问，可参考其他跨域方式，如script标签、隐藏iframe等。</p>
+<h3 id="创建和存储Cookie"><a href="#创建和存储Cookie" class="headerlink" title="创建和存储Cookie"></a>创建和存储Cookie</h3><p>对Cookie的所有操作都要通过<strong>读写document对象的Cookie属性</strong>来完成。Cookie的值都是以键值对的形式存储。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//创建一个名字Cookie，同时设置它的过期时间</span><br><span class="line">function setCookie(c_name,value,expiredays)&#123;</span><br><span class="line">     var exdate=new Date();</span><br><span class="line">     exdate.setDate(exdate.getDate()+expiredays);</span><br><span class="line">     //encodeURIComponent() 对 URI 进行编码</span><br><span class="line">     document.cookie=c_name+ &quot;=&quot; +encodeURIComponent(value)+</span><br><span class="line">((expiredays==null) ? &quot;&quot; : &quot;;expires=&quot;+exdate.toGMTString());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>同样的，如果要设置path、domain等属性，只须以如下形式追加到Cookie值的后面:　<br>　　;path=path</p>
+<h3 id="读取Cookie"><a href="#读取Cookie" class="headerlink" title="读取Cookie"></a>读取Cookie</h3><p>使用document.cookie可以获取到Cookie的值，不过这个值是一个字符串，为了更好地查看Cookie的值，往往会采用split()方法将Cookie中的名值对分离出来。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function getCookie()&#123;</span><br><span class="line">    // 初始化要返回的对象</span><br><span class="line">    var cookie = &#123;&#125;;</span><br><span class="line">    var all = document.cookie;</span><br><span class="line">    if(all === null)&#123;</span><br><span class="line">        return cookie;</span><br><span class="line">    &#125;</span><br><span class="line">    //分离出Cookie的各个属性</span><br><span class="line">    var list = all.split(&apos;;&apos;);</span><br><span class="line">    for(var i = 0;i &lt; list.length;i++)&#123;</span><br><span class="line">        // 查询出等号所在的位置</span><br><span class="line">        var p = list[i].indexOf(&apos;=&apos;);</span><br><span class="line">        // 分离出名字和值</span><br><span class="line">        var name = list[i].substring(0,p);</span><br><span class="line">        var value = list[i].substring(p+1);</span><br><span class="line">        //对值进行解码</span><br><span class="line">        value = decodeURIComponent(value);</span><br><span class="line">        // 将名值对存储到对象中</span><br><span class="line">        cookie[name] = value;</span><br><span class="line">    &#125;</span><br><span class="line">    return cookie;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="Cookie的局限性"><a href="#Cookie的局限性" class="headerlink" title="Cookie的局限性"></a>Cookie的局限性</h3><ol>
+<li>Cookie只能存储少量的数据，每个Cookie的大小不超过4KB。RFC标准不允许浏览器保存超过300个Cookie，为每个web服务器保存的Cookie数不超过20个。</li>
+<li>JavaScript中使用Cookie不会采用任何加密机制，因此它们是不安全的。</li>
+</ol>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/03/13/HTTP状态码大全/" data-toggle="tooltip" data-placement="top"
+                           title="HTTP状态码大全">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/03/10/正则表达式的模式匹配/" data-toggle="tooltip" data-placement="top"
+                           title="正则表达式">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                         data-thread-key="2016/03/11/cookie/"
+                         data-title="cookie详解"
+                         data-url="http://frankxiong.xyz/2016/03/11/cookie/">
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#Cookie的有效期和作用域"><span class="toc-text">Cookie的有效期和作用域</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#创建和存储Cookie"><span class="toc-text">创建和存储Cookie</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#读取Cookie"><span class="toc-text">读取Cookie</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cookie的局限性"><span class="toc-text">Cookie的局限性</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#JavaScript"
+                           title="JavaScript">JavaScript</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = '还原态氢';
+
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user};
+    (function () {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';
+        ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+        || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiong-xian-ren">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/frankxiongxyz">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/FrankXiong">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; FrankXiong 2016
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://frankxiong.xyz/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="//oi7ywoutt.bkt.clouddn.com/avatar.jpg">
+</body>
+
+</html>

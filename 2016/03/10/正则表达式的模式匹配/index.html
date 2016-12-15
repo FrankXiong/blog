@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- Head tag -->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keyword" content="null">
+    <meta name="theme-color" content="#600090">
+    <meta name="msapplication-navbutton-color" content="#600090">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="#600090">
+    <link rel="shortcut icon" href="https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-person-128.png">
+    <link rel="alternate" type="application/atom+xml" title="FrankXiong" href="/atom.xml">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
+    <title>
+        
+        正则表达式｜FrankXiong&#39;s blog
+        
+    </title>
+
+    <link rel="canonical" href="http://frankxiong.xyz/2016/03/10/正则表达式的模式匹配/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/blog-style.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+</head>
+
+<style>
+
+    header.intro-header {
+        background-image: url('//oi7ywoutt.bkt.clouddn.com/headimg.jpg')
+    }
+</style>
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="" class="animated fadeIn">
+<!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+" data-ishome = "false" >
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand animated pulse" href="/">
+                <span class="brand-logo">
+                    FrankXiong
+                </span>
+                's Blog
+            </a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <!-- /.navbar-collapse -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+					
+                    
+                        
+                    
+                        
+							
+                        <li>
+                            <a href="/Tags/">Tags</a>
+                        </li>
+							
+						
+                    
+					
+					
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+//    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+<!-- Main Content -->
+
+<!--only post-->
+
+
+<img class="wechat-title-img"
+     src="//oi7ywoutt.bkt.clouddn.com/landscape-01.png">
+
+
+<style>
+    
+    header.intro-header {
+        background-image: url('//oi7ywoutt.bkt.clouddn.com/landscape-01.png')
+    }
+
+    
+</style>
+
+<header class="intro-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <div class="post-heading">
+                    <h1>正则表达式</h1>
+                    
+                    <span class="meta">
+                         作者 Frank Xiong
+                        <span>
+                          日期 2016-03-10
+                         </span>
+                    </span>
+                    <div class="tags text-center">
+                        
+                        <a class="tag" href="/tags/#JavaScript"
+                           title="JavaScript">JavaScript</a>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="post-title-haojen">
+        <span>
+            正则表达式
+        </span>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
+                <p>JavaScript中用RegExp对象表示正则表达式，可以用RegExp()构造函数来创建正则表达式，不过更多时候是用对象直接量来创建<br>如：<code>var re = /s$/;</code>这个正则表达式可以匹配以字符s结尾的字符串</p>
+<h3 id="1-字符类"><a href="#1-字符类" class="headerlink" title="1.字符类"></a>1.字符类</h3><p>把字符放进方括号就变成了字符类，一个字符类可以匹配它所包含的任意字符。<br>如：<code>/[abc]/</code>与字母a、b、c中的任意一个都匹配。<br>常见字符类<br><code>[abc]</code>  方括号内任意字符<br><code>[^abc]</code>  不在方括号内的任意字符<br><code>.</code>  除换行符和其他Unicode行终止符之外的任意字符<br><code>\w</code>  任何ASCII字符组成的单词，等价于[a-zA-Z0-9]<br><code>\W</code>  任何不是ASCII字符组成的单词，等价于[^a-zA-Z0-9]<br><code>\s</code>  任何Unicode空白符<br><code>\d</code>  任何ASCII数字</p>
+<h3 id="2-重复"><a href="#2-重复" class="headerlink" title="2.重复"></a>2.重复</h3><p><code>{n,m}</code>　匹配前一项至少n次，至多m次<br><code>{n,}</code> 　  匹配前一项n次或更多次<br><code>{n}</code>　　匹配前一项n次<br><code>?</code>　　　匹配前一项0次或1次<br><code>+</code>　　 匹配前一项1次或多次<br><code>*</code>　　  匹配前一项0次或多次</p>
+<p>栗子：<br><code>/\d{2,4}/</code>  匹配2-4个数字<br><code>/\w{3}\d?</code>  匹配3个字符和一个可选的数字</p>
+<h3 id="3-分组"><a href="#3-分组" class="headerlink" title="3.分组"></a>3.分组</h3><p>字符”|“用于分隔供选择的字符，如<code>/ab|cd|ef/</code>可匹配字符串”ab“,也可匹配”cd“，还可匹配”ef“。<br>圆括号”()”可用于把单独的项组合成子表达式</p>
+<h3 id="4-修饰符"><a href="#4-修饰符" class="headerlink" title="4.修饰符"></a>4.修饰符</h3><p>修饰符放在”/“之外，用语说明匹配模式。JavaScript支持三种修饰符<br>i    执行不区分大小写的匹配<br>g   执行全局匹配，即找到所有的匹配，而不是在找到第一个后就停止<br>m  执行多行匹配。在这种模式下，如果被检索的字符串包含多行，^和$分别匹配每一行的开头和结束</p>
+<h3 id="5-指定匹配位置"><a href="#5-指定匹配位置" class="headerlink" title="5.指定匹配位置"></a>5.指定匹配位置</h3><p>^   匹配字符串的开头<br>$   匹配字符串的结尾<br>\b  匹配单词的边界<br>(?=p)  零宽正向先行断言，要求接下来的字符都与p匹配<br>(?!p)    零宽负向先行断言，要求接下来的字符都不与p匹配<br><code>/Java(?!Script)/g</code>匹配以“Java”开头，但接下来的字符不是“Script”的字符串</p>
+<h3 id="5-RegExp对象"><a href="#5-RegExp对象" class="headerlink" title="5.RegExp对象"></a>5.RegExp对象</h3><ul>
+<li>RegExp对象的属性<br>source：只读的字符串，包含正则表达式的源文本<br>lastIndex：一个可读写的整数，如果匹配模式带有g修饰符，这个属性用于存储下次匹配的起始位置。</li>
+<li>RegExp对象的方法<br>exec()：检索字符串中指定的值。如果找到匹配的值，返回一个结果数组，并确定其位置。如果没有找到匹配的值，就返回null<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var str = &apos;Hello World&apos;;</span><br><span class="line">var re = /Wo/g;</span><br><span class="line">var result = re.exec(str);</span><br><span class="line">if(result != null)&#123;</span><br><span class="line">    console.log(&apos;Find &apos;+result+&apos; at &apos;+result.index);//输出Find Wo at 6</span><br><span class="line">    console.log(&apos;next search begin at &apos;+re.lastIndex);//输出next search begin at 8</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>test():参数是一个字符串，如果成功匹配，返回true；如果没有匹配到结果，返回false</p>
+<h3 id="6-支持正则表达式的String对象的方法"><a href="#6-支持正则表达式的String对象的方法" class="headerlink" title="6.支持正则表达式的String对象的方法"></a>6.支持正则表达式的String对象的方法</h3><p>String对象支持4种使用正则表达式的方法。</p>
+<ul>
+<li>search()：参数是一个正则表达式，返回一个与之匹配的子串的起始位置，如果找不到子串，返回-1。</li>
+<li><p>replace()：执行检索和替换。第一个参数是一个正则表达式，第二个参数是一个内容为替换文本的字符串。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//将Lebron James替换为James Lebron</span><br><span class="line">var name = &apos;Lebron James&apos;;</span><br><span class="line">var result = name.replace(/(\w+)\s*\s*(\w+)/g,&apos;$2 $1&apos;);</span><br><span class="line">console.log(result);</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>match()：唯一参数是一个正则表达式，返回一个由匹配结果组成的数组。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//匹配出字符串中的数字，将其保存到一个数组中</span><br><span class="line">var str = &apos;rgb(237,13,235)&apos;;</span><br><span class="line">var result = str.match(/\d+/g);</span><br><span class="line">console.log(result);//输出[&quot;237&quot;, &quot;13&quot;, &quot;235&quot;]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>split()：将调用它的字符串拆分成一个子串组成的数组。第一个参数可以是字符串或者正则表达式，第二个可选参数可以指定返回数组的最大长度。</p>
+</li>
+</ul>
+
+                <hr>
+                
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2016/03/11/cookie/" data-toggle="tooltip" data-placement="top"
+                           title="cookie详解">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                    <li class="next">
+                        <a href="/2016/03/09/2016阿里前端实习电话面试实录/" data-toggle="tooltip" data-placement="top"
+                           title="阿里前端实习电话面试（一）">Next Post &rarr;</a>
+                    </li>
+                    
+                </ul>
+
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                         data-thread-key="2016/03/10/正则表达式的模式匹配/"
+                         data-title="正则表达式"
+                         data-url="http://frankxiong.xyz/2016/03/10/正则表达式的模式匹配/">
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
+                
+
+            </div>
+
+            <div class="hidden-xs col-sm-3 toc-col">
+                <div class="toc-wrap">
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-字符类"><span class="toc-text">1.字符类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-重复"><span class="toc-text">2.重复</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-分组"><span class="toc-text">3.分组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-修饰符"><span class="toc-text">4.修饰符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-指定匹配位置"><span class="toc-text">5.指定匹配位置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-RegExp对象"><span class="toc-text">5.RegExp对象</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-支持正则表达式的String对象的方法"><span class="toc-text">6.支持正则表达式的String对象的方法</span></a></li></ol>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar Container -->
+
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5 class="text-center">
+                        <a href="/tags/">FEATURED TAGS</a>
+                    </h5>
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#JavaScript"
+                           title="JavaScript">JavaScript</a>
+                        
+                    </div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+            </div>
+        </div>
+
+    </div>
+</article>
+
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User by Hux
+    var _user = '还原态氢';
+
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user};
+    (function () {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';
+        ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+        || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+
+<!-- Footer -->
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
+                <br>
+                <ul class="list-inline text-center">
+                
+                
+                
+                    <li>
+                        <a target="_blank" href="https://www.zhihu.com/people/xiong-xian-ren">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa  fa-stack-1x fa-inverse">知</i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+                    <li>
+                        <a target="_blank" href="http://weibo.com/frankxiongxyz">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                
+                    <li>
+                        <a target="_blank"  href="https://github.com/FrankXiong">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                
+
+                
+
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; FrankXiong 2016
+                    <br>
+                    <span id="busuanzi_container_site_pv" style="font-size: 12px;">PV: <span id="busuanzi_value_site_pv"></span> Times</span>
+                    <br>
+                    Theme by <a href="https://haojen.github.io/">Haojen Ma</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js"></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/blog.js"></script>
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- jquery.tagcloud.js -->
+<script>
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("http://frankxiong.xyz/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+
+<!--fastClick.js -->
+<script>
+    async("//cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+<!-- Google Analytics -->
+
+
+
+<!-- Baidu Tongji -->
+
+
+<!-- swiftype -->
+<script type="text/javascript">
+  (function(w,d,t,u,n,s,e){w['SwiftypeObject']=n;w[n]=w[n]||function(){
+  (w[n].q=w[n].q||[]).push(arguments);};s=d.createElement(t);
+  e=d.getElementsByTagName(t)[0];s.async=1;s.src=u;e.parentNode.insertBefore(s,e);
+  })(window,document,'script','//s.swiftypecdn.com/install/v2/st.js','_st');
+
+  _st('install','null','2.0.0');
+</script>
+
+<script async src="//dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<!--wechat title img-->
+<img class="wechat-title-img" src="//oi7ywoutt.bkt.clouddn.com/avatar.jpg">
+</body>
+
+</html>

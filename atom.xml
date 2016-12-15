@@ -1,0 +1,713 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>FrankXiong</title>
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://frankxiong.xyz/"/>
+  <updated>2016-12-03T12:00:47.000Z</updated>
+  <id>http://frankxiong.xyz/</id>
+  
+  <author>
+    <name>Frank Xiong</name>
+    <email>xianren_xiong@163.com</email>
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【译】真实的Virtual DOM</title>
+    <link href="http://frankxiong.xyz/2016/09/08/%E3%80%90%E8%AF%91%E3%80%91%E7%9C%9F%E5%AE%9E%E7%9A%84Virtual-DOM/"/>
+    <id>http://frankxiong.xyz/2016/09/08/【译】真实的Virtual-DOM/</id>
+    <published>2016-09-08T09:51:03.000Z</published>
+    <updated>2016-12-03T12:00:47.000Z</updated>
+    
+    <content type="html"><![CDATA[<h6 id="为什么我们需要UI框架？"><a href="#为什么我们需要UI框架？" class="headerlink" title="为什么我们需要UI框架？"></a>为什么我们需要UI框架？</h6><p>　响应式编程提出两个最重要的观点是：系统应该是事件驱动并且响应状态的变化。<br>　DOM的UI组件有自己的内部状态，更新浏览器页面并不是在发生变化后简单的重新生成DOM。如果Gmail这样做的话，出现一条新消息或者删掉你写的邮件，就会导致整个浏览器窗口刷新。<br>　正是因为DOM的无状态性，我们才需要类似key/value observation(Ember中使用了它)，或者脏值检查（Angular）。UI框架监听数据模型的变化，并在DOM中更新对应的部分。或者监听DOM的变化，更新对应的数据模型。这就是所谓的双向数据绑定。它通常可以处理非常复杂的UI逻辑。<br><a id="more"></a></p>
+<h6 id="什么让React与众不同？"><a href="#什么让React与众不同？" class="headerlink" title="什么让React与众不同？"></a>什么让React与众不同？</h6><p>　令React以及它的Virtual DOM如此与众不同的是：它比其他实现JavaScript响应数据的方法都更简单。你只需写JavaScript去更新React组件，React会帮你更新DOM。数据绑定并没有和应用缠在一起。<br>　React使用单向数据绑定来简化这一过程。每次当你在一个React组件的input文本框中输入时，它并不会直接改变这个组件的状态，而是更新数据模型。这会使得UI被更新，你输入的文本就会出现在文本框里。</p>
+<h6 id="DOM很慢？"><a href="#DOM很慢？" class="headerlink" title="DOM很慢？"></a>DOM很慢？</h6><p>　所有关于Virtual DOM的文章或演讲都在说JavaScript引擎很快，读写浏览器的DOM很慢。这种说法完全不对。DOM是很快的。添加删除DOM节点并不比在JavaScript对象上设置属性慢很多，只是简单的运算罢了。<br>　然而，真正慢的是当DOM改变时浏览器的layout。DOM的每次改变，浏览器都需要重新计算CSS，重排重绘整个页面。这是很耗时的。<br>那些写浏览器的人一直在努力缩短重绘的时间，其中最大的工作是最小化、分批处理DOM改变。</p>
+<h6 id="Virtual-DOM如何工作？"><a href="#Virtual-DOM如何工作？" class="headerlink" title="Virtual DOM如何工作？"></a>Virtual DOM如何工作？</h6><p>　就像真实的DOM，Virtual DOM也是一颗节点树。节点树上元素是对象，attribute和内容是对象的属性。React的render方法从组件上创建一颗节点树，在action触发数据模型发生mutation后响应式的更新节点树。<br>　每次在数据改变之后，就会在UI更新之前创建一个新的Virtual DOM。在React中，更新浏览器的DOM分三个步骤：<br><strong>1. 只要数据发生改变，就会重新生成一个完整的Virtual DOM。</strong><br><strong>2. 重新计算比较出新的和之前的Virtual DOM的差异。</strong><br><strong>3. 更新真实DOM中真正发生改变的部分，就像是给DOM打了个补丁。</strong></p>
+<h6 id="Virtual-DOM慢吗？"><a href="#Virtual-DOM慢吗？" class="headerlink" title="Virtual DOM慢吗？"></a>Virtual DOM慢吗？</h6><p>　我们可以想到每次改变都重新渲染整个Virtual DOM是很浪费的，却没有注意到任意时刻React都在内存中保存了两个Virtual DOM。但是，其实渲染Virtual DOM总是会比渲染真实DOM快，这跟你使用的浏览器无关。<br>　问题是用户并不能看到Virtual DOM。就好比你在其他国家有10000个墨西哥煎玉米卷，你迟早需要把玉米卷运回来，那会很贵并且缓慢。<br>　玉米卷问题的关键在于：一次把所有玉米卷运回来更快，还是计算出你需要的数量和你实际拥有的数量，然后仅仅运输两者最小值更快？当你只想要4个玉米卷的时候，当然只运输4个更划算。<br>　下一个问题是：你如何预定玉米卷？你可以说，“给我运送4个玉米卷”，或者说，“这是我的玉米卷状态清单，你计算出实际结果吧”。第二个方法就是Virtual DOM工作的方式。你写代码来让UI知道你想让他如何展示，Virtual DOM计算出当前UI和它只需要更新的部分的差异。<br>　React像变戏法般的将attribute加到元素上，然后在DOM Diff后决定需要更新的部分，并在文档上单独的修改这些元素。Virtual DOM加入了额外的步骤，但是它创造了一种优雅的方式去对页面做最小的更新。</p>
+<h6 id="我们来看一些数字"><a href="#我们来看一些数字" class="headerlink" title="我们来看一些数字"></a>我们来看一些数字</h6><p>　我不打算做标准的测试。其他人做的各种各样的测试已经证明了React的Virtual DOM更快。Virtual DOM在开发者对浏览器的性能优化之上加了一层脚本。这个额外的一层抽象使React相比其他更新DOM的方法，需要更多的CPU密集计算。<br>　举个使用原生JS操作DOM的“Hello，world！”的例子：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=&quot;UTF-8&quot; /&gt;</span><br><span class="line">  &lt;title&gt;Hello JavaScript!&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div id=&quot;example&quot;&gt;&lt;/div&gt;</span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    document.getElementById(&quot;example&quot;).innerHTML = &quot;&lt;h1&gt;Hello, world!&lt;/h1&gt;&quot;;</span><br><span class="line">  &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>　你在React中也会做同样的事。我们需要通过React、React DOM和babel，将看起来像是XML的代码在render()方法中转换成普通的JavaScript对象。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset=&quot;UTF-8&quot; /&gt;</span><br><span class="line">&lt;title&gt;Hello React!&lt;/title&gt;</span><br><span class="line">&lt;script src=&quot;build/react.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script src=&quot;build/react-dom.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.23/browser.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div id=&quot;example&quot;&gt;&lt;/div&gt;</span><br><span class="line">  &lt;script type=&quot;text/babel&quot;&gt;</span><br><span class="line">    ReactDOM.render(</span><br><span class="line">      &lt;h1&gt;Hello, world!&lt;/h1&gt;,    </span><br><span class="line">      document.getElementById(&apos;example&apos;)</span><br><span class="line">    );</span><br><span class="line">  &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p>原生操作DOM总是会更快。我们来看一下证明过程。<br>这是加载和渲染直接DOM操作的“Hello，World”页面的timeline（chrome）</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/192464-47f148936b3b9e16.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="原生DOM操作"><br>这是加载和渲染React“Hello，World”页面的timeline（chrome）</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/192464-d9dad58c3961dc76.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="React DOM操作"><br>React花了大量时间在scripting上，React比直接操作DOM慢的多。但是，它和jQuery比怎么样？<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">  &lt;meta charset=&quot;UTF-8&quot; /&gt;</span><br><span class="line">  &lt;title&gt;Hello jQuery!&lt;/title&gt;</span><br><span class="line">  &lt;script type=&quot;text/javascript&quot; src=&quot;scripts/vendor/jquery-1.12.3.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div id=&quot;example&quot;&gt;&lt;/div&gt;</span><br><span class="line">  &lt;script&gt;</span><br><span class="line">    $(document).ready(function()&#123;</span><br><span class="line">      $(&quot;#example&quot;).html(&quot;&lt;h1&gt;Hello, world!&lt;/h1&gt;&quot;); &#125;</span><br><span class="line">    );</span><br><span class="line">  &lt;/script&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/192464-6ed99e94b0e681bc.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="jQuery DOM操作"><br>　jQuery的总时间比原生JS慢了50ms，但都比React快3倍。显然，原生JS和jQuery要快得多。一般来说，使用框架都比不使用框架慢。实际操作DOM前在内存中创建一个表示DOM的结构比直接操作DOM要慢。下面，我们讨论一下究竟该如何让Virtual DOM更快。</p>
+<h6 id="如何使用Virtual-DOM"><a href="#如何使用Virtual-DOM" class="headerlink" title="如何使用Virtual DOM"></a>如何使用Virtual DOM</h6><p>　“Hello,World”例子对React不公正，因为他们仅仅包含了一个页面的初始渲染。React长于管理页面的更新。<br>　<strong>数据模型的每一次改变都会触发Virtual DOM的重新生成，这就是React和其他框架的不同之处</strong>。其他框架会检测文档的变化，只更新必要的部分。Virtual DOM通常占用更少的内存，因为它不需要在内存中常驻观察者。<br>　但是，每次改动发生后都比较两个完整的Virtual DOM是低效的。复杂的UI对于CPU的要求也很高。<br>　鉴于这个原因，React开发者要主动决定需要渲染的内容。如果你知道某个行为不会影响对应的组件，你应当告知React不要去分析组件的变动–这可以节省大量的资源，显著地提升应用的性能。<br>　事实上，可能没有办法真正说明使用Virtual DOM比直接操作DOM快，因为要做这种比较需要考虑各种各样的因素。但是<strong>主要还是取决于你如何更好的优化应用。</strong><br>　工具只是工具，关键看你怎么用它。React和Virtual DOM带给我们的是：一种更新页面的简单方法。这种简化能让我们摆脱繁杂的工作，使优化UI变得简单。<strong>这就是React带来的真正好处–性能和生产力</strong>。</p>
+<hr>
+<p>原文作者：<a href="https://www.accelebrate.com/blog/the-real-benefits-of-the-virtual-dom-in-react-js/" target="_blank" rel="external">Chris Minnick</a><br>翻译：<a href="http://voidman.xyz" target="_blank" rel="external">熊贤仁</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h6 id=&quot;为什么我们需要UI框架？&quot;&gt;&lt;a href=&quot;#为什么我们需要UI框架？&quot; class=&quot;headerlink&quot; title=&quot;为什么我们需要UI框架？&quot;&gt;&lt;/a&gt;为什么我们需要UI框架？&lt;/h6&gt;&lt;p&gt;　响应式编程提出两个最重要的观点是：系统应该是事件驱动并且响应状态的变化。&lt;br&gt;　DOM的UI组件有自己的内部状态，更新浏览器页面并不是在发生变化后简单的重新生成DOM。如果Gmail这样做的话，出现一条新消息或者删掉你写的邮件，就会导致整个浏览器窗口刷新。&lt;br&gt;　正是因为DOM的无状态性，我们才需要类似key/value observation(Ember中使用了它)，或者脏值检查（Angular）。UI框架监听数据模型的变化，并在DOM中更新对应的部分。或者监听DOM的变化，更新对应的数据模型。这就是所谓的双向数据绑定。它通常可以处理非常复杂的UI逻辑。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="前端" scheme="http://frankxiong.xyz/categories/%E5%89%8D%E7%AB%AF/"/>
+    
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+      <category term="React" scheme="http://frankxiong.xyz/tags/React/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Vue2.0源码学习#0</title>
+    <link href="http://frankxiong.xyz/2016/09/07/Vue2-0%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0-0/"/>
+    <id>http://frankxiong.xyz/2016/09/07/Vue2-0源码学习-0/</id>
+    <published>2016-09-06T19:37:41.000Z</published>
+    <updated>2016-09-08T09:58:30.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>近来没什么事，准备把Vue的源码通读一遍，2.0中加入了Serve-Side-Render、Virtual-Dom等新特性，看一看实现原理，顺便记录一下学习的过程，毕竟好记性不如烂笔头。</p>
+</blockquote>
+<a id="more"></a>
+<p>作为源码解读系列第一篇文章，先从整个框架的入口开始看吧。Vue使用了部分ES6语法，比如module机制。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import config from &apos;./config&apos;</span><br><span class="line">//加载初始全局API</span><br><span class="line">import &#123; initGlobalAPI &#125; from &apos;./global-api/index&apos;</span><br><span class="line">//类的初始化入口</span><br><span class="line">import Vue from &apos;./instance/index&apos;</span><br><span class="line"></span><br><span class="line">initGlobalAPI(Vue)</span><br><span class="line">//在Vue类的原型上定义$isServer属性，用于判断是否支持服务端渲染</span><br><span class="line">//这样在Vue实例上调用vue.$isServer就可以知道是否开启了SSR</span><br><span class="line">//关于Object.defineProperty，这是一个ES5的方法，可以直接在对象上定义属性</span><br><span class="line">//Vue的数据绑定机制就是用的Object.defineProperty，这也是Vue不支持IE8及以下版本的原因</span><br><span class="line">//将data对象的属性转成getter和setter，具体原理见http://cn.vuejs.org/guide/reactivity.html</span><br><span class="line">Object.defineProperty(Vue.prototype, &apos;$isServer&apos;, &#123;</span><br><span class="line">  get: () =&gt; config._isServer</span><br><span class="line">&#125;)</span><br><span class="line">//定义Vue版本号</span><br><span class="line">Vue.version = &apos;2.0.0-rc.4&apos;</span><br><span class="line"></span><br><span class="line">export default Vue</span><br></pre></td></tr></table></figure></p>
+<p>以下就是config的源码<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//Vue使用了Flow做静态类型检查</span><br><span class="line">//Flow可以在代码运行前检查出参数、返回值、变量等类型异常</span><br><span class="line">//方便我们在代码运行前进行部分debug</span><br><span class="line">/* @flow */</span><br><span class="line">import &#123; no, noop &#125; from &apos;shared/util&apos;</span><br><span class="line">export type Config = &#123;</span><br><span class="line">  optionMergeStrategies: &#123; [key: string]: Function &#125;;</span><br><span class="line">  silent: boolean;</span><br><span class="line">  devtools: boolean;</span><br><span class="line">  errorHandler: ?Function;</span><br><span class="line">  ignoredElements: ?Array&lt;string&gt;;</span><br><span class="line">  keyCodes: &#123; [key: string]: number &#125;;</span><br><span class="line">  // platform</span><br><span class="line">  isReservedTag: (x?: string) =&gt; boolean;</span><br><span class="line">  isUnknownElement: (x?: string) =&gt; boolean;</span><br><span class="line">  getTagNamespace: (x?: string) =&gt; string | void;</span><br><span class="line">  mustUseProp: (x?: string) =&gt; boolean;</span><br><span class="line">  // internal</span><br><span class="line">  _assetTypes: Array&lt;string&gt;;</span><br><span class="line">  _lifecycleHooks: Array&lt;string&gt;;</span><br><span class="line">  _maxUpdateCount: number;</span><br><span class="line">  _isServer: boolean;</span><br><span class="line">&#125;</span><br><span class="line">const config: Config = &#123;</span><br><span class="line">  optionMergeStrategies: Object.create(null),</span><br><span class="line">  //是否显示warning,默认显示</span><br><span class="line">  silent: false,</span><br><span class="line">  //是否启动devtool</span><br><span class="line">  devtools: process.env.NODE_ENV !== &apos;production&apos;,</span><br><span class="line">  errorHandler: null,</span><br><span class="line">  ignoredElements: null,</span><br><span class="line">  keyCodes: Object.create(null),</span><br><span class="line">  isReservedTag: no,</span><br><span class="line">  isUnknownElement: no,</span><br><span class="line">  getTagNamespace: noop,</span><br><span class="line">  mustUseProp: no,</span><br><span class="line"> //组件的默认类型</span><br><span class="line">  _assetTypes: [</span><br><span class="line">    &apos;component&apos;,</span><br><span class="line">    &apos;directive&apos;,</span><br><span class="line">    &apos;filter&apos;</span><br><span class="line">  ],</span><br><span class="line"> //定义组件的各种生命周期</span><br><span class="line">  _lifecycleHooks: [</span><br><span class="line">    &apos;beforeCreate&apos;,</span><br><span class="line">    &apos;created&apos;,</span><br><span class="line">    &apos;beforeMount&apos;,</span><br><span class="line">    &apos;mounted&apos;,</span><br><span class="line">    &apos;beforeUpdate&apos;,</span><br><span class="line">    &apos;updated&apos;,</span><br><span class="line">    &apos;beforeDestroy&apos;,</span><br><span class="line">    &apos;destroyed&apos;,</span><br><span class="line">    &apos;activated&apos;,</span><br><span class="line">    &apos;deactivated&apos;</span><br><span class="line">  ],</span><br><span class="line"> //规定组件在一次刷新中的最大循环更新次数</span><br><span class="line">  _maxUpdateCount: 100,</span><br><span class="line">  //判断全局环境是否为server</span><br><span class="line">  _isServer: process.env.VUE_ENV === &apos;server&apos;</span><br><span class="line">&#125;</span><br><span class="line">export default config</span><br></pre></td></tr></table></figure></p>
+<p>再来看Vue实例由哪些部分构成，这部分代码在<code>src/instance</code>，这个文件夹下有events.js,init.js,lifecycle.js,proxy.js,render.js,state.js`等文件，可以看到，一个Vue instance由这几部分构成。为了将这些模块组织在一起，Vue使用了Mixin模式。以下是index.js的代码：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import &#123; initMixin &#125; from &apos;./init&apos;</span><br><span class="line">import &#123; stateMixin &#125; from &apos;./state&apos;</span><br><span class="line">import &#123; renderMixin &#125; from &apos;./render&apos;</span><br><span class="line">import &#123; eventsMixin &#125; from &apos;./events&apos;</span><br><span class="line">import &#123; lifecycleMixin &#125; from &apos;./lifecycle&apos;</span><br><span class="line"></span><br><span class="line">function Vue (options) &#123;</span><br><span class="line">  this._init(options)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">initMixin(Vue)</span><br><span class="line">stateMixin(Vue)</span><br><span class="line">eventsMixin(Vue)</span><br><span class="line">lifecycleMixin(Vue)</span><br><span class="line">renderMixin(Vue)</span><br><span class="line"></span><br><span class="line">export default Vue</span><br></pre></td></tr></table></figure></p>
+<p>这里的Mixin利用了每个JavaScript对象都有一个原型，通过原型可以继承更多的属性，实现Vue类上方法的重用。在每个mixin方法中，将Vue类作为参数传递进去，并在其原型上定义各种内置方法。以eventsMixin方法为例：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//为了说明，这里是其简化版</span><br><span class="line">export function eventsMixin (Vue: Class&lt;Component&gt;) &#123;</span><br><span class="line">  //实现事件绑定的方法，将其添加到原型上</span><br><span class="line">  Vue.prototype.$on = function (event: string, fn: Function): Component &#123;</span><br><span class="line">    const vm: Component = this</span><br><span class="line">   //支持绑定多个事件</span><br><span class="line">    ;(vm._events[event] || (vm._events[event] = [])).push(fn)</span><br><span class="line">    return vm</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<h6 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h6><ol>
+<li>Vue中大量使用Object.property，包括利用它生成访问器，实现数据绑定。</li>
+<li>Vue使用了<a href="https://flowtype.org/" target="_blank" rel="external">Flow</a>做静态类型检查，有助于提前发现bug</li>
+<li>实现Vue类的过程中使用了Mixin这种设计模式，基于JavaScript原型继承的特性，可以方便的扩展Vue实例的功能。</li>
+</ol>
+<hr>
+<p>参考链接：<br> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty#Custom_Setters_and_Getters" target="_blank" rel="external">Object.defineProperty()</a><br> <a href="https://flowtype.org/" target="_blank" rel="external">Flow | A Static Type Checker For JavaScript</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;近来没什么事，准备把Vue的源码通读一遍，2.0中加入了Serve-Side-Render、Virtual-Dom等新特性，看一看实现原理，顺便记录一下学习的过程，毕竟好记性不如烂笔头。&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>【译】为什么Vue.js不支持templateURL?</title>
+    <link href="http://frankxiong.xyz/2016/08/03/%E3%80%90%E8%AF%91%E3%80%91%E4%B8%BA%E4%BB%80%E4%B9%88Vue-js%E4%B8%8D%E6%94%AF%E6%8C%81templateURL/"/>
+    <id>http://frankxiong.xyz/2016/08/03/【译】为什么Vue-js不支持templateURL/</id>
+    <published>2016-08-02T17:48:42.000Z</published>
+    <updated>2016-09-04T08:41:17.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>　　对于Vue新手，尤其是之前用过Angular的人来说，有一个非常普遍的问题：“我可以使用<code>templateURL</code>吗？”我（尤大）已经回答过很多次这个问题，发现最好写点东西来解释一下。<br>在Angular中，<code>templateURL</code>或者<code>ng-include</code>允许开发者在运行时动态地加载远程的模板文件。作为一个内建的特点，这点看起来很方便。但是让我们重新思考一下它解决了什么问题。<br><a id="more"></a><br>　　首先，templateURL允许我们在一个分离的HTML文件中写模板。可以让编辑器提供合适的语法高亮，这可能也是许多框架偏爱于这样做的原因吧。但是，分离模板和JavaScript代码真是的最好的方式吗？对于一个Vue组件，template和JavaScript被原生的紧密连在一起。事实上，如果这些东西仅仅在一个文件里会简单得多。上下文的来回跳转事实上会让开发体验变得更加糟糕。从概念上来说，组件是一个Vue应用的基本构建块，而template不是。每一个Vue.js template和一个伴随着的JavaScript上下文紧密连在一起，没有理由去进一步分离他们。<br>　　其次，由于<code>templateURL</code>通过Ajax在运行时加载模板，你不需要为了分离你的文件而增加一个构建的环节。这为开发提供了便利，但是当你想部署项目到生产环境的时候，这种方式带来了严重的开销。在HTTP/2被普遍支持之前，HTTP请求的数量依然是影响你的应用初次加载时性能的关键因素。现在想象你在应用中每一个组件中使用templateURL，浏览器需要在能展示页面之前做大量的HTTP请求，可能你不知道的是，大多数浏览器限制了它对于单个服务器的并行请求的数量。当你超过了这个限制，应用的初次渲染会承受额外的周转时间，因为浏览器要等待请求的加载。当然，现在也有构建工具，能够帮助你在<code>$templateCache</code>中预注册(pre-register)这些模板。但是，这事实上，不可避免的给前端开发增加了一个构建环节。<br>　　所以，没有templateURL，我们如何处理开发体验的问题？把模板作为行内JavaScript字符串来写是很糟糕的，以<code>&lt;script type=&quot;x/template&quot;&gt;</code>的方式来编写模板感觉像是一个hack。好吧，可能是时候去使用一个像 <a href="http://webpack.github.io/" target="_blank" rel="external">Webpack</a>或者<a href="http://browserify.org/" target="_blank" rel="external">Browserify</a>之类的模板加载器让程序跑起来。你如果之前没处理过这些问题的话可能会被吓到，但是相信我，做出这种改变是值得的。如果你想要去构建一个大型的可维护的项目时，合适的模块化是必不可少的。更重要的是，当你开始<strong>在单个文件中写Vue组件</strong>时，使用合适的语法高亮，享受着预加载器、热加载(hot-reloading)，ES2015带来的开发上的快感，以及自动补全和scoped css。这些会将开发体验提升10倍。<br>　　最后，Vue也允许懒加载组件。使用webpack的话，这将变得极其简单。尽管这有一个唯一值得担心的问题是，当初始模块太大时，你最好将它进一步分离。<br>　　<strong>以组件的方式去思考，而不是模板。</strong></p>
+<hr>
+<p>作者：尤雨溪<br>原文地址：<a href="http://cn.vuejs.org/2015/10/28/why-no-template-url/" target="_blank" rel="external">http://cn.vuejs.org/2015/10/28/why-no-template-url/</a><br>译者：<a href="http://voidman.xyz" target="_blank" rel="external">熊贤仁</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;　　对于Vue新手，尤其是之前用过Angular的人来说，有一个非常普遍的问题：“我可以使用&lt;code&gt;templateURL&lt;/code&gt;吗？”我（尤大）已经回答过很多次这个问题，发现最好写点东西来解释一下。&lt;br&gt;在Angular中，&lt;code&gt;templateURL&lt;/code&gt;或者&lt;code&gt;ng-include&lt;/code&gt;允许开发者在运行时动态地加载远程的模板文件。作为一个内建的特点，这点看起来很方便。但是让我们重新思考一下它解决了什么问题。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="前端" scheme="http://frankxiong.xyz/categories/%E5%89%8D%E7%AB%AF/"/>
+    
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+      <category term="Vue" scheme="http://frankxiong.xyz/tags/Vue/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Cookie和Session的区别总结</title>
+    <link href="http://frankxiong.xyz/2016/06/26/Cookie%E5%92%8CSession%E7%9A%84%E5%8C%BA%E5%88%AB%E6%80%BB%E7%BB%93/"/>
+    <id>http://frankxiong.xyz/2016/06/26/Cookie和Session的区别总结/</id>
+    <published>2016-06-26T05:55:10.000Z</published>
+    <updated>2016-09-04T08:41:04.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>二者作用：解决HTTP协议无状态的缺陷，在客户端/服务器端保存会话状态。<br><a id="more"></a><br>创建Session过程：</p>
+<ul>
+<li>检查客户端请求中是否包含一个session标识（session id）</li>
+<li>若包含，则说明之前已经为此客户端创建过session。服务器按照此session id检索出session</li>
+<li>若不包含，则为此客户端创建一个session，并生成一个session id。此session id将作为响应返回给客户端保存。（使用Cookie保存）</li>
+</ul>
+<p>若Cookie被禁止，必须有其他机制能够把session id回传给服务器<br>回传session id至服务器：</p>
+<ul>
+<li>URL重写：把session id直接附加在URL路径后面</li>
+<li>隐藏表单字段</li>
+</ul>
+<p>Cookie和Session的区别：</p>
+<ul>
+<li><strong>Cookie中只能保存ASCII字符串，Session中可以保存任意类型的数据</strong>，甚至Java Bean乃至任何Java类、对象等</li>
+<li><strong>隐私策略不同</strong>。Cookie存储在客户端，对客户端是可见的，可被客户端窥探、复制、修改。而Session存储在服务器上，不存在敏感信息泄露的风险</li>
+<li><strong>有效期不同</strong>。Cookie的过期时间可以被设置很长。Session依赖于名为JSESSIONI的Cookie，其过期时间默认为-1，只要关闭了浏览器窗口，该Session就会过期，因此Session不能完成信息永久有效。如果Session的超时时间过长，服务器累计的Session就会越多，越容易导致内存溢出。</li>
+<li><strong>服务器压力不同</strong>。每个用户都会产生一个session，如果并发访问的用户过多，就会产生非常多的session，耗费大量的内存。因此，诸如Google、Baidu这样的网站，不太可能运用Session来追踪客户会话。</li>
+<li><strong>浏览器支持不同</strong>。Cookie运行在浏览器端，若浏览器不支持Cookie，需要运用Session和URL地址重写。</li>
+<li><strong>跨域支持不同</strong>。Cookie支持跨域访问（设置domain属性实现跨子域），Session不支持跨域访问</li>
+</ul>
+<hr>
+<p>参考：<a href="http://www.lai18.com/content/7450273.html" target="_blank" rel="external">理解Cookie和Session机制</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;二者作用：解决HTTP协议无状态的缺陷，在客户端/服务器端保存会话状态。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="前端" scheme="http://frankxiong.xyz/categories/%E5%89%8D%E7%AB%AF/"/>
+    
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>你该逃课吗</title>
+    <link href="http://frankxiong.xyz/2016/05/29/%E4%BD%A0%E8%AF%A5%E9%80%83%E8%AF%BE%E5%90%97/"/>
+    <id>http://frankxiong.xyz/2016/05/29/你该逃课吗/</id>
+    <published>2016-05-29T11:57:44.000Z</published>
+    <updated>2016-09-04T08:40:35.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>　　你逃课的时候，总有人（比如：辅导员）会跟你说：“你交了那么多学费，居然还逃课，真是浪费！”但在经济学里，这种说法是不成立的。因为这些交了的学费是沉没成本：无论你逃或不逃课，学费早就交了。所以逃课的成本和学费没有关系。<br><a id="more"></a><br>　　在经济学看来，逃课和机会成本有关系：你逃了课，那么你就错过了一堂精彩或者无聊的课，而且可能因为点名不到而被扣分。这个错过与扣分就是逃课的代价。所以，如果你逃了课后只是无所事事，那么就不要逃课，因为机会成本太高。但如果逃课是为了干你认为更重要的事，它带来的收益大于逃课的代价，那么就去做吧。因为错过了这些事带来的代价显然比逃课的代价高。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;　　你逃课的时候，总有人（比如：辅导员）会跟你说：“你交了那么多学费，居然还逃课，真是浪费！”但在经济学里，这种说法是不成立的。因为这些交了的学费是沉没成本：无论你逃或不逃课，学费早就交了。所以逃课的成本和学费没有关系。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="随笔" scheme="http://frankxiong.xyz/categories/%E9%9A%8F%E7%AC%94/"/>
+    
+    
+      <category term="随笔" scheme="http://frankxiong.xyz/tags/%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>traceroute的原理</title>
+    <link href="http://frankxiong.xyz/2016/05/23/traceroute%E7%9A%84%E5%8E%9F%E7%90%86/"/>
+    <id>http://frankxiong.xyz/2016/05/23/traceroute的原理/</id>
+    <published>2016-05-23T13:49:09.000Z</published>
+    <updated>2016-09-04T08:44:38.000Z</updated>
+    
+    <content type="html"><![CDATA[<h6 id="1-什么是traceroute"><a href="#1-什么是traceroute" class="headerlink" title="1.什么是traceroute?"></a>1.什么是traceroute?</h6><p> traceroute， Linux系统称为tracepath，Windows系统称为tracert，是一种计算机网络工具。它可显示数据包在IP网络经过的路由器的IP地址。通过traceroute我们可以知道信息从你的计算机到互联网另一端的主机是走的什么路径。<br><a id="more"></a><br>traceroute有不同的实现版本：常规的traceroute(基于UDP和ICMP)和tcptraceroute(基于TCP)</p>
+<h6 id="2-traceroute原理"><a href="#2-traceroute原理" class="headerlink" title="2.traceroute原理"></a>2.traceroute原理</h6><p>常规的traceroute和tcptraceroute具有相同的工作原理：</p>
+<blockquote>
+<ol>
+<li>发送一个TTL(Time-To-Live)相当小的包，TTL经过每一跳时会递减。当它减为0时，数据包就被丢弃。</li>
+<li>当TTL失效后，看哪个路由器返回一个带有表明的ICMP “time exceeded”</li>
+<li>如果返回的路由器就是最终的目的地，停止trace</li>
+<li>否则，TTL加1并返回到步骤1</li>
+</ol>
+</blockquote>
+<p>两者的不同点：</p>
+<blockquote>
+<ul>
+<li>常规的traceroute使用UDP包或ICMP “Echo”包，这两种包都可能会被防火墙拦截。</li>
+<li>tcptraceroute使用TCP “SYN”包。发送带SYN标志位的数据段是TCP建立连接时进行“三次握手”的第一次握手，只要目标地址是被允许访问的，通常这种包不会被防火墙拦截。但是防火墙会拦截其他的不是用于建立连接的TCP包。</li>
+<li>基于TCP的traceroute拥有更高的访问权限。以amazon.com为例。基于UDP的traceroute停在205.251.248.5，这个地址很可能是某种防火墙。基于TCP的traceroute访问80端口，这是amazon.com的默认端口，然后进入下一步，最终停在72.21.194.212</li>
+</ul>
+</blockquote>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h6 id=&quot;1-什么是traceroute&quot;&gt;&lt;a href=&quot;#1-什么是traceroute&quot; class=&quot;headerlink&quot; title=&quot;1.什么是traceroute?&quot;&gt;&lt;/a&gt;1.什么是traceroute?&lt;/h6&gt;&lt;p&gt; traceroute， Linux系统称为tracepath，Windows系统称为tracert，是一种计算机网络工具。它可显示数据包在IP网络经过的路由器的IP地址。通过traceroute我们可以知道信息从你的计算机到互联网另一端的主机是走的什么路径。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="网络" scheme="http://frankxiong.xyz/categories/%E7%BD%91%E7%BB%9C/"/>
+    
+    
+      <category term="IP" scheme="http://frankxiong.xyz/tags/IP/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>自定义复选框</title>
+    <link href="http://frankxiong.xyz/2016/05/18/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%A4%8D%E9%80%89%E6%A1%86/"/>
+    <id>http://frankxiong.xyz/2016/05/18/自定义复选框/</id>
+    <published>2016-05-18T05:47:27.000Z</published>
+    <updated>2016-09-04T08:41:57.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>思路：借助于组合选择符和before伪元素，利用content属性改变伪元素的内容，为其添加我们想要的样式。并将原来的复选框隐藏掉。<br><a id="more"></a><br>HTML结构如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;input type=&quot;checkbox&quot; id=&quot;awesome&quot;&gt;</span><br><span class="line">&lt;label for=&quot;awesome&quot;&gt;Awesome!&lt;/label&gt;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>首先，生成一个伪元素，先给这个伪元素添加一些样式。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">input[type=&quot;checkbox&quot;] + label::before&#123;</span><br><span class="line">    content: &apos;\a0&apos;; /*不换行空格*/</span><br><span class="line">    display: inline-block;</span><br><span class="line">    vertical-align: .2em;</span><br><span class="line">    width: .8em;</span><br><span class="line">    height: .8em;</span><br><span class="line">    margin-right: .2em;</span><br><span class="line">    border-radius: .2em;</span><br><span class="line">    background: silver;</span><br><span class="line">    text-indent: .15em;</span><br><span class="line">    line-height: .65;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/uploads/checkbox_1.png" alt="左边是原生复选框，右边是经过我们初步自定义的复选框"><br>然后给伪元素添加勾选状态下的样式<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">input[type=&quot;checkbox&quot;]:checked + label::before&#123;</span><br><span class="line">    content: &apos;\2713&apos;;</span><br><span class="line">    background: yellowgreen;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/uploads/checkbox_2.png" alt="为伪元素添加选中状态下的样式"><br>这时，这个伪元素已经是经过简单美化后的复选框了。然后，我们需要将原来的复选框以一种不损失访问性的方式隐藏起来。因此，不能使用display:none，那样会完全删除这个dom元素。用另一种办法：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">input[type=&quot;checkbox&quot;]&#123;</span><br><span class="line">    position: absolute;</span><br><span class="line">    clip:rect(0,0,0,0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这时候，我们自定义的复选框就已经完成了。</p>
+<p><img src="/uploads/checkbox_3.png" alt="接近完成"></p>
+<p>最后，可以给这个复选框再加上聚焦和禁用状态下的样式。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">input[type=&quot;checkbox&quot;]:focus + label::before&#123;</span><br><span class="line">    box-shadow: 0 0 .1em .1em #58a;</span><br><span class="line">&#125;</span><br><span class="line">input[type=&quot;checkbox&quot;]:disabled + label::before&#123;</span><br><span class="line">    background: gray;</span><br><span class="line">    box-shadow: none;</span><br><span class="line">    color: #555;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="/uploads/checkbox_4.png" alt="最终效果"></p>
+<hr>
+<p>参考：<a href="http://www.ituring.com.cn/book/1695" target="_blank" rel="external">《CSS揭秘》</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;思路：借助于组合选择符和before伪元素，利用content属性改变伪元素的内容，为其添加我们想要的样式。并将原来的复选框隐藏掉。&lt;br&gt;
+    
+    </summary>
+    
+      <category term="前端" scheme="http://frankxiong.xyz/categories/%E5%89%8D%E7%AB%AF/"/>
+    
+    
+      <category term="CSS" scheme="http://frankxiong.xyz/tags/CSS/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>类数组转换为数组</title>
+    <link href="http://frankxiong.xyz/2016/05/02/%E7%B1%BB%E6%95%B0%E7%BB%84%E8%BD%AC%E6%8D%A2%E4%B8%BA%E6%95%B0%E7%BB%84/"/>
+    <id>http://frankxiong.xyz/2016/05/02/类数组转换为数组/</id>
+    <published>2016-05-02T13:51:06.000Z</published>
+    <updated>2016-05-02T13:51:41.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>一、什么是类数组对象<br><strong>1.特征</strong><br>特征一：具有指向对象元素的数字索引下标以及 length 属性,告诉我们对象的元素个数<br>特征二：不具有诸如 push 、forEach 以及 indexOf 等数组对象具有的方法<br><strong>2.常见的类数组对象</strong><br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">document.getElementsByClassName()</span><br><span class="line">document.getElementsByTagName()</span><br><span class="line">document.getElementsByName()</span><br><span class="line">document.querySelectorAll()</span><br><span class="line">document.stylesheets</span><br><span class="line">parentNode.childNodes</span><br><span class="line">arguments</span><br><span class="line">var arrayObj = &#123;</span><br><span class="line">  0 : &apos;Benjamin01&apos;</span><br><span class="line">  1 : &apos;Benjmain02&apos;</span><br><span class="line">  length : 2</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p><strong>3.转换为数组对象</strong><br>slice()方法可以将一个类数组(Array-like)对象/集合转换成一个数组. 你只需要用数组原型上的slice方法call这个对象,即Array.prototype.slice.call(Array-like)。IE9以下并不支持slice()方法，因此需要对其做兼容处理。<br> <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function convertArray(nodeList)&#123;</span><br><span class="line">    var arr = []</span><br><span class="line">    if(Array.prototype.slice)&#123;</span><br><span class="line">        arr = [].slice.call(nodeList);</span><br><span class="line">    &#125;else&#123;</span><br><span class="line">        for(var i=0,len = nodeList.length;i &lt; len;i++)&#123;</span><br><span class="line">            arr.push(nodeList[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return arr;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;一、什么是类数组对象&lt;br&gt;&lt;strong&gt;1.特征&lt;/strong&gt;&lt;br&gt;特征一：具有指向对象元素的数字索引下标以及 length 属性,告诉我们对象的元素个数&lt;br&gt;特征二：不具有诸如 push 、forEach 以及 indexOf 等数组对象具有的方法&lt;br&gt;&lt;s
+    
+    </summary>
+    
+      <category term="前端" scheme="http://frankxiong.xyz/categories/%E5%89%8D%E7%AB%AF/"/>
+    
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>让Ajax支持浏览器的前进后退</title>
+    <link href="http://frankxiong.xyz/2016/05/01/%E8%AE%A9Ajax%E6%94%AF%E6%8C%81%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E5%89%8D%E8%BF%9B%E5%90%8E%E9%80%80/"/>
+    <id>http://frankxiong.xyz/2016/05/01/让Ajax支持浏览器的前进后退/</id>
+    <published>2016-04-30T17:13:43.000Z</published>
+    <updated>2016-09-04T08:42:20.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>众所周知，Ajax可以实现网页的局部刷新，但与此同时，Ajax会破坏浏览器历史的前进后退。为了让Ajax也能支持浏览器的前进后退，HTML5的history API中定义了一系列方法，其中pushState就是来解决这个问题的。</p>
+</blockquote>
+<a id="more"></a>
+<p>来看看这几个API</p>
+<ol>
+<li><strong>history.pushState(state, title, url)</strong><br>pushState 是人工插入历史记录和修改地址栏,此时地址栏虽然修改,但并不触发网页跳转,换句话说就是给你看的而已,第一个参数是一个对象,你可以放入需要的参数,第二个标题名称,第三个就是url.这是地址栏里显示的东西.</li>
+<li><strong>window.onpopstate</strong><br>用户点击浏览器历史前进后退按钮，并且页面无刷的时候（由于使用pushState修改了history）会触发popstate事件，事件发生时浏览器会从history中取出URL和对应的state对象替换当前的URL和history.state。</li>
+<li><strong>history.replaceState(state,title,url)</strong><br>用新的state和URL替换当前。不会造成页面刷新。<br>state：与要跳转到的URL对应的状态信息。<br>title：标题<br>url：要跳转到的URL地址，不能跨域。</li>
+</ol>
+<p>实现原理如下：</p>
+<ul>
+<li>每次发起Ajax请求时，将Ajax地址的查询内容(?后面的)附在HTML页面地址后面，使用history.pushState塞到浏览器历史中。</li>
+<li>浏览器的前进与后退，会触发window.onpopstate事件，通过绑定popstate事件，就可以根据当前URL地址中的查询内容让对应的菜单执行Ajax载入，实现Ajax的前进与后退效果。</li>
+<li>页面首次载入的时候，如果没有查询地址、或查询地址不匹配，则使用第一个菜单的Ajax地址的查询内容，并使用history.replaceState更改当前的浏览器历史，然后触发Ajax操作。</li>
+</ul>
+<p>除此之外，单页应用处理路由还可以监听onhashchange事件，只要hash值一改变就会触发该事件。Angular的路由机制就同时利用了这两种方案。</p>
+<hr>
+<p>欢迎关注我博客:<a href="http://voidman.xyz" target="_blank" rel="external">http://voidman.xyz</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;众所周知，Ajax可以实现网页的局部刷新，但与此同时，Ajax会破坏浏览器历史的前进后退。为了让Ajax也能支持浏览器的前进后退，HTML5的history API中定义了一系列方法，其中pushState就是来解决这个问题的。&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/categories/JavaScript/"/>
+    
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>一个通用的事件监听器</title>
+    <link href="http://frankxiong.xyz/2016/04/29/%E4%B8%80%E4%B8%AA%E9%80%9A%E7%94%A8%E7%9A%84%E4%BA%8B%E4%BB%B6%E7%9B%91%E5%90%AC%E5%99%A8/"/>
+    <id>http://frankxiong.xyz/2016/04/29/一个通用的事件监听器/</id>
+    <published>2016-04-29T10:03:38.000Z</published>
+    <updated>2016-05-02T13:54:13.000Z</updated>
+    
+    <content type="html"><![CDATA[<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">define(function()&#123;</span><br><span class="line">    var Event = &#123;</span><br><span class="line">        //页面加载完成后注册onload事件</span><br><span class="line">        readyEvent:function(fn)&#123;</span><br><span class="line">            if(fn == null)&#123;</span><br><span class="line">                fn = document;</span><br><span class="line">            &#125;</span><br><span class="line">            var oldonload = window.onload;</span><br><span class="line">            if(typeof window.onload != &apos;function&apos;)&#123;</span><br><span class="line">                window.onload = fn;</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                // 如果window.onload上已有事件绑定，则追加到它的后面</span><br><span class="line">                window.onload = function()&#123;</span><br><span class="line">                    oldonload();</span><br><span class="line">                    fn();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        bindEvent:function(target,type,handler)&#123;</span><br><span class="line">            if(target.addEventListener)&#123;</span><br><span class="line">                target.addEventListener(type,handler,false);</span><br><span class="line">            &#125;else if(target.attachEvent)&#123;</span><br><span class="line">                target.attachEvent(&apos;on&apos;+type,function(event)&#123;</span><br><span class="line">                    // IE attachEvent注册的事件作为函数调用，其this值是全局对象，需要用call来修改其指向</span><br><span class="line">                    return handler.call(target,event)</span><br><span class="line">                &#125;)</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                target[&apos;on&apos;+type] = handler;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        // 移除事件</span><br><span class="line">        removeEvent:function(target,type,handler)&#123;</span><br><span class="line">            if(target.removeEventListener)&#123;</span><br><span class="line">                target.removeEventListener(type,handler,false);</span><br><span class="line">            &#125;else if(target.detachEvent)&#123;</span><br><span class="line">                target.detachEvent(&apos;on&apos;+type,handler);</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                target[&apos;on&apos;+type] = null;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        // 阻止事件传播</span><br><span class="line">        stopPropagation:function(event)&#123;</span><br><span class="line">            if(event.stopPropagation)&#123;</span><br><span class="line">                event.stopPropagation();</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                event.cancelBubble = true;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        // 取消事件默认行为</span><br><span class="line">        preventDefault:function(event)&#123;</span><br><span class="line">            if(event.preventDefault)&#123;</span><br><span class="line">                event.preventDefault();</span><br><span class="line">            &#125;else&#123;</span><br><span class="line">                event.returnValue = false;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;,</span><br><span class="line">        // 获取事件目标</span><br><span class="line">        getTarget:function(event)&#123;</span><br><span class="line">            return event.target || event.srcElement;</span><br><span class="line">        &#125;,</span><br><span class="line">        // 获取事件对象的引用</span><br><span class="line">        getEvent:function(event)&#123;</span><br><span class="line">            var event = event || window.event;</span><br><span class="line">            if(!event)&#123;</span><br><span class="line">                // caller用于在函数内部获取调用getEvent的函数</span><br><span class="line">                var c = this.getEvent.caller;</span><br><span class="line">                while(c)&#123;</span><br><span class="line">                    event = c.arguments[0];</span><br><span class="line">                    if(event &amp;&amp; Event == event.constructor)&#123;</span><br><span class="line">                        break;</span><br><span class="line">                    &#125;</span><br><span class="line">                    c = c.caller;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            return event;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    return Event;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;define(function()&amp;#123;&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;   
+    
+    </summary>
+    
+      <category term="前端" scheme="http://frankxiong.xyz/categories/%E5%89%8D%E7%AB%AF/"/>
+    
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>DNS劫持与DNS污染的原理</title>
+    <link href="http://frankxiong.xyz/2016/04/28/DNS%E5%8A%AB%E6%8C%81%E4%B8%8EDNS%E6%B1%A1%E6%9F%93%E7%9A%84%E5%8E%9F%E7%90%86/"/>
+    <id>http://frankxiong.xyz/2016/04/28/DNS劫持与DNS污染的原理/</id>
+    <published>2016-04-28T14:24:01.000Z</published>
+    <updated>2016-04-28T14:25:28.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>DNS劫持就是通过<strong>劫持了DNS服务器，通过某些手段取得某域名的解析记录控制权，进而修改此域名的解析结果，导致对该域名的访问由原IP地址转入到修改后的指定IP</strong>，其结果就是对特定的网址不能访问或访问的是假网址，从而实现窃取资料或者破坏原有正常服务的目的。DNS劫持通过篡改DNS服务器上的数据返回给用户一个错误的查询结果来实现的。<br>DNS劫持症状：连接宽带后首次打开的页面都是指向ISP提供的“电信互联星空”、“网通黄页广告”等内容页面。还有就是曾经出现过用户访问Google域名的时候出现了百度的网站。这些都属于DNS劫持。</p>
+<p>DNS污染是一种让一般用户由于得到虚假目标主机IP而不能与其通信的方法，是一种DNS缓存投毒攻击（DNS cache poisoning）。其工作方式是：由于通常的DNS查询没有任何认证机制，而且DNS查询通常<strong>基于的UDP是无连接不可靠的协议，因此DNS的查询非常容易被篡改</strong>，<strong>通过对UDP端口53上的DNS查询进行入侵检测，一经发现与关键词相匹配的请求则立即伪装成目标域名的解析服务器（NS，Name Server）给查询者返回虚假结果。</strong>用户访问一个地址，国内的服务器(非DNS)监控到用户访问的已经被标记地址时，服务器伪装成DNS服务器向用户发回错误的地址的行为。</p>
+<p>DNS污染症状：我们平时访问Youtube、Facebook之类网站等出现的状况。</p>
+<p>区别：<br>DNS劫持是劫持了DNS服务器，进而修改其解析结果。<br>DNS污染是国内的某些服务器对DNS查询进行入侵检测，发现与黑名单上匹配的请求，该服务器就伪装成DNS服务器，给查询者返回虚假结果。它利用了UDP协议是无连接不可靠性。</p>
+<p>一个是劫持了DNS服务器，一个是伪装成DNS服务器。造成的结果都是返回错误的IP地址。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;DNS劫持就是通过&lt;strong&gt;劫持了DNS服务器，通过某些手段取得某域名的解析记录控制权，进而修改此域名的解析结果，导致对该域名的访问由原IP地址转入到修改后的指定IP&lt;/strong&gt;，其结果就是对特定的网址不能访问或访问的是假网址，从而实现窃取资料或者破坏原有正常服
+    
+    </summary>
+    
+      <category term="网络" scheme="http://frankxiong.xyz/categories/%E7%BD%91%E7%BB%9C/"/>
+    
+    
+      <category term="DNS" scheme="http://frankxiong.xyz/tags/DNS/"/>
+    
+      <category term="web安全" scheme="http://frankxiong.xyz/tags/web%E5%AE%89%E5%85%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>一个优化的快速排序</title>
+    <link href="http://frankxiong.xyz/2016/04/17/%E4%B8%80%E4%B8%AA%E4%BC%98%E5%8C%96%E7%9A%84%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/"/>
+    <id>http://frankxiong.xyz/2016/04/17/一个优化的快速排序/</id>
+    <published>2016-04-17T07:59:49.000Z</published>
+    <updated>2016-04-17T08:01:37.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>快速排序是一个最差时间复杂度为O(n²)的排序算法，这种情况通常出现在选择的轴值(pivot)不能将数组划分为两个长度相等的子数组的时候，比如数组逆序排列的时候，如果选择第一个数作为轴值，划分的子数组的大小分别为0和n-1，此时算法的性能最差。</p>
+<p>一个较好的办法是“三数取中”，查看当前数组的第一个、中间一个和最后一个位置的数组，取其中位数，以此来降低轴值选择得不好的可能性。</p>
+<p>JavaScript实现代码如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Array.prototype.swap = function (i, j) &#123;</span><br><span class="line">  var t = this[i];</span><br><span class="line">  this[i] = this[j];</span><br><span class="line">  this[j] = t;</span><br><span class="line">&#125;;</span><br><span class="line">//三数取中，将开头、中间、结尾三个数中间那个数交换到数组开头</span><br><span class="line">Array.prototype.partionMedianOfThree = function(start,end)&#123;</span><br><span class="line">    var mid = Math.floor(start+(end-start)/2);</span><br><span class="line">    if(this[start]&gt;this[end])&#123;</span><br><span class="line">        this.swap(start,end);</span><br><span class="line">    &#125;</span><br><span class="line">    if(this[mid]&gt;this[end])&#123;</span><br><span class="line">        this.swap(mid,end);</span><br><span class="line">    &#125;</span><br><span class="line">    if(this[mid]&gt;this[start])&#123;</span><br><span class="line">        this.swap(mid,start);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">Array.prototype.quickSortHelper = function(start,end)&#123;</span><br><span class="line">    if(start&gt;=end)&#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    this.partionMedianOfThree(start,end);</span><br><span class="line">    var pivotIdx = start;</span><br><span class="line">    var pivot = this[pivotIdx];</span><br><span class="line">    var i = start+1;</span><br><span class="line">    var n = end;</span><br><span class="line">    while(i&lt;=n)&#123;</span><br><span class="line">        if(this[i] &lt; pivot)&#123;</span><br><span class="line">           //比轴值小则交换</span><br><span class="line">            this.swap(pivotIdx,i);</span><br><span class="line">            i++;</span><br><span class="line">            pivotIdx = i;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            this.swap(n,i);</span><br><span class="line">            n--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    //递归地对子数组进行排序</span><br><span class="line">    this.quickSortHelper(start,pivotIdx-1);</span><br><span class="line">    this.quickSortHelper(pivotIdx+1,end);</span><br><span class="line">&#125;</span><br><span class="line">Array.prototype.quickSort = function () &#123;</span><br><span class="line">  this.quickSortHelper(0, this.length-1);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>测试一下算法的性能：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function test () &#123;</span><br><span class="line">    var arr = [];</span><br><span class="line">    for (var i = 0; i &lt; 1000000; i++) &#123;</span><br><span class="line">        arr.push(Math.round(Math.random(i) * 10000));</span><br><span class="line">    &#125;</span><br><span class="line">    doTest(arr, 1);</span><br><span class="line">&#125;</span><br><span class="line">function doTest(arr, n) &#123;</span><br><span class="line">    var tStart = (new Date()).getTime();</span><br><span class="line">    var re = arr.quickSort1(0,arr.length-1);</span><br><span class="line">    var tEnd = (new Date()).getTime();</span><br><span class="line">    console.log(&apos;快速排序使用时间是:&apos; + (tEnd - tStart) + &apos;ms&apos;);</span><br><span class="line">    return re;</span><br><span class="line">&#125;</span><br><span class="line">test();//输出：快速排序使用时间是:227ms</span><br></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;快速排序是一个最差时间复杂度为O(n²)的排序算法，这种情况通常出现在选择的轴值(pivot)不能将数组划分为两个长度相等的子数组的时候，比如数组逆序排列的时候，如果选择第一个数作为轴值，划分的子数组的大小分别为0和n-1，此时算法的性能最差。&lt;/p&gt;
+&lt;p&gt;一个较好的办法
+    
+    </summary>
+    
+      <category term="数据结构与算法" scheme="http://frankxiong.xyz/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+      <category term="算法" scheme="http://frankxiong.xyz/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>部署Node项目到CentOS服务器</title>
+    <link href="http://frankxiong.xyz/2016/04/05/%E9%83%A8%E7%BD%B2Node%E9%A1%B9%E7%9B%AE%E5%88%B0CentOS%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    <id>http://frankxiong.xyz/2016/04/05/部署Node项目到CentOS服务器/</id>
+    <published>2016-04-05T06:15:56.000Z</published>
+    <updated>2016-04-05T06:19:40.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近开始折腾Node，跟着慕课网的教程写了个电影网站，于是想把网站部署到服务器上，本文记录了我整个环境搭建的流程。</p>
+<p>通常Node和mongoDB一起搭配使用，再加上Node的一个热门的开发框架Express，以及angular.js，共同构成了整个web开发的技术架构（这次的开发中没有用到angular）。取其首字母，也就是所谓的“MEAN”。不废话了，下面是正文。</p>
+<hr>
+<h4 id="服务器配置"><a href="#服务器配置" class="headerlink" title="服务器配置"></a>服务器配置</h4><ul>
+<li>阿里云ECS 单核1G内存（这里要安利一下阿里云的学生优惠活动，一个月只要￥10，学生党的福利~）</li>
+<li>操作系统：CentOS 7.0 64位</li>
+</ul>
+<p>首先SSH连接服务器管理终端：<br><img src="http://upload-images.jianshu.io/upload_images/192464-f258d36c0aab64b9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<p>####安装Node<br>Node.JS的安装方法很多，这里贴上一种方法以供参考。<br><a href="http://yijiebuyi.com/blog/4fcce2f8b1aed8389f34c27f22864a04.html" target="_blank" rel="external">http://yijiebuyi.com/blog/4fcce2f8b1aed8389f34c27f22864a04.html</a></p>
+<p>####安装MongoDB<br>在MongoDB官网上看了下，没找到在centOS直接用apt-get安装mongo的方法，那就手动来下载安装吧。<br>1.输入以下命令：curl -O <a href="https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-3.2.4.tgz" target="_blank" rel="external">https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-3.2.4.tgz</a><br>mongoDB就开始下载了，也可以用wget来下载。(下载过程比较缓慢，不知道是我的网速还是curl的问题…)</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/192464-3af8db48de752e76.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>2.下载结束后解压文件：tar xf mongodb-linux-x86_64-rhel70-3.2.4.tgz<br>文件名太长了，重命名一下：mv mongodb-linux-x86_64-rhel70-3.2.4  mongodb<br>3.进入mongodb文件夹，新建logs文件夹，并在其下创建一个mongodb.log文件用于保存日志。创建data文件夹，在data文件夹下再新建db文件夹，用于存储mongoDB的数据。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/192464-cd05cbf5b83dfc89.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>4.添加环境变量</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/192464-56c75e56977202d3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""><br>5.重新加载环境变量,验证结果。<br>用mongod -verison或者-v看到下面的结果，就证明mongoDB安装成功了</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/192464-fc61e6daca451fdb.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt=""></p>
+<h4 id="上传项目文件到服务器"><a href="#上传项目文件到服务器" class="headerlink" title="上传项目文件到服务器"></a>上传项目文件到服务器</h4><p>Mac上可以用scp上传，windows上用FTP。FTP上传工具很多，随意选一种即可。</p>
+<h4 id="启动MongoDB"><a href="#启动MongoDB" class="headerlink" title="启动MongoDB"></a>启动MongoDB</h4><p>进入mongo目录的bin文件夹，输入如下命令，dbpath后指定的是Node项目的路径，这样就可以直接通过该项目启动数据库<br><code>mongod --dbpath &quot;/developer/mongodb/imooc&quot;</code></p>
+<h4 id="连接MongoDB"><a href="#连接MongoDB" class="headerlink" title="连接MongoDB"></a>连接MongoDB</h4><p>在Node项目根目录下输入mongo命令就可以建立与数据库的连接。另外，如果你前面没有指定在启动mongoDB的时候指定项目路径的话，你就还需要使用use命令建立两者的关联。当时我忘了这一点，于是注册后的帐号等数据都没有被保存到数据库中。</p>
+<hr>
+<p>下面就能看到网站欢快地跑起来了~~~因为没做域名解析，暂时只能通过IP地址来访问<br>附一张这个网站的截图</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/192464-a1274f936e3652de.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="电影详情页"></p>
+<p>另：网站的Github地址 <a href="https://github.com/FrankXiong/imooc" target="_blank" rel="external">https://github.com/FrankXiong/imooc</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;最近开始折腾Node，跟着慕课网的教程写了个电影网站，于是想把网站部署到服务器上，本文记录了我整个环境搭建的流程。&lt;/p&gt;
+&lt;p&gt;通常Node和mongoDB一起搭配使用，再加上Node的一个热门的开发框架Express，以及angular.js，共同构成了整个web开发的
+    
+    </summary>
+    
+      <category term="Node" scheme="http://frankxiong.xyz/categories/Node/"/>
+    
+    
+      <category term="Node" scheme="http://frankxiong.xyz/tags/Node/"/>
+    
+      <category term="MongoDB" scheme="http://frankxiong.xyz/tags/MongoDB/"/>
+    
+      <category term="服务器" scheme="http://frankxiong.xyz/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【JavaScript实现算法】快速排序</title>
+    <link href="http://frankxiong.xyz/2016/03/22/%E3%80%90JavaScript%E5%AE%9E%E7%8E%B0%E7%AE%97%E6%B3%95%E3%80%91%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/"/>
+    <id>http://frankxiong.xyz/2016/03/22/【JavaScript实现算法】快速排序/</id>
+    <published>2016-03-22T13:13:54.000Z</published>
+    <updated>2016-03-22T13:15:06.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>快速排序是一种分而治之的算法,通过递归的方式将数据依次分解为包含较小元素和较大元素的不同子序列。该算法不断重复这个步骤直到所有数据都是有序的。</p>
+<p>快速排序的算法如下:<br>(1) 选择一个基准元素,将列表分隔成两个子序列;<br>(2) 对列表重新排序,将所有小于基准值的元素放在基准值的前面,所有大于基准值的元素放在基准值的后面;<br>(3) 分别对较小元素的子序列和较大元素的子序列重复步骤 1 和 2。</p>
+<p>这个算法的JavaScript实现如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//工具函数：交换两个值</span><br><span class="line">Array.prototype.swap = function (i, j) &#123;</span><br><span class="line">  var t = this[i];</span><br><span class="line">  this[i] = this[j];</span><br><span class="line">  this[j] = t;</span><br><span class="line">&#125;;</span><br><span class="line">Array.prototype.quickSort = function () &#123;</span><br><span class="line">  this.quickSortHelper(0, this.length-1);</span><br><span class="line">&#125;;</span><br><span class="line">Array.prototype.quickSortHelper = function(start,end)&#123;</span><br><span class="line">    if(start&gt;=end)&#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    var pivot = this[start];</span><br><span class="line">    var pivotIdx = start;</span><br><span class="line">    var i = start+1;</span><br><span class="line">    var n = end;</span><br><span class="line">    while(i&lt;=n)&#123;</span><br><span class="line">        if(this[i] &lt; pivot)&#123;</span><br><span class="line">            this.swap(pivotIdx,i);</span><br><span class="line">            i++;</span><br><span class="line">            pivotIdx = i;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            this.swap(n,i);</span><br><span class="line">            n--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    this.quickSortHelper(start,pivotIdx-1);</span><br><span class="line">    this.quickSortHelper(pivotIdx+1,end);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试一下快速排序的性能<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// test</span><br><span class="line">function test () &#123;</span><br><span class="line">    var arr = [];</span><br><span class="line">    for (var i = 0; i &lt; 1000000; i++) &#123;</span><br><span class="line">        arr.push(Math.round(Math.random(i) * 10000));</span><br><span class="line">    &#125;</span><br><span class="line">    doTest(arr, 1);</span><br><span class="line">&#125;</span><br><span class="line">function doTest(arr, n) &#123;</span><br><span class="line">    var tStart = (new Date()).getTime();</span><br><span class="line">    var re = arr.quickSort();</span><br><span class="line">    var tEnd = (new Date()).getTime();</span><br><span class="line">    console.log(&apos;快速排序使用时间是:&apos; + (tEnd - tStart) + &apos;ms&apos;);</span><br><span class="line">    return re;</span><br><span class="line">&#125;</span><br><span class="line">test();//输出：快速排序使用时间是:215ms</span><br></pre></td></tr></table></figure></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;快速排序是一种分而治之的算法,通过递归的方式将数据依次分解为包含较小元素和较大元素的不同子序列。该算法不断重复这个步骤直到所有数据都是有序的。&lt;/p&gt;
+&lt;p&gt;快速排序的算法如下:&lt;br&gt;(1) 选择一个基准元素,将列表分隔成两个子序列;&lt;br&gt;(2) 对列表重新排序,将所有
+    
+    </summary>
+    
+      <category term="数据结构与算法" scheme="http://frankxiong.xyz/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+      <category term="算法" scheme="http://frankxiong.xyz/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>实现JavaScript中的indexOf方法</title>
+    <link href="http://frankxiong.xyz/2016/03/21/%E5%AE%9E%E7%8E%B0JavaScript%E4%B8%AD%E7%9A%84indexOf%E6%96%B9%E6%B3%95/"/>
+    <id>http://frankxiong.xyz/2016/03/21/实现JavaScript中的indexOf方法/</id>
+    <published>2016-03-21T09:43:49.000Z</published>
+    <updated>2016-03-21T09:48:02.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<p>indexOf()方法是ES5中出现的数组方法，它有两个参数<br>array.indexOf(value,start)<br>第一个参数指定要在数组查找的值，第二个可选参数指定开始查找的数组下标。如果省略，则为0。如果数组中存在匹配的值，就返回第一次匹配的数组下标，如果不存在匹配的值，则返回-1。<br>示例：[‘a’,’b’,’c’].indexOf(‘a’,1)  //返回-1</p>
+</blockquote>
+<p>下面我们来自己实现这个方法，并保证其向下兼容性。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var indexof = function(array,value,start)&#123;</span><br><span class="line">   if(array == null) return -1;</span><br><span class="line">   var i=0,length = array.length;</span><br><span class="line">   if(start)&#123;</span><br><span class="line">       if(typeof start == &apos;number&apos;)&#123;</span><br><span class="line">           // 添加对start为负值时的处理</span><br><span class="line">           i = (start &lt; 0 ? Math.max(0,length+start):start);</span><br><span class="line">        &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   // 如果浏览器支持ES5 indexOf，则直接使用它</span><br><span class="line">   if(Array.prototype.indexOf &amp;&amp; array.indexOf === Array.prototype.indexOf)&#123;</span><br><span class="line">        return array.indexOf(value,start);</span><br><span class="line">   &#125;</span><br><span class="line">   // 遍历数组</span><br><span class="line">   for(;i &lt; length;i++)&#123;</span><br><span class="line">       if(array[i]===value)&#123;</span><br><span class="line">           return i;</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   return -1;</span><br><span class="line">&#125;</span><br><span class="line">//测试</span><br><span class="line">console.log(indexof([2,4,1,8,5],1,0));//输出2</span><br></pre></td></tr></table></figure></p>
+<p>如此，我们就扩充了indexOf方法，使其在即便不支持的ES5的浏览器也能运行良好。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;indexOf()方法是ES5中出现的数组方法，它有两个参数&lt;br&gt;array.indexOf(value,start)&lt;br&gt;第一个参数指定要在数组查找的值，第二个可选参数指定开始查找的数组下标。如果省略，则为0。如果数组中存在匹配的值，就返回第
+    
+    </summary>
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/categories/JavaScript/"/>
+    
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【JavaScript实现数据结构】队列</title>
+    <link href="http://frankxiong.xyz/2016/03/21/%E3%80%90JavaScript%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E3%80%91%E9%98%9F%E5%88%97/"/>
+    <id>http://frankxiong.xyz/2016/03/21/【JavaScript实现数据结构】队列/</id>
+    <published>2016-03-21T09:42:51.000Z</published>
+    <updated>2016-03-21T09:45:01.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>队列是一种先进先出（FIFO）的数据结构，其实现方式主要分两种：顺序队列和链式队列，本文将给出顺序队列的JavaScript实现。</p>
+<p>JavaScript提供的数组原生方法：push()可以在数组末尾插入元素，shift()可以删除数组的第一个元素，利用这两个方法可以很容易实现队列的“入队”和“出队”。代码如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function Queue()&#123;</span><br><span class="line">    this.items = [];</span><br><span class="line">&#125;</span><br><span class="line">Queue.prototype = &#123;</span><br><span class="line">    enqueue:function(data)&#123;</span><br><span class="line">        this.items.push(data);</span><br><span class="line">    &#125;,</span><br><span class="line">    dequeue:function()&#123;</span><br><span class="line">        return this.items.shift();</span><br><span class="line">    &#125;,</span><br><span class="line">    front:function()&#123;</span><br><span class="line">        return this.items[0];</span><br><span class="line">    &#125;,</span><br><span class="line">    rear:function()&#123;</span><br><span class="line">        return this.items[this.items.length-1];</span><br><span class="line">    &#125;,</span><br><span class="line">    clear:function()&#123;</span><br><span class="line">        this.items = [];</span><br><span class="line">    &#125;,</span><br><span class="line">    length:function()&#123;</span><br><span class="line">        return this.items.length;</span><br><span class="line">    &#125;,</span><br><span class="line">    displayAll:function()&#123;</span><br><span class="line">        var str = &apos;&apos;;</span><br><span class="line">        for(var i = 0;i &lt; this.length();i++)&#123;</span><br><span class="line">            str += this.items[i];</span><br><span class="line">        &#125;</span><br><span class="line">        return str;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var queue = new Queue();</span><br><span class="line">queue.enqueue(&apos;aaa&apos;);</span><br><span class="line">queue.enqueue(&apos;bbb&apos;);</span><br><span class="line">console.log(queue.length());//输出2</span><br><span class="line">queue.dequeue();</span><br><span class="line">console.log(queue.displayAll());//输出bbb</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p><strong>初学者学习笔记，如有不对，还希望高手指点。如有造成误解，还希望多多谅解。</strong></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;队列是一种先进先出（FIFO）的数据结构，其实现方式主要分两种：顺序队列和链式队列，本文将给出顺序队列的JavaScript实现。&lt;/p&gt;
+&lt;p&gt;JavaScript提供的数组原生方法：push()可以在数组末尾插入元素，shift()可以删除数组的第一个元素，利用这两个方
+    
+    </summary>
+    
+      <category term="数据结构与算法" scheme="http://frankxiong.xyz/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+      <category term="数据结构" scheme="http://frankxiong.xyz/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>数组去重</title>
+    <link href="http://frankxiong.xyz/2016/03/21/%E6%95%B0%E7%BB%84%E5%8E%BB%E9%87%8D/"/>
+    <id>http://frankxiong.xyz/2016/03/21/数组去重/</id>
+    <published>2016-03-21T09:42:35.000Z</published>
+    <updated>2016-03-21T09:45:45.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>话说面试常会碰到面试官会问JavaScript实现数组去重的问题，最近刚好在学习有关于<a href="http://www.w3cplus.com/blog/tags/538.html" target="_blank" rel="external">JavaScript数组相关的知识</a>,趁此机会整理了一些有关于JavaScript数组去重的方法。</p>
+<p>下面这些数组去重的方法是自己收集和整理的，如有不对希望指正文中不对之处。</p>
+<h3 id="双重循环去重"><a href="#双重循环去重" class="headerlink" title="双重循环去重"></a>双重循环去重</h3><hr>
+<p>这个方法使用了两个for循环做遍历。整个思路是：</p>
+<ul>
+<li>构建一个空数组用来存放去重后的数组</li>
+<li>外面的for循环对原数组做遍历，每次从数组中取出一个元素与结果数组做对比</li>
+<li>如果原数组取出的元素与结果数组元素相同，则跳出循环;反之则将其存放到结果数组中</li>
+</ul>
+<p>代码如下:<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Array.prototype.unique1 = function () &#123; </span><br><span class="line">　// 构建一个新数组，存放结果 var newArray = [this[0]]; </span><br><span class="line">　// for循环，每次从原数组中取出一个元素 </span><br><span class="line">　// 用取出的元素循环与结果数组对比 </span><br><span class="line">　for (var i = 1; i &lt; this.length; i++) &#123; </span><br><span class="line">　　var repeat = false; </span><br><span class="line">　　for (var j=0; j &lt; newArray.length; j++) &#123; </span><br><span class="line">　　// 原数组取出的元素与结果数组元素相同 </span><br><span class="line">　　　if(this[i] == newArray[j]) &#123; </span><br><span class="line">　　　　repeat = true; break; </span><br><span class="line">　　　&#125; </span><br><span class="line">　　&#125; </span><br><span class="line">　　if(!repeat) &#123; </span><br><span class="line">　　// 如果结果数组中没有该元素，则存放到结果数组中 　　　　</span><br><span class="line">　　　newArray.push(this[i]);</span><br><span class="line">　　&#125; </span><br><span class="line">　&#125; </span><br><span class="line">　return newArray;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>假设我们有一个这样的数组：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var arr = [1,2,3,4,&apos;a&apos;,&apos;b&apos;,1,3,4,56,32,34,2,&apos;b&apos;,&apos;c&apos;,5,&apos;1&apos;,&apos;2&apos;];</span><br><span class="line">arr.unique1(); // [1, 2, 3, 4, &quot;a&quot;, &quot;b&quot;, 56, 32, 34, &quot;c&quot;, 5]</span><br></pre></td></tr></table></figure></p>
+<p>据说这种方法比较耗时，费性能。简单做个测试(测试方法写得比较拙逼)：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function test () &#123; </span><br><span class="line">　var arr = []; </span><br><span class="line">　for (var i = 0; i &lt; 1000000; i++) &#123; 　　</span><br><span class="line">　　arr.push(Math.round(Math.random(i) * 10000)); </span><br><span class="line">　&#125; </span><br><span class="line">　doTest(arr, 1);</span><br><span class="line">&#125;</span><br><span class="line">function doTest(arr, n) &#123; </span><br><span class="line">　var tStart = (new Date()).getTime(); </span><br><span class="line">　var re = arr.unique1(); </span><br><span class="line">　var tEnd = (new Date()).getTime(); </span><br><span class="line">　console.log(&apos;双重循环去重方法使用时间是:&apos; + (tEnd - tStart) + &apos;ms&apos;); </span><br><span class="line">　return re;</span><br><span class="line">&#125;</span><br><span class="line">test();</span><br></pre></td></tr></table></figure></p>
+<p>在Chrome控制器运行上面的代码，测试双重循环去重所费时间：11031ms。</p>
+<p>上面的方法可以使用forEach()方法和indexOf()方法模拟实现：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function unique1() &#123; </span><br><span class="line">　var newArray = []; </span><br><span class="line">　this.forEach(function (index) &#123; </span><br><span class="line">　　if (newArray.indexOf(index) == -1) &#123; </span><br><span class="line">　　　newArray.push(index); </span><br><span class="line">　　&#125; </span><br><span class="line">　&#125;); </span><br><span class="line">　return newArray;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>通过unique1.apply(arr)或unique1.call(arr)调用。不过这种方法效率要快得多，同样的上面测试代码，所费时间5423ms，几乎快了一半。</p>
+<h3 id="排序遍历去重"><a href="#排序遍历去重" class="headerlink" title="排序遍历去重"></a>排序遍历去重</h3><hr>
+<p>先使用sort()方法对原数组做一个排序，排完序之后对数组做遍历，并且检查数组中的第i个元素与结果数组中最后一个元素是否相同。如果不同，则将元素放到结果数组中。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Array.prototype.unique2 = function () &#123; </span><br><span class="line">　// 原数组先排序 </span><br><span class="line">　this.sort(); </span><br><span class="line">　// 构建一个新数组存放结果 </span><br><span class="line">　var newArray = []; </span><br><span class="line">　for (var i = 1; i &lt; this.length; i++) &#123; </span><br><span class="line">　　// 检查原数中的第i个元素与结果中的最后一个元素是否相同 </span><br><span class="line">　　// 因为排序了，所以重复元素会在相邻位置 </span><br><span class="line">　　if(this[i] !== newArray[newArray.length - 1]) &#123; </span><br><span class="line">　　　// 如果不同，将元素放到结果数组中 </span><br><span class="line">　　　newArray.push(this[i]); </span><br><span class="line">　　&#125; </span><br><span class="line">　&#125; </span><br><span class="line">　return newArray;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>例如：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var arr = [1,2,3,4,&apos;a&apos;,&apos;b&apos;,1,3,4,56,32,34,2,&apos;b&apos;,&apos;c&apos;,5,&apos;1&apos;,&apos;2&apos;];</span><br><span class="line">arr.unique2(); // [&quot;1&quot;, 1, 2, &quot;2&quot;, 3, 32, 34, 4, 5, 56, &quot;a&quot;, &quot;b&quot;, &quot;c&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>这种方法有两个特色：<br>去重后的数组会做排序，主要是因为原数在去重前做了排序去重后的数组，与数字相同的数字字符无法区分，比如’1’和1</p>
+<p>使用同样的方法，测试所费时间：1232ms。</p>
+<h3 id="对象键值对法"><a href="#对象键值对法" class="headerlink" title="对象键值对法"></a>对象键值对法</h3><hr>
+<p>这种去重方法实现思路是：<br>创建一个JavaScript对象以及新数组使用for循环遍历原数组，每次取出一个元素与JavaScript对象的键做对比<br>如果不包含，将存入对象的元素的值推入到结果数组中,并且将存入object<br>对象中该属性名的值设置为1</p>
+<p>代码如下:<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Array.prototype.unique3 = function () &#123; </span><br><span class="line">　// 构建一个新数组存放结果 </span><br><span class="line">　var newArray = []; </span><br><span class="line">　// 创建一个空对象 </span><br><span class="line">　var object = &#123;&#125;; </span><br><span class="line">　// for循环时，每次取出一个元素与对象进行对比 </span><br><span class="line">　// 如果这个元素不重复，则将它存放到结果数中 </span><br><span class="line">　// 同时把这个元素的内容作为对象的一个属性，并赋值为1, </span><br><span class="line">　// 存入到第2步建立的对象中 </span><br><span class="line">　for (var i = 0; i &lt; this.length; i++)&#123; </span><br><span class="line">　　// 检测在object对象中是否包含遍历到的元素的值 </span><br><span class="line">　　if(!object[typeof(this[i]) + this[i]]) &#123; </span><br><span class="line">　　// 如果不包含，将存入对象的元素的值推入到结果数组中</span><br><span class="line">　　　newArray.push(this[i]); </span><br><span class="line">　　　// 如果不包含，存入object对象中该属性名的值设置为1 </span><br><span class="line">　　　object[typeof(this[i]) + this[i]] = 1; </span><br><span class="line">　　&#125; </span><br><span class="line">　&#125; </span><br><span class="line">　return newArray;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>运行前面的示例：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var arr = [1,2,3,4,&apos;a&apos;,&apos;b&apos;,1,3,4,56,32,34,2,&apos;b&apos;,&apos;c&apos;,5,&apos;1&apos;,&apos;2&apos;];</span><br><span class="line">arr.unique3(); // [1, 2, 3, 4, &quot;a&quot;, &quot;b&quot;, 56, 32, 34, &quot;c&quot;, 5, &quot;1&quot;, &quot;2&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>同样的，不同的键可能会被误认为一样；例如： a[1]、a[“1”]。这种方法所费时间：621ms。 这种方法所费时间是最短，但就是占用内存大一些。</p>
+<p>除了上面几种方法，还有其他几种方法如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 方法四</span><br><span class="line">Array.prototype.unique4 = function () &#123; </span><br><span class="line">　// 构建一个新数组存放结果 </span><br><span class="line">　var newArray = []; </span><br><span class="line">　// 遍历整个数组 </span><br><span class="line">　for (var i = 0; i &lt; this.length; i++) &#123; </span><br><span class="line">　　// 遍历是否有重复的值 </span><br><span class="line">　　for (j = i + 1; j &lt; this.length; j++) &#123; </span><br><span class="line">　　　// 如果有相同元素，自增i变量，跳出i的循环 </span><br><span class="line">　　　if(this[i] === this[j]) &#123; </span><br><span class="line">　　　　j = ++i; </span><br><span class="line">　　　&#125;　 </span><br><span class="line">　　&#125; </span><br><span class="line">　　// 如果没有相同元素，将元素推入到结果数组中 　</span><br><span class="line">　　newArray.push(this[i]); </span><br><span class="line">　&#125; </span><br><span class="line">　return newArray;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Chrome测试结果<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var arr = [1,2,3,4,&apos;a&apos;,&apos;b&apos;,1,3,4,56,32,34,2,&apos;b&apos;,&apos;c&apos;,5,&apos;1&apos;,&apos;2&apos;];</span><br><span class="line">arr.unique4(); // [&quot;a&quot;, 1, 3, 4, 56, 32, 34, 2, &quot;b&quot;, &quot;c&quot;, 5, &quot;1&quot;, &quot;2&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>同样的，1和’1’无法区分。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 方法五</span><br><span class="line">Array.prototype.unique5 = function () &#123; </span><br><span class="line">　// 构建一个新数组存放结果 </span><br><span class="line">　var newArray = []; </span><br><span class="line">　// 遍历整个数组 </span><br><span class="line">　for (var i = 0; i &lt; this.length; i++) &#123; </span><br><span class="line">　　// 如果当前数组的第i值保存到临时数组，那么跳过 </span><br><span class="line">　　var index = this[i]; </span><br><span class="line">　　// 如果数组项不在结果数组中，将这个值推入结果数组中 </span><br><span class="line">　　if (newArray.indexOf(index) === -1) &#123; </span><br><span class="line">　　　newArray.push(index); </span><br><span class="line">　　&#125; </span><br><span class="line">　&#125; </span><br><span class="line">　return newArray;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>Chrome测试结果:<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var arr = [1,2,3,4,&apos;a&apos;,&apos;b&apos;,1,3,4,56,32,34,2,&apos;b&apos;,&apos;c&apos;,5,&apos;1&apos;,&apos;2&apos;];</span><br><span class="line">arr.unique6(); // [1, 2, 3, 4, &quot;a&quot;, &quot;b&quot;, 56, 32, 34, &quot;c&quot;, 5, &quot;1&quot;, &quot;2&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>同样的，类似于1和’1’无法区分。所费时间：14361ms。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 方法六</span><br><span class="line">Array.prototype.unique6 = function () &#123; </span><br><span class="line">　return this.reduce(function (newArray, index) &#123; 　　</span><br><span class="line">　　if(newArray.indexOf(index) &lt; 0) &#123; </span><br><span class="line">　　　newArray.push(index); </span><br><span class="line">　　&#125; </span><br><span class="line">　　return newArray; </span><br><span class="line">　&#125;,[]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试结果如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var arr = [1,2,3,4,&apos;a&apos;,&apos;b&apos;,1,3,4,56,32,34,2,&apos;b&apos;,&apos;c&apos;,5,&apos;1&apos;,&apos;2&apos;]; </span><br><span class="line">arr.unique6(); // [1, 2, 3, 4, &quot;a&quot;, &quot;b&quot;, 56, 32, 34, &quot;c&quot;, 5, &quot;1&quot;, &quot;2&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>所费时间：16490ms。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// 方法七</span><br><span class="line">Array.prototype.unique7 = function()&#123; </span><br><span class="line">　var newArray; </span><br><span class="line">　newArray = this.filter(function (ele,i,arr) &#123; </span><br><span class="line">　　return arr.indexOf(ele) === i; &#125;); </span><br><span class="line">　　return newArray;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>测试结果：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var arr = [1,2,3,4,&apos;a&apos;,&apos;b&apos;,1,3,4,56,32,34,2,&apos;b&apos;,&apos;c&apos;,5,&apos;1&apos;,&apos;2&apos;]; </span><br><span class="line">arr.unique6(); // [1, 2, 3, 4, &quot;a&quot;, &quot;b&quot;, 56, 32, 34, &quot;c&quot;, 5, &quot;1&quot;, &quot;2&quot;]</span><br></pre></td></tr></table></figure></p>
+<p>所费时间：13201ms。<br>方法虽然很多种，但相比下来，下面这种方法是较为优秀的方案：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//方法三</span><br><span class="line">Array.prototype.unique3 = function () &#123; </span><br><span class="line">　// 构建一个新数组存放结果 </span><br><span class="line">　var newArray = []; </span><br><span class="line">　// 创建一个空对象 </span><br><span class="line">　var object = &#123;&#125;; </span><br><span class="line">　// for循环时，每次取出一个元素与对象进行对比 </span><br><span class="line">　// 如果这个元素不重复，则将它存放到结果数中 </span><br><span class="line">　// 同时把这个元素的内容作为对象的一个属性，并赋值为1, </span><br><span class="line">　// 存入到第2步建立的对象中 </span><br><span class="line">　for (var i = 0; i &lt; this.length; i++)&#123; </span><br><span class="line">　　// 检测在object对象中是否包含遍历到的元素的值 </span><br><span class="line">　　if(!object[typeof(this[i]) + this[i]]) &#123; </span><br><span class="line">　　// 如果不包含，将存入对象的元素的值推入到结果数组中</span><br><span class="line">　　　newArray.push(this[i]); </span><br><span class="line">　　　// 如果不包含，存入object对象中该属性名的值设置为1 </span><br><span class="line">　　　object[typeof(this[i]) + this[i]] = 1; </span><br><span class="line">　　&#125; </span><br><span class="line">　&#125; </span><br><span class="line">　return newArray;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>但在ES6去重还有更简单，更优化的方案，比如：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// ES6</span><br><span class="line">function unique (arr) &#123; </span><br><span class="line">　const seen = new Map() </span><br><span class="line">　return arr.filter((a) =&gt; !seen.has(a) &amp;&amp; seen.set(a, 1))</span><br><span class="line">&#125;</span><br><span class="line">// or</span><br><span class="line">function unique (arr) &#123; </span><br><span class="line">　return Array.from(new Set(arr))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>转载自：<a href="http://www.w3cplus.com/javascript/remove-duplicates-from-javascript-array.html" target="_blank" rel="external">http://www.w3cplus.com/javascript/remove-duplicates-from-javascript-array.html</a></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;话说面试常会碰到面试官会问JavaScript实现数组去重的问题，最近刚好在学习有关于&lt;a href=&quot;http://www.w3cplus.com/blog/tags/538.html&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;JavaScript数
+    
+    </summary>
+    
+      <category term="数据结构与算法" scheme="http://frankxiong.xyz/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+      <category term="算法" scheme="http://frankxiong.xyz/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>【JavaScript实现数据结构】栈</title>
+    <link href="http://frankxiong.xyz/2016/03/21/%E3%80%90JavaScript%E5%AE%9E%E7%8E%B0%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E3%80%91%E6%A0%88/"/>
+    <id>http://frankxiong.xyz/2016/03/21/【JavaScript实现数据结构】栈/</id>
+    <published>2016-03-21T09:39:09.000Z</published>
+    <updated>2016-03-21T09:41:33.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>堆栈可以用链表和数组两种方式实现，这里分别给出这两种实现方式。<br>代码如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//数组实现</span><br><span class="line">function Stack()&#123;</span><br><span class="line">   this.items = [];</span><br><span class="line">   this.size = 0;</span><br><span class="line">&#125;</span><br><span class="line">Stack.prototype = &#123;</span><br><span class="line">   constructor:Stack,</span><br><span class="line">   push:function(data)&#123;</span><br><span class="line">       this.items[this.size++] = data;</span><br><span class="line">   &#125;,</span><br><span class="line">   pop:function()&#123;</span><br><span class="line">       return this.items[--this.size];</span><br><span class="line">   &#125;,</span><br><span class="line">   clear:function()&#123;</span><br><span class="line">       this.size = 0;</span><br><span class="line">       this.items = [];</span><br><span class="line">   &#125;,</span><br><span class="line">   perk:function()&#123;</span><br><span class="line">       return this.items[this.size-1];</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//链表实现</span><br><span class="line">    function Stack()&#123;</span><br><span class="line">        this.top = null;</span><br><span class="line">        this.size = 0;</span><br><span class="line">    &#125;</span><br><span class="line">    Stack.prototype = &#123;</span><br><span class="line">        constructor:Stack,</span><br><span class="line">        push:function(data)&#123;</span><br><span class="line">            var node = &#123;</span><br><span class="line">                data:data,</span><br><span class="line">                next:null</span><br><span class="line">            &#125;;</span><br><span class="line">            node.next = this.top;</span><br><span class="line">            this.top = node;</span><br><span class="line">            this.size++;</span><br><span class="line">        &#125;,</span><br><span class="line">        pop:function()&#123;</span><br><span class="line">            if(this.top === null)&#123;</span><br><span class="line">                return null;</span><br><span class="line">            &#125;</span><br><span class="line">            var out = this.top;</span><br><span class="line">            this.top = this.top.next;</span><br><span class="line">            if(this.size &gt; 0)&#123;</span><br><span class="line">                this.size--;    </span><br><span class="line">            &#125;</span><br><span class="line">            return out.data;</span><br><span class="line">        &#125;,</span><br><span class="line">        perk:function()&#123;</span><br><span class="line">            return this.top === null ? null:this.top.data; </span><br><span class="line">        &#125;,</span><br><span class="line">        clear:function()&#123;</span><br><span class="line">            this.top = null;</span><br><span class="line">            this.size = 0;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p>测试：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var stack = new Stack();</span><br><span class="line">stack.push(&apos;k&apos;);</span><br><span class="line">stack.push(&apos;b&apos;);</span><br><span class="line">console.log(stack.perk());//输出b</span><br><span class="line">stack.pop();</span><br><span class="line">console.log(stack.perk());//输出k</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="栈的应用"><a href="#栈的应用" class="headerlink" title="栈的应用"></a>栈的应用</h3><p>例子：数值进制转换<br>算法思想如下：<br>(1)  最高位为 n % b,将此位压入栈。<br>(2)  使用 n/b 代替 n。<br>(3)  重复步骤 1 和 2,直到 n 等于 0,且没有余数。<br>(4)  持续将栈内元素弹出,直到栈为空,依次将这些元素排列,就得到转换后数字的字符串形式。</p>
+<p>具体代码实现：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function mulBase(num,base)&#123;</span><br><span class="line">    var stack = new Stack();</span><br><span class="line">    do&#123;</span><br><span class="line">        stack.push(num % base); </span><br><span class="line">        num = Math.floor(num / base);</span><br><span class="line">    &#125;while(num&gt;0);</span><br><span class="line">    var result = &apos;&apos;;</span><br><span class="line">    while(stack.size &gt; 0)&#123;</span><br><span class="line">        result += stack.pop();</span><br><span class="line">    &#125;</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br><span class="line">console.log(mulBase(234,2)); //输出11101010</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p><strong>初学者学习笔记，如有不对，还希望高手指点。如有造成误解，还希望多多谅解。</strong></p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;堆栈可以用链表和数组两种方式实现，这里分别给出这两种实现方式。&lt;br&gt;代码如下：&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;//数组实现&lt;/s
+    
+    </summary>
+    
+      <category term="数据结构与算法" scheme="http://frankxiong.xyz/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
+    
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+      <category term="数据结构" scheme="http://frankxiong.xyz/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+      <category term="算法" scheme="http://frankxiong.xyz/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>阿里前端实习电话面试（二）</title>
+    <link href="http://frankxiong.xyz/2016/03/16/%E9%98%BF%E9%87%8C%E5%89%8D%E7%AB%AF%E5%AE%9E%E4%B9%A0%E7%94%B5%E8%AF%9D%E9%9D%A2%E8%AF%95%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
+    <id>http://frankxiong.xyz/2016/03/16/阿里前端实习电话面试（二）/</id>
+    <published>2016-03-16T14:22:52.000Z</published>
+    <updated>2016-03-16T14:25:35.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>今天经历了阿里的两轮电话面试，分别来自阿里旅行和无线部门。加上之前无线部门的一面，事实上这已经是阿里的第三次电面了。。。我猜是他们的招聘系统出了问题，填简历时选的杭州，结果今天收到了来自北京的电面。。。</p>
+<p>这两次面试显然考察的比第一次面试全面多了，从C语言、数据结构、算法，到网络、OOP、以及JS基础……两次都面了半个多小时……</p>
+<p>1.自我介绍，描述你的项目</p>
+<p>2.项目中用到了哪些技术，如何进行依赖管理，描述项目的结构(显然是在问前端工程化)</p>
+<p>3.什么是重载与多态？如何用JS实现多态？(OOP)</p>
+<p>4.常见的数据结构？栈和队列的区别？(数据结构)</p>
+<p>5.如何找出数组中重复最多的三个数?描述其复杂度(答的不好，放了我这个算法渣吧……)</p>
+<p>6.C语言中分配的几个空间(直接说了不知道……坑啊)</p>
+<p>7.JS中apply和call的用法(JS基础)</p>
+<p>8.什么是URL编码？(encodeUriComponent)</p>
+<p>9.Get和Post的区别？什么时候使用Post？(幂等与非幂等，数据长度，安全性)</p>
+<p>10.说出几个HTTP请求头(说了一堆，哈哈哈)</p>
+<p>11.HTTP和HTTPS的区别？HTTPS解决了哪些问题？(easy~)</p>
+<p>12.websocket实现了服务器和浏览器的实时通信，它还有哪些替代方案？(轮询Ajax和long pool)</p>
+<p>13.网页中你有使用栅格系统吗？你如何进行的布局？(没用，自己写的栅格，提到了Flexbox)</p>
+<p>14.描述一下五层网络模型(easy~)</p>
+<p>15.了解HashMap吗？描述其原理(勉强答了上来)</p>
+<p>16.对于账号密码等提交，如何保证其安全性(我答了加盐hash,似乎不是他想听到的答案)</p>
+<p>17.学过密码学吗？(没有)大学专业课里面哪个科目学的最好？(都学的差不多……)</p>
+<p>18.你还有什么问题要问我的吗？(这个问题每次面试结束的时候都会问到……)</p>
+<p>感觉遗漏了很多问题，大致如此吧，共勉。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;今天经历了阿里的两轮电话面试，分别来自阿里旅行和无线部门。加上之前无线部门的一面，事实上这已经是阿里的第三次电面了。。。我猜是他们的招聘系统出了问题，填简历时选的杭州，结果今天收到了来自北京的电面。。。&lt;/p&gt;
+&lt;p&gt;这两次面试显然考察的比第一次面试全面多了，从C语言、数据
+    
+    </summary>
+    
+      <category term="面试" scheme="http://frankxiong.xyz/categories/%E9%9D%A2%E8%AF%95/"/>
+    
+    
+      <category term="面试" scheme="http://frankxiong.xyz/tags/%E9%9D%A2%E8%AF%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>CDN缓存原理</title>
+    <link href="http://frankxiong.xyz/2016/03/16/CDN%E7%BC%93%E5%AD%98%E5%8E%9F%E7%90%86/"/>
+    <id>http://frankxiong.xyz/2016/03/16/CDN缓存原理/</id>
+    <published>2016-03-15T19:46:38.000Z</published>
+    <updated>2016-03-15T19:48:53.000Z</updated>
+    
+    <content type="html"><![CDATA[<p>启用CDN缓存后浏览器访问的全过程：</p>
+<p>1.用户输入URL，浏览器将解析过后的域名发给DNS服务器</p>
+<p>2.CDN返回该域名对应的CNAME，此时浏览器需要再次对获得的CNAME进行解析，才能得到CDN缓存服务器的IP地址。在此过程中全局负载均衡DNS解析服务器会将用户的访问请求定位到离用户最近、负载最轻的CDN缓存服务器上。这种技术也被称为“DNS重定向”，DNS服务器不是为每个请求返回相同的IP地址，比如在悉尼的一个客户请求解析www.cdn.com，DNS服务器根据地理位置，计算出距离这个用户最近的CDN服务器，于是返回一个悉尼CDN节点的IP地址。这种方法也不一定是最优的，因为地理位置上最近的两个点，延迟可能反而很高。还有一种方法是通过估计节点间的样本延迟，具体原理我也不了解。</p>
+<p>3.再次解析后，浏览器得到CDN缓存服务器的实际IP地址，向缓存服务器发起请求。</p>
+<p>4.缓存服务器根据浏览器提供的域名，通过内部DNS解析得到此域名源服务器的真实IP地址，再由缓存服务器向该服务器发起访问请求。</p>
+<p>5.缓存服务器拿到数据后，一方面将数据发回浏览器，另一方面进行本地保存，以备后用。之后再次访问，数据将从CDN缓存服务器中被返回。CDN不会永久保存数据，可以设置CDN的刷新频率，来达到数据的更新。</p>
+<p>6.浏览器得到由缓存服务器发回的数据，并将其显示出来。至此，完成整个域名访问的过程。</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;p&gt;启用CDN缓存后浏览器访问的全过程：&lt;/p&gt;
+&lt;p&gt;1.用户输入URL，浏览器将解析过后的域名发给DNS服务器&lt;/p&gt;
+&lt;p&gt;2.CDN返回该域名对应的CNAME，此时浏览器需要再次对获得的CNAME进行解析，才能得到CDN缓存服务器的IP地址。在此过程中全局负载均衡DNS
+    
+    </summary>
+    
+      <category term="网络" scheme="http://frankxiong.xyz/categories/%E7%BD%91%E7%BB%9C/"/>
+    
+    
+      <category term="性能优化" scheme="http://frankxiong.xyz/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"/>
+    
+  </entry>
+  
+</feed>
