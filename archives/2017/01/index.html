@@ -22,7 +22,7 @@
         
     </title>
 
-    <link rel="canonical" href="http://frankxiong.xyz/page/4/">
+    <link rel="canonical" href="http://frankxiong.xyz/archives/2017/01/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -44,7 +44,7 @@
 <body ontouchstart="" class="animated fadeIn">
 <!-- Navigation -->
 <nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "false" data-istags="false
-" data-ishome = "true" >
+" data-ishome = "false" >
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header page-scroll">
@@ -145,126 +145,6 @@
 <!-- Main Content -->
 
 
-<style>
-
-    .custom-haojen-container .post-preview:nth-of-type(1),
-    .custom-haojen-container .post-preview-poetry:nth-of-type(1) {
-        text-align: center;
-        background-repeat: no-repeat;
-        border-radius: 3px;
-        background-size: cover;
-        padding: 0;
-        height: 300px;
-        display: table;
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.16);
-    }
-
-    /*去掉诗歌的背景图片*/
-    .custom-haojen-container .post-preview-poetry:nth-of-type(1) {
-        background-image: none !important;
-        background-color: rgba(255, 248, 220, 0.5);
-    }
-
-    .custom-haojen-container .post-preview:nth-child(1) h2,
-    .custom-haojen-container .post-preview:nth-child(1) .post-meta,
-    .custom-haojen-container .post-preview:nth-child(1) .post-subtitle {
-        text-shadow: 0 0 40px rgba(0, 0, 0, 1);
-        letter-spacing: 1px;
-        color: #fff;
-        margin-top: 0;
-        padding-left: 60px;
-        padding-right: 60px;
-    }
-
-    .custom-haojen-container .post-preview:nth-child(1) .post-meta {
-        font-size: .9em;
-        font-weight: 300;
-        margin-top: 0;
-    }
-
-    .custom-haojen-container .post-preview-poetry:nth-child(1) .post-subtitle {
-        letter-spacing: 6px;
-        font-size: 18px;
-        font-family: unset;
-        font-weight: 400;
-        color: rgba(0, 0, 0, .75)
-    }
-
-    /*不显示摘要*/
-    .custom-haojen-container .post-preview:nth-child(1) .post-content-preview {
-        display: none
-    }
-
-    /*只第一个显示背景图片*/
-    .custom-haojen-container .post-preview:not(:nth-child(1)) {
-        background-image: none !important;
-    }
-
-    /*第一个分界线去掉*/
-    .custom-haojen-container hr:nth-of-type(1) {
-        display: none;
-    }
-
-    /*主题*/
-    .custom-haojen-container .post-preview:nth-of-type(1) > a {
-        display: table-cell;
-        vertical-align: middle;
-    }
-
-    /*诗词标题*/
-    .custom-haojen-container .post-preview-poetry:nth-child(1) h2 {
-        font-size: 35px;
-        font-family: STKaiti;
-        color: rgba(0, 0, 0, .8);
-    }
-
-    .custom-haojen-container .post-preview-poetry:nth-of-type(1) .post-meta {
-        color: #0e2231;
-    }
-
-    @media (max-width: 768px) {
-        .custom-haojen-container .post-preview:nth-child(1) {
-            height: 240px;
-        }
-
-        .custom-haojen-container .post-preview-poetry:nth-child(1) h2 {
-            font-size: 28px !important;
-            margin-top: 0;
-        }
-
-        .custom-haojen-container .post-preview:nth-child(1) .post-subtitle {
-            font-size: 18px;
-            font-weight: 400;
-            padding-left: 0;
-            padding-right: 0;
-        }
-
-        .custom-haojen-container .post-preview:nth-of-type(1) > a {
-            padding: 20px
-        }
-    }
-
-    /*手机屏幕*/
-    @media (max-width: 400px) {
-        .custom-haojen-container .post-preview:nth-child(1) {
-            height: 195px;
-        }
-
-        .custom-haojen-container .post-preview-poetry:nth-child(1) h2 {
-            font-size: 20px !important;
-        }
-
-        .custom-haojen-container .post-preview:nth-child(1) .post-subtitle {
-            font-size: 16px;
-        }
-
-        .custom-haojen-container .post-preview:nth-child(1) a {
-            padding: 30px 20px;
-        }
-    }
-</style>
-
 <!-- Page Header -->
 <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 visible-xs-block visible-sm-block">
     <div class="row">
@@ -293,190 +173,20 @@
 
 <div class="post-preview "
      style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
-    <a href="/2016/03/11/cookie/">
+    <a href="/2017/01/09/【JavaScript】splice方法实现原理分析/">
         <h2 class="post-title">
-            cookie详解
+            【JavaScript】splice方法实现原理分析
         </h2>
         <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-03-11
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2017-01-09
         </p>
         
         <div class="post-content-preview">
             <p>
                 
-前言：
+近日在LeetCode上刷题，一个题目提交代码后提示Time Limit Exceeded，分析了下发现是splice()方法拖慢了执行速度。之前经常使用这个方法去操作数组，但从未思考过它的底层实现，于是借此机会揭开splice()的庐山真面目。
 
-Cookie是指web浏览器存储的少量数据，它与具体的web站点相关。Cookie数据会自动在浏览器和服务器之间传输，因此服务器端也可以读写存储在客户端的Cookie值。在JavaScript中，Cookie用于保存状态，以及为浏览器提供一种身份识别机制。
-检测Cookie是否可用：..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview "
-     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
-    <a href="/2016/03/10/正则表达式的模式匹配/">
-        <h2 class="post-title">
-            正则表达式
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-03-10
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                JavaScript中用RegExp对象表示正则表达式，可以用RegExp()构造函数来创建正则表达式，不过更多时候是用对象直接量来创建如：var re = /s$/;这个正则表达式可以匹配以字符s结尾的字符串
-1.字符类把字符放进方括号就变成了字符类，一个字符类可以匹配它所包含的任意字符。如：..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview "
-     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
-    <a href="/2016/03/09/2016阿里前端实习电话面试实录/">
-        <h2 class="post-title">
-            阿里前端实习电话面试（一）
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-03-09
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                一下子记不全，可能遗漏了一些问题……下面是正文
-0.你的项目团队中前端的人数？答：（此处略去20字）
-1.谈谈你在项目中用到的技术？答：全部采用原生CSS，JS，Ajax……
-2.CSS如何垂直居中？答：最新使用FlexBox比较多，其他的方法还有display:table-cell、verti..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview "
-     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
-    <a href="/2016/03/09/深入理解BFC/">
-        <h2 class="post-title">
-            深入理解BFC
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-03-09
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                BFC的定义先看W3C文档
-
-In a block formatting context, boxes are laid out one after the other, vertically, beginning at the top of a containing block. The ve..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview "
-     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
-    <a href="/2016/03/09/什么是TCP连接的三次握手/">
-        <h2 class="post-title">
-            什么是TCP连接的三次握手
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-03-09
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                第一次握手：客户端发送syn(syn=j)包到服务器；并进入SYN_SEND状态，等待服务器确认第二次握手：服务器收到syn包，确认客户的SYN(ack=j+1),同时自己也发送一个SYN包（syn=k），即SYN+ACK包，此时服务器进入SYN_RECV状态第三次握手：客户端收到服务器的SYN..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview "
-     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
-    <a href="/2016/03/09/HTTPS知识点/">
-        <h2 class="post-title">
-            HTTPS知识点
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-03-09
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                1.网景公司首创，所有主要浏览器和服务器都支持此协议2.使用HTTPS时，所有的HTTP请求和响应数据在发送到网络之前，都要进行加密。HTTPS在HTTP和TCP之间加入了一个传输级的安全层，可以使用SSL或者TLS。TLS/SSL中使用了非对称加密、对称加密、Hash算法等。3.密钥是一种参数..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview "
-     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
-    <a href="/2016/03/08/null和undefined的区别/">
-        <h2 class="post-title">
-            null和undefined的区别
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-03-08
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                 1.null和undefined都被用来表示空值，当使用不严格等于号（==）做判断时，他们是等价的。console.log(null == undefined);//输出trueconsole.log(null === undefined);//输出false
-这也是为什么我们在代码中判断相等..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview "
-     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
-    <a href="/2016/03/07/localStorage详解/">
-        <h2 class="post-title">
-            localStorage详解
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-03-07
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                
-前言：在HTML5出现之前，为了保存用户在网站中一些操作状态，以便于下次打开页面时恢复到上次访问时的一些状态，在浏览器端常常使用Cookie来存储一些信息。最典型的应用是判断用户是否登录过网站。但是，Cookie的大小受限，每个Cookie的大小不超过4KB，浏览器一般只允许存放300个Coo..
+函数原型：Array.prototype.s..
             </p>
         </div>
     </a>
@@ -492,14 +202,6 @@ In a block formatting context, boxes are laid out one after the other, verticall
 
 <ul class="pager">
     
-    <li class="previous">
-        <a href="/page/3/">&larr; Newer Posts</a>
-    </li>
-    
-    
-    <li class="next">
-        <a href="/page/5/">Older Posts &rarr;</a>
-    </li>
     
 </ul>
 
