@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://frankxiong.xyz/"/>
-  <updated>2017-01-08T23:43:07.000Z</updated>
+  <updated>2017-02-05T05:13:16.000Z</updated>
   <id>http://frankxiong.xyz/</id>
   
   <author>
@@ -14,6 +14,65 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>【译】2017 年要去学的 3 个 CSS 新属性</title>
+    <link href="http://frankxiong.xyz/2017/02/05/%E3%80%90%E8%AF%91%E3%80%912017-%E5%B9%B4%E8%A6%81%E5%8E%BB%E5%AD%A6%E7%9A%84-3-%E4%B8%AA-CSS-%E6%96%B0%E5%B1%9E%E6%80%A7/"/>
+    <id>http://frankxiong.xyz/2017/02/05/【译】2017-年要去学的-3-个-CSS-新属性/</id>
+    <published>2017-02-05T05:10:28.000Z</published>
+    <updated>2017-02-05T05:13:16.000Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote>
+<ul>
+<li>原文地址：<a href="https://bitsofco.de/3-new-css-features-to-learn-in-2017/" target="_blank" rel="external">3 New CSS Features to Learn in 2017</a></li>
+<li>原文作者：<a href="https://twitter.com/ireaderinokun" target="_blank" rel="external">ireaderinokun</a></li>
+<li>译文出自：<a href="https://github.com/xitu/gold-miner" target="_blank" rel="external">掘金翻译计划</a></li>
+<li>译者： <a href="https://github.com/FrankXiong" target="_blank" rel="external">熊贤仁</a></li>
+<li>校对者： <a href="https://github.com/Professor-Z" target="_blank" rel="external">Professor-Z</a> <a href="https://github.com/aleen42" target="_blank" rel="external">aleen42</a></li>
+</ul>
+</blockquote>
+<h1 id="2017-年要去学的-3-个-CSS-新属性"><a href="#2017-年要去学的-3-个-CSS-新属性" class="headerlink" title="2017 年要去学的 3 个 CSS 新属性"></a>2017 年要去学的 3 个 CSS 新属性</h1><h2 id="1-特性查询（Feature-Queries）"><a href="#1-特性查询（Feature-Queries）" class="headerlink" title="1. 特性查询（Feature Queries）"></a>1. 特性查询（Feature Queries）</h2><p>不久前，我写过一篇关于特性查询的文章 —— <a href="https://bitsofco.de/the-one-css-feature/" target="_blank" rel="external">《一个我十分期待的CSS特性 - the one CSS feature I really want》</a>。如今果然出现了。除了 IE浏览器之外，所有主流浏览器（包括 Opera Mini）均已支持特性查询。</p>
+<p>特性查询采用 <code>@supports</code> 规则，它使得我们可以将 CSS 代码包裹一个条件块中。只有当浏览器的用户代理（user agent）支持某个特定的 CSS 属性-值对时，该条件块中的样式代码才会生效。下面举个简单的例子来说：只有支持 display: flex 的浏览器才会应用 Flexbox 样式<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@supports ( display: flex ) &#123;</span><br><span class="line">  .foo &#123; display: flex; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>另外，我们甚至可以使用像 <code>and</code> 和 <code>not</code> 这类操作符来创建更为复杂的特性查询。例如，检测一个浏览器是否只支持老式的 Flexbox 语法<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@supports ( display: flexbox )</span><br><span class="line">          and</span><br><span class="line">          ( not ( display: flex ) ) &#123;</span><br><span class="line">  .foo &#123; display: flexbox; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h3><p><img src="http://i1.piimg.com/567571/bd5cfc239fccdda6.jpg" alt=""></p>
+<h2 id="2-栅格布局（Grid-Layout）"><a href="#2-栅格布局（Grid-Layout）" class="headerlink" title="2. 栅格布局（Grid Layout）"></a>2. 栅格布局（Grid Layout）</h2><p><a href="https://drafts.csswg.org/css-grid/" target="_blank" rel="external">CSS 栅格布局模块（CSS Grid Layout Module）</a> 定义了一个用于创建基于栅格布局的系统。它和 <a href="https://www.w3.org/TR/css-flexbox-1/" target="_blank" rel="external">弹性盒子布局模块（Flexbible Box Layout Module）</a> 有些相似，但由于其专为页面布局而设计，因此拥有许多不同的特性。</p>
+<h3 id="显式定位元素"><a href="#显式定位元素" class="headerlink" title="显式定位元素"></a>显式定位元素</h3><p>一个栅格由栅格容器（由 <code>display: grid</code> 所创建）和栅格项（子元素）组成。在 CSS 中，我们可以简单且显式地组织栅格项的位置及顺序，并独立于 markup 语言中元素的位置。</p>
+<p>在<a href="https://bitsofco.de/holy-grail-layout-css-grid/" target="_blank" rel="external">《CSS栅格实现圣杯布局》</a>这篇文章中，我演示了如何使用栅格布局模块来创建万恶的“圣杯布局”。</p>
+<p><img src="https://bitsofco.de/content/images/2016/03/Holy_Grail_CSS_Grid.gif" alt="Holy Grail Layout Demo"></p>
+<p>下列 CSS 代码仅有 31 行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.hg__header &#123; grid-area: header; &#125;</span><br><span class="line">.hg__footer &#123; grid-area: footer; &#125;</span><br><span class="line">.hg__main &#123; grid-area: main; &#125;</span><br><span class="line">.hg__left &#123; grid-area: navigation; &#125;</span><br><span class="line">.hg__right &#123; grid-area: ads; &#125;</span><br><span class="line"></span><br><span class="line">.hg &#123;</span><br><span class="line">    display: grid;</span><br><span class="line">    grid-template-areas: &quot;header header header&quot;</span><br><span class="line">                         &quot;navigation main ads&quot;</span><br><span class="line">                         &quot;footer footer footer&quot;;</span><br><span class="line">    grid-template-columns: 150px 1fr 150px;</span><br><span class="line">    grid-template-rows: 100px</span><br><span class="line">                        1fr</span><br><span class="line">                        30px;</span><br><span class="line">    min-height: 100vh;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@media screen and (max-width: 600px) &#123;</span><br><span class="line">    .hg &#123;</span><br><span class="line">        grid-template-areas: &quot;header&quot;</span><br><span class="line">                             &quot;navigation&quot;</span><br><span class="line">                             &quot;main&quot;</span><br><span class="line">                             &quot;ads&quot;</span><br><span class="line">                             &quot;footer&quot;;</span><br><span class="line">        grid-template-columns: 100%;</span><br><span class="line">        grid-template-rows: 100px</span><br><span class="line">                            50px</span><br><span class="line">                            1fr</span><br><span class="line">                            50px</span><br><span class="line">                            30px;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="弹性长度"><a href="#弹性长度" class="headerlink" title="弹性长度"></a>弹性长度</h3><p>CSS 栅格模块引入了一个新的长度单位：<code>fr</code> ，用于表示栅格容器中所剩空间的占比。</p>
+<p>这样我们可以根据栅格容器中的可用空间来分配栅格项的宽高。比如在圣杯布局中，我们可以通过下面的简单代码使得 <code>main</code> 区域占用两个边栏外的余下空间。<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.hg &#123;</span><br><span class="line">  grid-template-columns: 150px 1fr 150px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="槽（Gutters）"><a href="#槽（Gutters）" class="headerlink" title="槽（Gutters）"></a>槽（Gutters）</h3><p>我们可以使用 <code>grid-row-gap</code>，<code>grid-column-gap</code>，和 <code>grid-gap</code> 属性来为栅格布局明确地定义槽。这些属性接受一个 <a href="https://bitsofco.de/generic-css-data-types/#percentages" target="_blank" rel="external"><code>&lt;length-percentage&gt;</code> 数据类型</a> 作为值，以表示内容区大小的相对百分比。</p>
+<p>比如设置一个 5% 的槽，我们可以这样写<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.hg &#123;</span><br><span class="line">  display: grid;</span><br><span class="line">  grid-column-gap: 5%;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="兼容性-1"><a href="#兼容性-1" class="headerlink" title="兼容性"></a>兼容性</h3><p>CSS 栅格模块最早将在今年三月份被浏览器们支持。</p>
+<p><img src="http://i1.piimg.com/567571/229e6ea502a22d93.jpg" alt=""></p>
+<h2 id="3-原生变量（Native-Variables）"><a href="#3-原生变量（Native-Variables）" class="headerlink" title="3. 原生变量（Native Variables）"></a>3. 原生变量（Native Variables）</h2><p>最后，原生 CSS 变量（<a href="https://drafts.csswg.org/css-variables/" target="_blank" rel="external">层叠变量模块（Cascading Variables Module）的自定义属性</a>）来了。该模块引入了一个用于创建用户自定义变量的方法，变量可被赋值给 CSS 属性。</p>
+<p>譬如，若有多个样式表使用同一个主题颜色，那么我们就可以将其抽象成一个变量，并引用该变量，而非重复书写。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">  --theme-colour: cornflowerblue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">h1 &#123; color: var(--theme-colour); &#125;  </span><br><span class="line">a &#123; color: var(--theme-colour); &#125;  </span><br><span class="line">strong &#123; color: var(--theme-colour); &#125;</span><br></pre></td></tr></table></figure>
+<p>我们之前可以用像 SASS 这种 CSS 预处理器来做到这一点，但 CSS 变量的优势是能实际运行于浏览器中。这就意味着，变量的值可以被动态的更新。比如要修改以上所有 –theme-colour 属性，我们只需要这样做<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const rootEl = document.documentElement;  </span><br><span class="line">rootEl.style.setProperty(&apos;--theme-colour&apos;,&apos;plum&apos;);</span><br></pre></td></tr></table></figure></p>
+<h2 id="兼容性-2"><a href="#兼容性-2" class="headerlink" title="兼容性"></a>兼容性</h2><p> <img src="http://i1.piimg.com/567571/fe40f3b4ec633b1c.jpg" alt=""></p>
+<h2 id="关于兼容性？"><a href="#关于兼容性？" class="headerlink" title="关于兼容性？"></a>关于兼容性？</h2><p>如你所见，以上所有特性目前都没有被所有浏览器完全支持，那么我们如何在生产环境中舒服地用上他们呢？渐进增强（Progressive Enhancement）！去年的前端开发者大会上，我就曾就如何在 CSS 中进行渐进增强做过一次分享。点击下面可以看到</p>
+<p><a href="https://player.vimeo.com/video/194815985" target="_blank" rel="external"><img src="http://bitsofco.de/content/images/2017/01/Screen-Shot-2017-01-09-at-20.58.09--2-.png" alt="JavaScript Array Methods -　Mutator"></a></p>
+<p>2017年有哪些 CSS 特性令你激动不已想要学习？</p>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;原文地址：&lt;a href=&quot;https://bitsofco.de/3-new-css-features-to-learn-in-2017/&quot; target=&quot;_blank&quot; rel=&quot;external&quot;&gt;3 New CSS Featu
+    
+    </summary>
+    
+      <category term="前端" scheme="http://frankxiong.xyz/categories/%E5%89%8D%E7%AB%AF/"/>
+    
+    
+      <category term="CSS" scheme="http://frankxiong.xyz/tags/CSS/"/>
+    
+      <category term="翻译" scheme="http://frankxiong.xyz/tags/%E7%BF%BB%E8%AF%91/"/>
+    
+  </entry>
   
   <entry>
     <title>【JavaScript】splice方法实现原理分析</title>
@@ -64,7 +123,7 @@
     <link href="http://frankxiong.xyz/2016/09/08/%E3%80%90%E8%AF%91%E3%80%91%E7%9C%9F%E5%AE%9E%E7%9A%84Virtual-DOM/"/>
     <id>http://frankxiong.xyz/2016/09/08/【译】真实的Virtual-DOM/</id>
     <published>2016-09-08T09:51:03.000Z</published>
-    <updated>2016-12-03T12:00:47.000Z</updated>
+    <updated>2017-02-05T05:12:10.000Z</updated>
     
     <content type="html"><![CDATA[<h6 id="为什么我们需要UI框架？"><a href="#为什么我们需要UI框架？" class="headerlink" title="为什么我们需要UI框架？"></a>为什么我们需要UI框架？</h6><p>　响应式编程提出两个最重要的观点是：系统应该是事件驱动并且响应状态的变化。<br>　DOM的UI组件有自己的内部状态，更新浏览器页面并不是在发生变化后简单的重新生成DOM。如果Gmail这样做的话，出现一条新消息或者删掉你写的邮件，就会导致整个浏览器窗口刷新。<br>　正是因为DOM的无状态性，我们才需要类似key/value observation(Ember中使用了它)，或者脏值检查（Angular）。UI框架监听数据模型的变化，并在DOM中更新对应的部分。或者监听DOM的变化，更新对应的数据模型。这就是所谓的双向数据绑定。它通常可以处理非常复杂的UI逻辑。<br><a id="more"></a></p>
 <h6 id="什么让React与众不同？"><a href="#什么让React与众不同？" class="headerlink" title="什么让React与众不同？"></a>什么让React与众不同？</h6><p>　令React以及它的Virtual DOM如此与众不同的是：它比其他实现JavaScript响应数据的方法都更简单。你只需写JavaScript去更新React组件，React会帮你更新DOM。数据绑定并没有和应用缠在一起。<br>　React使用单向数据绑定来简化这一过程。每次当你在一个React组件的input文本框中输入时，它并不会直接改变这个组件的状态，而是更新数据模型。这会使得UI被更新，你输入的文本就会出现在文本框里。</p>
@@ -92,6 +151,8 @@
     
     
       <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+      <category term="翻译" scheme="http://frankxiong.xyz/tags/%E7%BF%BB%E8%AF%91/"/>
     
       <category term="React" scheme="http://frankxiong.xyz/tags/React/"/>
     
@@ -137,7 +198,7 @@
     <link href="http://frankxiong.xyz/2016/08/03/%E3%80%90%E8%AF%91%E3%80%91%E4%B8%BA%E4%BB%80%E4%B9%88Vue-js%E4%B8%8D%E6%94%AF%E6%8C%81templateURL/"/>
     <id>http://frankxiong.xyz/2016/08/03/【译】为什么Vue-js不支持templateURL/</id>
     <published>2016-08-02T17:48:42.000Z</published>
-    <updated>2016-09-04T08:41:17.000Z</updated>
+    <updated>2017-02-05T05:12:23.000Z</updated>
     
     <content type="html"><![CDATA[<p>　　对于Vue新手，尤其是之前用过Angular的人来说，有一个非常普遍的问题：“我可以使用<code>templateURL</code>吗？”我（尤大）已经回答过很多次这个问题，发现最好写点东西来解释一下。<br>在Angular中，<code>templateURL</code>或者<code>ng-include</code>允许开发者在运行时动态地加载远程的模板文件。作为一个内建的特点，这点看起来很方便。但是让我们重新思考一下它解决了什么问题。<br><a id="more"></a><br>　　首先，templateURL允许我们在一个分离的HTML文件中写模板。可以让编辑器提供合适的语法高亮，这可能也是许多框架偏爱于这样做的原因吧。但是，分离模板和JavaScript代码真是的最好的方式吗？对于一个Vue组件，template和JavaScript被原生的紧密连在一起。事实上，如果这些东西仅仅在一个文件里会简单得多。上下文的来回跳转事实上会让开发体验变得更加糟糕。从概念上来说，组件是一个Vue应用的基本构建块，而template不是。每一个Vue.js template和一个伴随着的JavaScript上下文紧密连在一起，没有理由去进一步分离他们。<br>　　其次，由于<code>templateURL</code>通过Ajax在运行时加载模板，你不需要为了分离你的文件而增加一个构建的环节。这为开发提供了便利，但是当你想部署项目到生产环境的时候，这种方式带来了严重的开销。在HTTP/2被普遍支持之前，HTTP请求的数量依然是影响你的应用初次加载时性能的关键因素。现在想象你在应用中每一个组件中使用templateURL，浏览器需要在能展示页面之前做大量的HTTP请求，可能你不知道的是，大多数浏览器限制了它对于单个服务器的并行请求的数量。当你超过了这个限制，应用的初次渲染会承受额外的周转时间，因为浏览器要等待请求的加载。当然，现在也有构建工具，能够帮助你在<code>$templateCache</code>中预注册(pre-register)这些模板。但是，这事实上，不可避免的给前端开发增加了一个构建环节。<br>　　所以，没有templateURL，我们如何处理开发体验的问题？把模板作为行内JavaScript字符串来写是很糟糕的，以<code>&lt;script type=&quot;x/template&quot;&gt;</code>的方式来编写模板感觉像是一个hack。好吧，可能是时候去使用一个像 <a href="http://webpack.github.io/" target="_blank" rel="external">Webpack</a>或者<a href="http://browserify.org/" target="_blank" rel="external">Browserify</a>之类的模板加载器让程序跑起来。你如果之前没处理过这些问题的话可能会被吓到，但是相信我，做出这种改变是值得的。如果你想要去构建一个大型的可维护的项目时，合适的模块化是必不可少的。更重要的是，当你开始<strong>在单个文件中写Vue组件</strong>时，使用合适的语法高亮，享受着预加载器、热加载(hot-reloading)，ES2015带来的开发上的快感，以及自动补全和scoped css。这些会将开发体验提升10倍。<br>　　最后，Vue也允许懒加载组件。使用webpack的话，这将变得极其简单。尽管这有一个唯一值得担心的问题是，当初始模块太大时，你最好将它进一步分离。<br>　　<strong>以组件的方式去思考，而不是模板。</strong></p>
 <hr>
@@ -154,6 +215,8 @@
     
     
       <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+      <category term="翻译" scheme="http://frankxiong.xyz/tags/%E7%BF%BB%E8%AF%91/"/>
     
       <category term="Vue" scheme="http://frankxiong.xyz/tags/Vue/"/>
     
@@ -676,50 +739,6 @@
       <category term="数据结构" scheme="http://frankxiong.xyz/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     
       <category term="算法" scheme="http://frankxiong.xyz/tags/%E7%AE%97%E6%B3%95/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>阿里前端实习电话面试（二）</title>
-    <link href="http://frankxiong.xyz/2016/03/16/%E9%98%BF%E9%87%8C%E5%89%8D%E7%AB%AF%E5%AE%9E%E4%B9%A0%E7%94%B5%E8%AF%9D%E9%9D%A2%E8%AF%95%EF%BC%88%E4%BA%8C%EF%BC%89/"/>
-    <id>http://frankxiong.xyz/2016/03/16/阿里前端实习电话面试（二）/</id>
-    <published>2016-03-16T14:22:52.000Z</published>
-    <updated>2016-03-16T14:25:35.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>今天经历了阿里的两轮电话面试，分别来自阿里旅行和无线部门。加上之前无线部门的一面，事实上这已经是阿里的第三次电面了。。。我猜是他们的招聘系统出了问题，填简历时选的杭州，结果今天收到了来自北京的电面。。。</p>
-<p>这两次面试显然考察的比第一次面试全面多了，从C语言、数据结构、算法，到网络、OOP、以及JS基础……两次都面了半个多小时……</p>
-<p>1.自我介绍，描述你的项目</p>
-<p>2.项目中用到了哪些技术，如何进行依赖管理，描述项目的结构(显然是在问前端工程化)</p>
-<p>3.什么是重载与多态？如何用JS实现多态？(OOP)</p>
-<p>4.常见的数据结构？栈和队列的区别？(数据结构)</p>
-<p>5.如何找出数组中重复最多的三个数?描述其复杂度(答的不好，放了我这个算法渣吧……)</p>
-<p>6.C语言中分配的几个空间(直接说了不知道……坑啊)</p>
-<p>7.JS中apply和call的用法(JS基础)</p>
-<p>8.什么是URL编码？(encodeUriComponent)</p>
-<p>9.Get和Post的区别？什么时候使用Post？(幂等与非幂等，数据长度，安全性)</p>
-<p>10.说出几个HTTP请求头(说了一堆，哈哈哈)</p>
-<p>11.HTTP和HTTPS的区别？HTTPS解决了哪些问题？(easy~)</p>
-<p>12.websocket实现了服务器和浏览器的实时通信，它还有哪些替代方案？(轮询Ajax和long pool)</p>
-<p>13.网页中你有使用栅格系统吗？你如何进行的布局？(没用，自己写的栅格，提到了Flexbox)</p>
-<p>14.描述一下五层网络模型(easy~)</p>
-<p>15.了解HashMap吗？描述其原理(勉强答了上来)</p>
-<p>16.对于账号密码等提交，如何保证其安全性(我答了加盐hash,似乎不是他想听到的答案)</p>
-<p>17.学过密码学吗？(没有)大学专业课里面哪个科目学的最好？(都学的差不多……)</p>
-<p>18.你还有什么问题要问我的吗？(这个问题每次面试结束的时候都会问到……)</p>
-<p>感觉遗漏了很多问题，大致如此吧，共勉。</p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;今天经历了阿里的两轮电话面试，分别来自阿里旅行和无线部门。加上之前无线部门的一面，事实上这已经是阿里的第三次电面了。。。我猜是他们的招聘系统出了问题，填简历时选的杭州，结果今天收到了来自北京的电面。。。&lt;/p&gt;
-&lt;p&gt;这两次面试显然考察的比第一次面试全面多了，从C语言、数据
-    
-    </summary>
-    
-      <category term="面试" scheme="http://frankxiong.xyz/categories/%E9%9D%A2%E8%AF%95/"/>
-    
-    
-      <category term="面试" scheme="http://frankxiong.xyz/tags/%E9%9D%A2%E8%AF%95/"/>
     
   </entry>
   
