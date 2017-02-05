@@ -89,15 +89,15 @@
                     
                         
 							
-                        <li>
-                            <a href="/works/">works</a>
-                        </li>
+								
 							
 						
                     
                         
 							
-								
+                        <li>
+                            <a href="/works/">works</a>
+                        </li>
 							
 						
                     
@@ -228,7 +228,7 @@
 <p>譬如，若有多个样式表使用同一个主题颜色，那么我们就可以将其抽象成一个变量，并引用该变量，而非重复书写。</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">  --theme-colour: cornflowerblue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">h1 &#123; color: var(--theme-colour); &#125;  </span><br><span class="line">a &#123; color: var(--theme-colour); &#125;  </span><br><span class="line">strong &#123; color: var(--theme-colour); &#125;</span><br></pre></td></tr></table></figure>
 <p>我们之前可以用像 SASS 这种 CSS 预处理器来做到这一点，但 CSS 变量的优势是能实际运行于浏览器中。这就意味着，变量的值可以被动态的更新。比如要修改以上所有 –theme-colour 属性，我们只需要这样做<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const rootEl = document.documentElement;  </span><br><span class="line">rootEl.style.setProperty(&apos;--theme-colour&apos;,&apos;plum&apos;);</span><br></pre></td></tr></table></figure></p>
-<h2 id="兼容性-2"><a href="#兼容性-2" class="headerlink" title="兼容性"></a>兼容性</h2><p> <img src="http://i1.piimg.com/567571/fe40f3b4ec633b1c.jpg" alt=""></p>
+<h3 id="兼容性-2"><a href="#兼容性-2" class="headerlink" title="兼容性"></a>兼容性</h3><p> <img src="http://i1.piimg.com/567571/fe40f3b4ec633b1c.jpg" alt=""></p>
 <h2 id="关于兼容性？"><a href="#关于兼容性？" class="headerlink" title="关于兼容性？"></a>关于兼容性？</h2><p>如你所见，以上所有特性目前都没有被所有浏览器完全支持，那么我们如何在生产环境中舒服地用上他们呢？渐进增强（Progressive Enhancement）！去年的前端开发者大会上，我就曾就如何在 CSS 中进行渐进增强做过一次分享。点击下面可以看到</p>
 <p><a href="https://player.vimeo.com/video/194815985" target="_blank" rel="external"><img src="http://bitsofco.de/content/images/2017/01/Screen-Shot-2017-01-09-at-20.58.09--2-.png" alt="JavaScript Array Methods -　Mutator"></a></p>
 <p>2017年有哪些 CSS 特性令你激动不已想要学习？</p>
@@ -289,7 +289,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2017-年要去学的-3-个-CSS-新属性"><span class="toc-text">2017 年要去学的 3 个 CSS 新属性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-特性查询（Feature-Queries）"><span class="toc-text">1. 特性查询（Feature Queries）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#兼容性"><span class="toc-text">兼容性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-栅格布局（Grid-Layout）"><span class="toc-text">2. 栅格布局（Grid Layout）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#显式定位元素"><span class="toc-text">显式定位元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#弹性长度"><span class="toc-text">弹性长度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#槽（Gutters）"><span class="toc-text">槽（Gutters）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#兼容性-1"><span class="toc-text">兼容性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-原生变量（Native-Variables）"><span class="toc-text">3. 原生变量（Native Variables）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#兼容性-2"><span class="toc-text">兼容性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于兼容性？"><span class="toc-text">关于兼容性？</span></a></li></ol></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2017-年要去学的-3-个-CSS-新属性"><span class="toc-text">2017 年要去学的 3 个 CSS 新属性</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-特性查询（Feature-Queries）"><span class="toc-text">1. 特性查询（Feature Queries）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#兼容性"><span class="toc-text">兼容性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-栅格布局（Grid-Layout）"><span class="toc-text">2. 栅格布局（Grid Layout）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#显式定位元素"><span class="toc-text">显式定位元素</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#弹性长度"><span class="toc-text">弹性长度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#槽（Gutters）"><span class="toc-text">槽（Gutters）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#兼容性-1"><span class="toc-text">兼容性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-原生变量（Native-Variables）"><span class="toc-text">3. 原生变量（Native Variables）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#兼容性-2"><span class="toc-text">兼容性</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于兼容性？"><span class="toc-text">关于兼容性？</span></a></li></ol></li></ol>
                 </div>
             </div>
         </div>
