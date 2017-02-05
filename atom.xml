@@ -167,7 +167,7 @@
     <link href="http://frankxiong.xyz/2016/09/07/Vue2-0%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0-0/"/>
     <id>http://frankxiong.xyz/2016/09/07/Vue2-0源码学习-0/</id>
     <published>2016-09-06T19:37:41.000Z</published>
-    <updated>2016-09-08T09:58:30.000Z</updated>
+    <updated>2017-02-05T05:23:27.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>近来没什么事，准备把Vue的源码通读一遍，2.0中加入了Serve-Side-Render、Virtual-Dom等新特性，看一看实现原理，顺便记录一下学习的过程，毕竟好记性不如烂笔头。</p>
@@ -194,6 +194,12 @@
     
     </summary>
     
+      <category term="前端" scheme="http://frankxiong.xyz/categories/%E5%89%8D%E7%AB%AF/"/>
+    
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+      <category term="Vue" scheme="http://frankxiong.xyz/tags/Vue/"/>
     
   </entry>
   
@@ -397,7 +403,7 @@
     <link href="http://frankxiong.xyz/2016/05/01/%E8%AE%A9Ajax%E6%94%AF%E6%8C%81%E6%B5%8F%E8%A7%88%E5%99%A8%E7%9A%84%E5%89%8D%E8%BF%9B%E5%90%8E%E9%80%80/"/>
     <id>http://frankxiong.xyz/2016/05/01/让Ajax支持浏览器的前进后退/</id>
     <published>2016-04-30T17:13:43.000Z</published>
-    <updated>2016-09-04T08:42:20.000Z</updated>
+    <updated>2017-02-05T05:28:42.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>众所周知，Ajax可以实现网页的局部刷新，但与此同时，Ajax会破坏浏览器历史的前进后退。为了让Ajax也能支持浏览器的前进后退，HTML5的history API中定义了一系列方法，其中pushState就是来解决这个问题的。</p>
@@ -428,7 +434,7 @@
     
     </summary>
     
-      <category term="JavaScript" scheme="http://frankxiong.xyz/categories/JavaScript/"/>
+      <category term="前端" scheme="http://frankxiong.xyz/categories/%E5%89%8D%E7%AB%AF/"/>
     
     
       <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
@@ -521,7 +527,7 @@
     <link href="http://frankxiong.xyz/2016/04/05/%E9%83%A8%E7%BD%B2Node%E9%A1%B9%E7%9B%AE%E5%88%B0CentOS%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
     <id>http://frankxiong.xyz/2016/04/05/部署Node项目到CentOS服务器/</id>
     <published>2016-04-05T06:15:56.000Z</published>
-    <updated>2016-04-05T06:19:40.000Z</updated>
+    <updated>2017-02-05T05:28:13.000Z</updated>
     
     <content type="html"><![CDATA[<p>最近开始折腾Node，跟着慕课网的教程写了个电影网站，于是想把网站部署到服务器上，本文记录了我整个环境搭建的流程。</p>
 <p>通常Node和mongoDB一起搭配使用，再加上Node的一个热门的开发框架Express，以及angular.js，共同构成了整个web开发的技术架构（这次的开发中没有用到angular）。取其首字母，也就是所谓的“MEAN”。不废话了，下面是正文。</p>
@@ -553,14 +559,10 @@
     
     </summary>
     
-      <category term="Node" scheme="http://frankxiong.xyz/categories/Node/"/>
+      <category term="Node.js" scheme="http://frankxiong.xyz/categories/Node-js/"/>
     
     
-      <category term="Node" scheme="http://frankxiong.xyz/tags/Node/"/>
-    
-      <category term="MongoDB" scheme="http://frankxiong.xyz/tags/MongoDB/"/>
-    
-      <category term="服务器" scheme="http://frankxiong.xyz/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+      <category term="运维" scheme="http://frankxiong.xyz/tags/%E8%BF%90%E7%BB%B4/"/>
     
   </entry>
   
@@ -598,7 +600,7 @@
     <link href="http://frankxiong.xyz/2016/03/21/%E5%AE%9E%E7%8E%B0JavaScript%E4%B8%AD%E7%9A%84indexOf%E6%96%B9%E6%B3%95/"/>
     <id>http://frankxiong.xyz/2016/03/21/实现JavaScript中的indexOf方法/</id>
     <published>2016-03-21T09:43:49.000Z</published>
-    <updated>2016-03-21T09:48:02.000Z</updated>
+    <updated>2017-02-05T05:24:33.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>indexOf()方法是ES5中出现的数组方法，它有两个参数<br>array.indexOf(value,start)<br>第一个参数指定要在数组查找的值，第二个可选参数指定开始查找的数组下标。如果省略，则为0。如果数组中存在匹配的值，就返回第一次匹配的数组下标，如果不存在匹配的值，则返回-1。<br>示例：[‘a’,’b’,’c’].indexOf(‘a’,1)  //返回-1</p>
@@ -614,7 +616,7 @@
     
     </summary>
     
-      <category term="JavaScript" scheme="http://frankxiong.xyz/categories/JavaScript/"/>
+      <category term="前端" scheme="http://frankxiong.xyz/categories/%E5%89%8D%E7%AB%AF/"/>
     
     
       <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>

@@ -89,15 +89,15 @@
                     
                         
 							
-                        <li>
-                            <a href="/works/">works</a>
-                        </li>
+								
 							
 						
                     
                         
 							
-								
+                        <li>
+                            <a href="/works/">works</a>
+                        </li>
 							
 						
                     
@@ -168,6 +168,82 @@
     <div class="row">
         <div class="col-lg-8 col-lg-offset-1 col-md-8 col-md-offset-1 col-sm-12 col-xs-12 post-container">
             <!-- Main Content -->
+
+
+
+<div class="post-preview "
+     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
+    <a href="/2016/05/01/让Ajax支持浏览器的前进后退/">
+        <h2 class="post-title">
+            让Ajax支持浏览器的前进后退
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-05-01
+        </p>
+        
+        <div class="post-content-preview">
+            <p>
+                
+众所周知，Ajax可以实现网页的局部刷新，但与此同时，Ajax会破坏浏览器历史的前进后退。为了让Ajax也能支持浏览器的前进后退，HTML5的history API中定义了一系列方法，其中pushState就是来解决这个问题的。
+
+
+来看看这几个API
+
+history.pushState(s..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview "
+     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
+    <a href="/2016/04/29/一个通用的事件监听器/">
+        <h2 class="post-title">
+            一个通用的事件监听器
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-04-29
+        </p>
+        
+        <div class="post-content-preview">
+            <p>
+                define(function()&#123;    var Event = &#123;        //页面加载完成后注册onload事件        readyEvent:function(fn)&#123;            if(fn == null)&#123;       ..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview "
+     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
+    <a href="/2016/03/21/实现JavaScript中的indexOf方法/">
+        <h2 class="post-title">
+            实现JavaScript中的indexOf方法
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-03-21
+        </p>
+        
+        <div class="post-content-preview">
+            <p>
+                
+indexOf()方法是ES5中出现的数组方法，它有两个参数array.indexOf(value,start)第一个参数指定要在数组查找的值，第二个可选参数指定开始查找的数组下标。如果省略，则为0。如果数组中存在匹配的值，就返回第一次匹配的数组下标，如果不存在匹配的值，则返回-1。示例：[‘..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
 
 
 
@@ -295,77 +371,6 @@ In a block formatting context, boxes are laid out one after the other, verticall
 
 
 
-<div class="post-preview "
-     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
-    <a href="/2016/03/09/什么是TCP连接的三次握手/">
-        <h2 class="post-title">
-            什么是TCP连接的三次握手
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-03-09
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                第一次握手：客户端发送syn(syn=j)包到服务器；并进入SYN_SEND状态，等待服务器确认第二次握手：服务器收到syn包，确认客户的SYN(ack=j+1),同时自己也发送一个SYN包（syn=k），即SYN+ACK包，此时服务器进入SYN_RECV状态第三次握手：客户端收到服务器的SYN..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview "
-     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
-    <a href="/2016/03/08/null和undefined的区别/">
-        <h2 class="post-title">
-            null和undefined的区别
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-03-08
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                 1.null和undefined都被用来表示空值，当使用不严格等于号（==）做判断时，他们是等价的。console.log(null == undefined);//输出trueconsole.log(null === undefined);//输出false
-这也是为什么我们在代码中判断相等..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
-<div class="post-preview "
-     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
-    <a href="/2016/03/07/localStorage详解/">
-        <h2 class="post-title">
-            localStorage详解
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-03-07
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                
-前言：在HTML5出现之前，为了保存用户在网站中一些操作状态，以便于下次打开页面时恢复到上次访问时的一些状态，在浏览器端常常使用Cookie来存储一些信息。最典型的应用是判断用户是否登录过网站。但是，Cookie的大小受限，每个Cookie的大小不超过4KB，浏览器一般只允许存放300个Coo..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
 
 <!-- 翻页 pager -->
 
@@ -465,19 +470,24 @@ In a block formatting context, boxes are laid out one after the other, verticall
                     
                     
                     
-                    <a href="/tags/#JavaScript" title="JavaScript"
-                       rel="20">JavaScript</a>
-                    
-                    
-                    
-                    
-                    
-                    
-                    
                     <a href="/tags/#HTTP" title="HTTP"
                        rel="3">HTTP</a>
                     
                     
+                    
+                    <a href="/tags/#JavaScript" title="JavaScript"
+                       rel="21">JavaScript</a>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <a href="/tags/#Vue" title="Vue"
+                       rel="2">Vue</a>
                     
                     
                     
@@ -498,8 +508,6 @@ In a block formatting context, boxes are laid out one after the other, verticall
                     
                     
                     
-                    
-                    
                     <a href="/tags/#翻译" title="翻译"
                        rel="3">翻译</a>
                     
@@ -509,10 +517,6 @@ In a block formatting context, boxes are laid out one after the other, verticall
                     
                     <a href="/tags/#随笔" title="随笔"
                        rel="2">随笔</a>
-                    
-                    
-                    
-                    
                     
                     
                     

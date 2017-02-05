@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        【JavaScript】变量作用域｜FrankXiong&#39;s blog
+        FrankXiong&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://frankxiong.xyz/2016/03/07/【JavaScript】变量作用域/">
+    <link rel="canonical" href="http://frankxiong.xyz/categories/Node-js/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -43,7 +43,7 @@
 <!-- hack iOS CSS :active style -->
 <body ontouchstart="" class="animated fadeIn">
 <!-- Navigation -->
-<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "true" data-istags="false
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top " id="nav-top" data-ispost = "false" data-istags="false
 " data-ishome = "false" >
     <div class="container-fluid">
         <!-- Brand and toggle get grouped for better mobile display -->
@@ -144,189 +144,210 @@
 
 <!-- Main Content -->
 
-<!--only post-->
 
-
-<img class="wechat-title-img"
-     src="//oi7ywoutt.bkt.clouddn.com/going-to-quasar.jpg">
-
-
-<style>
-    
-    header.intro-header {
-        background-image: url('//oi7ywoutt.bkt.clouddn.com/going-to-quasar.jpg')
-    }
-
-    
-</style>
-
-<header class="intro-header">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
-                <div class="post-heading">
-                    <h1>【JavaScript】变量作用域</h1>
-                    
-                    <span class="meta">
-                         作者 Frank Xiong
-                        <span>
-                          日期 2016-03-07
-                         </span>
-                    </span>
-                    <div class="tags text-center">
-                        
-                        <a class="tag" href="/tags/#JavaScript"
-                           title="JavaScript">JavaScript</a>
-                        
+<!-- Page Header -->
+<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 visible-xs-block visible-sm-block">
+    <div class="row">
+        <header class="intro-header">
+            <div class="container">
+                <div class="site-heading text-center">
+                    <div class="about-me">
+                        <!--移动端头部显示-->
+                        <img src="//oi7ywoutt.bkt.clouddn.com/avatar.jpg"/>
+                        <h5><a href="/about/">Frank Xiong</a></h5>
+                        <p>Stay hungry Stay foolish</p>
                     </div>
                 </div>
             </div>
-        </div>
+        </header>
     </div>
-    <div class="post-title-haojen">
-        <span>
-            【JavaScript】变量作用域
-        </span>
-    </div>
-</header>
+</div>
+<!-- Main Content -->
+<div class="container custom-haojen-container">
+    <!-- Post Container -->
+    <div class="row">
+        <div class="col-lg-8 col-lg-offset-1 col-md-8 col-md-offset-1 col-sm-12 col-xs-12 post-container">
+            <!-- Main Content -->
 
-<!-- Post Content -->
-<article>
-    <div class="container">
-        <div class="row">
-            <!-- Post Container -->
-            <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <p>背景知识：</p>
-<ul>
-<li>编程语言中，作用域控制变量与参数的可见性和生命周期</li>
-<li>函数体内，局部变量的优先级高于同名的全局变量</li>
-<li>块级作用域：花括号内的每一段代码都具有各自的作用域</li>
+
+
+<div class="post-preview "
+     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
+    <a href="/2016/04/05/部署Node项目到CentOS服务器/">
+        <h2 class="post-title">
+            部署Node项目到CentOS服务器
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-04-05
+        </p>
+        
+        <div class="post-content-preview">
+            <p>
+                最近开始折腾Node，跟着慕课网的教程写了个电影网站，于是想把网站部署到服务器上，本文记录了我整个环境搭建的流程。
+通常Node和mongoDB一起搭配使用，再加上Node的一个热门的开发框架Express，以及angular.js，共同构成了整个web开发的技术架构（这次的开发中没有用到ang..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+
+<!-- 翻页 pager -->
+
+<ul class="pager">
+    
+    
 </ul>
-<p>1.<strong>JavaScript不支持块级作用域</strong><br>JavaScript的<b>函数作用域</b>：变量在声明它们的函数体以及这个函数体嵌套的任意函数体内都是有定义的<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function hello( ) &#123; </span><br><span class="line">        for (var i = 0; i &lt; 10; i++) &#123; </span><br><span class="line">            doSomething...</span><br><span class="line">        &#125; </span><br><span class="line">        //输出10，在支持块级作用域的语言中这里会报错</span><br><span class="line">        console.log(i); </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>2.声明提前：<strong>JavaScript函数里申明的所有变量都被提前至函数体顶部</strong><br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var scope = “global”;</span><br><span class="line">function test( )&#123;</span><br><span class="line">    //输出undefined，这里scope只是申明，还没有被赋初值</span><br><span class="line">     console.log(scope);     </span><br><span class="line">    //scope在这里被赋初值，但scoop的申明发生在函数体顶部</span><br><span class="line">     var scope = “local”;     </span><br><span class="line">    //输出local</span><br><span class="line">     console.log(scope);     </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>该函数等价于：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var scope = “global”;</span><br><span class="line">function test( )&#123;</span><br><span class="line">     var scope;    </span><br><span class="line">     console.log(scope);    </span><br><span class="line">     scope = “local”;   </span><br><span class="line">     console.log(scope);    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 
-                <hr>
-                
-                <!-- 多说 Share start -->
-                <div class="ds-share"
-                     style="text-align: right"
-                     data-thread-key="2016/03/07/【JavaScript】变量作用域/"
-                     data-title="【JavaScript】变量作用域"
-                     data-url="http://frankxiong.xyz/2016/03/07/【JavaScript】变量作用域/"
-                     data-images=""
-                     data-content="背景知识：
 
-编程语言中，作用域控制变量与参数的可见性和生命周期
-函数体内，局部变量的优先级高... | FrankXiong&#39;s blog ">
-                    <div class="ds-share-inline">
-                        <ul class="ds-share-icons-16">
-                            <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
-                            <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
-                            <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
-                            <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
-                        </ul>
-                        <div class="ds-share-icons-more">
-                        </div>
-                    </div>
+        </div>
+        <!-- Sidebar Container -->
+        <div class="
+                col-lg-3 col-lg-offset-0
+                col-md-3 col-md-offset-0
+                col-sm-12
+                col-xs-12
+                sidebar-container
+            ">
+
+            <!-- About Me -->
+            <section class="visible-md visible-lg" style="padding: 0 18px">
+                <div class="short-about">
+                    <!--侧边栏头像-->
+                    
+                    <img src="//oi7ywoutt.bkt.clouddn.com/avatar.jpg"/>
+                    
+                    <h5><a href="/about/">Frank Xiong</a></h5>
+                    
+                    <p>Stay hungry Stay foolish</p>
+                    
                     <hr>
-                </div>
-                <!-- 多说 Share end-->
-                
-
-                <ul class="pager">
-                    
-                    <li class="previous">
-                        <a href="/2016/03/07/【JavaScript】闭包的概念/" data-toggle="tooltip" data-placement="top"
-                           title="【JavaScript】闭包的概念">&larr; Previous Post</a>
-                    </li>
-                    
-                    
-                    <li class="next">
-                        <a href="/2016/03/07/Markdown简明语法/" data-toggle="tooltip" data-placement="top"
-                           title="Markdown简明语法">Next Post &rarr;</a>
-                    </li>
-                    
-                </ul>
-
-                
-                <!-- 多说评论框 start -->
-                <div class="comment">
-                    <div class="ds-thread"
-                         data-thread-key="2016/03/07/【JavaScript】变量作用域/"
-                         data-title="【JavaScript】变量作用域"
-                         data-url="http://frankxiong.xyz/2016/03/07/【JavaScript】变量作用域/">
-                    </div>
-                </div>
-                <!-- 多说评论框 end -->
-                
-
-                
-
-            </div>
-
-            <div class="hidden-xs col-sm-3 toc-col">
-                <div class="toc-wrap">
-                    
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <!-- Sidebar Container -->
-
-            <div class="
-                col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1
-                sidebar-container">
-
-                <!-- Featured Tags -->
-                
-                <section>
-                    <!-- no hr -->
-                    <h5 class="text-center">
-                        <a href="/tags/">FEATURED TAGS</a>
-                    </h5>
-                    <div class="tags">
+                    <!-- SNS Link 社交 -->
+                    <ul class="list-inline">
                         
-                        <a class="tag" href="/tags/#JavaScript"
-                           title="JavaScript">JavaScript</a>
                         
-                    </div>
-                </section>
-                
+                        
+                        <li>
+                            <a target="_blank" href="https://www.zhihu.com/people/xiong-xian-ren">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa  fa-stack-1x fa-inverse">知</i>
+                                        </span>
+                            </a>
+                        </li>
+                        
 
-                <!-- Friends Blog -->
-                
-            </div>
+                        
+                        <li>
+                            <a target="_blank" href="http://weibo.com/frankxiongxyz">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                                        </span>
+                            </a>
+                        </li>
+                        
+
+                        
+
+                        
+                        <li>
+                            <a target="_blank" href="https://github.com/FrankXiong">
+                                        <span class="fa-stack fa-lg">
+                                            <i class="fa fa-circle fa-stack-2x"></i>
+                                            <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                        </span>
+                            </a>
+                        </li>
+                        
+
+                        
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Featured Tags  标签 -->
+            
+            <section>
+                <div class="tags">
+                    
+                    
+                    <a href="/tags/#面试" title="面试"
+                       rel="2">面试</a>
+                    
+                    
+                    
+                    <a href="/tags/#性能优化" title="性能优化"
+                       rel="2">性能优化</a>
+                    
+                    
+                    
+                    <a href="/tags/#HTTP" title="HTTP"
+                       rel="3">HTTP</a>
+                    
+                    
+                    
+                    <a href="/tags/#JavaScript" title="JavaScript"
+                       rel="21">JavaScript</a>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <a href="/tags/#Vue" title="Vue"
+                       rel="2">Vue</a>
+                    
+                    
+                    
+                    
+                    
+                    <a href="/tags/#CSS" title="CSS"
+                       rel="4">CSS</a>
+                    
+                    
+                    
+                    <a href="/tags/#数据结构" title="数据结构"
+                       rel="2">数据结构</a>
+                    
+                    
+                    
+                    <a href="/tags/#算法" title="算法"
+                       rel="4">算法</a>
+                    
+                    
+                    
+                    <a href="/tags/#翻译" title="翻译"
+                       rel="3">翻译</a>
+                    
+                    
+                    
+                    
+                    
+                    <a href="/tags/#随笔" title="随笔"
+                       rel="2">随笔</a>
+                    
+                    
+                    
+                    
+                    
+                    
+                </div>
+            </section>
+            
+
+            
+
         </div>
-
     </div>
-</article>
-
-
-<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
-<script type="text/javascript">
-    // dynamic User by Hux
-    var _user = 'frankxiong';
-
-    // duoshuo comment query.
-    var duoshuoQuery = {short_name: _user};
-    (function () {
-        var ds = document.createElement('script');
-        ds.type = 'text/javascript';
-        ds.async = true;
-        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
-        ds.charset = 'UTF-8';
-        (document.getElementsByTagName('head')[0]
-        || document.getElementsByTagName('body')[0]).appendChild(ds);
-    })();
-</script>
-<!-- 多说公共JS代码 end -->
-
-
-
-
+</div>
 
 <!-- Footer -->
 <!-- Footer -->
