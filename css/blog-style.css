@@ -31,7 +31,7 @@ hr{
 
 .sidebar-container a:hover,
 .sidebar-container a:active {
-    color: #0085a1 !important;
+    color: #EF5350 !important;
 }
 
 .sidebar-container .tags a {
@@ -40,7 +40,7 @@ hr{
 
 .sidebar-container .tags a:hover,
 .sidebar-container .tags a:active {
-    border-color: #0085a1;
+    border-color: #EF5350;
 }
 
 .sidebar-container .short-about img {
@@ -94,7 +94,7 @@ a {
 
 a:hover,
 a:focus {
-    color: #0085a1;
+    color: #EF5350;
 }
 
 a img:hover,
@@ -335,7 +335,7 @@ article blockquote footer{
 
     .navbar-custom .nav li a:hover,
     .navbar-custom .nav li a:focus {
-        color: #FC7097;
+        color: #EF5350;
     }
 
     .navbar-custom .nav li a:active {
@@ -359,7 +359,7 @@ article blockquote footer{
     .navbar-custom.is-fixed .nav li a:focus,
     .navbar-custom.is-fixed .navbar-brand:hover,
     .navbar-custom.is-fixed .navbar-brand:focus {
-        color: #0085a1;
+        color: #EF5350;
     }
 }
 
@@ -473,7 +473,7 @@ a:focus {
 }
 .post-preview > a > h2{transition: color .3s;}
 .post-preview:not(:first-of-type) > a:hover > h2{
-    color: #FC7097;
+    color: #EF5350;
 }
 
 .post-preview > a > .post-title {
@@ -506,7 +506,7 @@ a:focus {
 
 .post-preview > .post-meta > a:hover,
 .post-preview > .post-meta > a:focus {
-    color: #0085a1;
+    color: #EF5350;
     text-decoration: underline;
 }
 
@@ -543,7 +543,7 @@ a:focus {
 
 footer {
     font-size: 20px;
-    padding: 50px 0 65px;
+    padding: 50px 0 30px;
 }
 
 footer .list-inline {
@@ -563,7 +563,7 @@ footer .copyright a {
 
 footer .copyright a:hover,
 footer .copyright a:focus {
-    color: #0085a1;
+    color: #EF5350;
 }
 
 .floating-label-form-group {
@@ -612,7 +612,7 @@ footer .copyright a:focus {
 }
 
 .floating-label-form-group-with-focus label {
-    color: #0085a1;
+    color: #EF5350;
 }
 
 form .row:first-child .floating-label-form-group {
@@ -641,8 +641,8 @@ form .row:first-child .floating-label-form-group {
 
 .btn-default:hover,
 .btn-default:focus {
-    background-color: #0085a1;
-    border: 1px solid #0085a1;
+    background-color: #EF5350;
+    border: 1px solid #EF5350;
     color: white;
 }
 
@@ -683,8 +683,8 @@ form .row:first-child .floating-label-form-group {
 .pager li > a:hover,
 .pager li > a:focus {
     color: white;
-    background-color: #0085a1;
-    border: 1px solid #0085a1;
+    background-color: #EF5350;
+    border: 1px solid #EF5350;
 }
 
 .pager .disabled > a,
@@ -699,13 +699,13 @@ form .row:first-child .floating-label-form-group {
 ::-moz-selection {
     color: white;
     text-shadow: none;
-    background: #0085a1;
+    background: #EF5350;
 }
 
 ::selection {
     color: white;
     text-shadow: none;
-    background: #0085a1;
+    background: #EF5350;
 }
 
 img::selection {
@@ -783,7 +783,7 @@ img::-moz-selection {
 #tag_cloud .tag:hover,
 #tag_cloud a:active,
 #tag_cloud .tag:active {
-    background-color: #0085a1 !important;
+    background-color: #EF5350 !important;
 }
 
 @media only screen and (min-width: 768px) {
@@ -807,7 +807,7 @@ img::-moz-selection {
 }
 
 .listing-seperator {
-    color: #0085a1;
+    color: #EF5350;
     font-size: 21px !important;
 }
 
@@ -873,11 +873,11 @@ img::-moz-selection {
     .one-tag-list .post-preview .post-meta {
         font-size: 18px;
     }
-	
+
 	.one-archive-list .post-preview {
 		margin-left: 40px;
 	}
-	
+
 	.archive-month {
 		margin-left: 20px;
 	}
@@ -1055,7 +1055,7 @@ img::-moz-selection {
 }
 
 .container .toc-wrap .toc-level-2 > a {
-    color: #0085a1;
+    color: #EF5350;
     font-size: .9em;
 }
 
@@ -1201,5 +1201,3 @@ img::-moz-selection {
     height:0;
     width:0;
 }
-
-
