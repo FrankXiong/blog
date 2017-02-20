@@ -163,7 +163,7 @@ pre code {
 }
 
 .post-container a {
-    color: #337ab7;
+    color: #404040;
 }
 
 
@@ -557,7 +557,7 @@ footer .copyright {
 }
 
 footer .copyright a {
-    color: #337ab7;
+    color: #404040;
 }
 
 footer .copyright a:hover,
@@ -819,6 +819,10 @@ img::-moz-selection {
         font-size: 20px !important;
         line-height: 2 !important;
     }
+}
+
+.one-tag-list {
+  margin-bottom: 15px;
 }
 
 .one-tag-list .tag-text {
