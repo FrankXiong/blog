@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://frankxiong.xyz/"/>
-  <updated>2017-03-11T18:12:36.000Z</updated>
+  <updated>2017-03-11T18:30:01.000Z</updated>
   <id>http://frankxiong.xyz/</id>
   
   <author>
@@ -20,10 +20,13 @@
     <link href="http://frankxiong.xyz/2017/03/12/%E3%80%90%E8%AF%91%E3%80%91HLS%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/"/>
     <id>http://frankxiong.xyz/2017/03/12/【译】HLS架构简介/</id>
     <published>2017-03-11T18:03:01.000Z</published>
-    <updated>2017-03-11T18:12:36.000Z</updated>
+    <updated>2017-03-11T18:30:01.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
-<p>原文：<a href="https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTPStreamingArchitecture/HTTPStreamingArchitecture.html#//apple_ref/doc/uid/TP40008332-CH101-SW9" target="_blank" rel="external">https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTPStreamingArchitecture/HTTPStreamingArchitecture.html#//apple_ref/doc/uid/TP40008332-CH101-SW9</a><br>译者：<a href="http://frankxiong.xyz">熊贤仁</a></p>
+<ul>
+<li>原文：<a href="https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTPStreamingArchitecture/HTTPStreamingArchitecture.html" target="_blank" rel="external">https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTPStreamingArchitecture/HTTPStreamingArchitecture.html</a></li>
+<li>译者：<a href="http://frankxiong.xyz">熊贤仁</a></li>
+</ul>
 </blockquote>
 <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>作为 Apple 提出的一种基于 HTTP 的协议，HLS（HTTP Live Streaming）用于解决实时音视频流的传输。尤其是在移动端，由于 iOS 不支持 flash，使得 HLS 成了移动端实时视频流传输的首选。HLS 经常用在直播领域，一些国内的直播云通常用 HLS 拉流（将视频流从服务器拉到客户端）。 HLS 值得诟病之处就是其延迟严重，延迟通常在 10-30s 之间。通过本文你可以了解到 HLS 延迟问题的原因，同时对直播系统的架构有个大概的认知。   </p>
 <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>在进行编码和鉴权后，HLS 支持从一台普通的 web 服务器上发送实时或预先录制的音视频，接收端可以是 iOS 3.0+ 的任何设备（包括 iPad 和 Apple TV ），或者其他安装有 Safari 4.0+ 的设备。</p>
@@ -72,7 +75,8 @@
     <summary type="html">
     
       &lt;blockquote&gt;
-&lt;p&gt;原文：&lt;a href=&quot;https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTP
+&lt;ul&gt;
+&lt;li&gt;原文：&lt;a href=&quot;https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuid
     
     </summary>
     
@@ -90,7 +94,7 @@
     <link href="http://frankxiong.xyz/2017/02/05/%E3%80%90%E8%AF%91%E3%80%912017-%E5%B9%B4%E8%A6%81%E5%8E%BB%E5%AD%A6%E7%9A%84-3-%E4%B8%AA-CSS-%E6%96%B0%E5%B1%9E%E6%80%A7/"/>
     <id>http://frankxiong.xyz/2017/02/05/【译】2017-年要去学的-3-个-CSS-新属性/</id>
     <published>2017-02-05T05:10:28.000Z</published>
-    <updated>2017-02-05T05:16:19.000Z</updated>
+    <updated>2017-03-11T18:28:37.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <ul>

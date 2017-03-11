@@ -197,7 +197,10 @@
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
                 <blockquote>
-<p>原文：<a href="https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTPStreamingArchitecture/HTTPStreamingArchitecture.html#//apple_ref/doc/uid/TP40008332-CH101-SW9" target="_blank" rel="external">https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTPStreamingArchitecture/HTTPStreamingArchitecture.html#//apple_ref/doc/uid/TP40008332-CH101-SW9</a><br>译者：<a href="http://frankxiong.xyz">熊贤仁</a></p>
+<ul>
+<li>原文：<a href="https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTPStreamingArchitecture/HTTPStreamingArchitecture.html" target="_blank" rel="external">https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTPStreamingArchitecture/HTTPStreamingArchitecture.html</a></li>
+<li>译者：<a href="http://frankxiong.xyz">熊贤仁</a></li>
+</ul>
 </blockquote>
 <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>作为 Apple 提出的一种基于 HTTP 的协议，HLS（HTTP Live Streaming）用于解决实时音视频流的传输。尤其是在移动端，由于 iOS 不支持 flash，使得 HLS 成了移动端实时视频流传输的首选。HLS 经常用在直播领域，一些国内的直播云通常用 HLS 拉流（将视频流从服务器拉到客户端）。 HLS 值得诟病之处就是其延迟严重，延迟通常在 10-30s 之间。通过本文你可以了解到 HLS 延迟问题的原因，同时对直播系统的架构有个大概的认知。   </p>
 <h3 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h3><p>在进行编码和鉴权后，HLS 支持从一台普通的 web 服务器上发送实时或预先录制的音视频，接收端可以是 iOS 3.0+ 的任何设备（包括 iPad 和 Apple TV ），或者其他安装有 Safari 4.0+ 的设备。</p>
@@ -252,7 +255,8 @@
                      data-url="http://frankxiong.xyz/2017/03/12/【译】HLS架构简介/"
                      data-images=""
                      data-content="
-原文：https://developer.apple.com/library/content... | Frank Xiong&#39;s blog ">
+
+原文：https://developer.apple.com/library/conten... | Frank Xiong&#39;s blog ">
                     <div class="ds-share-inline">
                         <ul class="ds-share-icons-16">
                             <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
