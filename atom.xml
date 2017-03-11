@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://frankxiong.xyz/"/>
-  <updated>2017-03-11T18:30:01.000Z</updated>
+  <updated>2017-03-11T18:32:32.000Z</updated>
   <id>http://frankxiong.xyz/</id>
   
   <author>
@@ -20,11 +20,11 @@
     <link href="http://frankxiong.xyz/2017/03/12/%E3%80%90%E8%AF%91%E3%80%91HLS%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/"/>
     <id>http://frankxiong.xyz/2017/03/12/【译】HLS架构简介/</id>
     <published>2017-03-11T18:03:01.000Z</published>
-    <updated>2017-03-11T18:30:01.000Z</updated>
+    <updated>2017-03-11T18:32:32.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <ul>
-<li>原文：<a href="https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTPStreamingArchitecture/HTTPStreamingArchitecture.html" target="_blank" rel="external">https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTPStreamingArchitecture/HTTPStreamingArchitecture.html</a></li>
+<li>原文：<a href="https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTPStreamingArchitecture/HTTPStreamingArchitecture.html" target="_blank" rel="external">HTTP Streaming Architecture</a></li>
 <li>译者：<a href="http://frankxiong.xyz">熊贤仁</a></li>
 </ul>
 </blockquote>
