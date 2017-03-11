@@ -172,6 +172,9 @@
                     </span>
                     <div class="tags text-center">
                         
+                        <a class="tag" href="/tags/#翻译"
+                           title="翻译">翻译</a>
+                        
                         <a class="tag" href="/tags/#直播"
                            title="直播">直播</a>
                         
@@ -233,9 +236,9 @@
 </blockquote>
 <p>索引文件可能也包含了一些用于加密 key 文件的 URL，在不同的带宽下会替换成相应的索引文件。关于索引文件格式的更详细说明，见 IETF Internet-Draft 中  <a href="http://tools.ietf.org/html/draft-pantos-http-live-streaming" target="_blank" rel="external">HTTP Live Streaming specification</a> 部分。</p>
 <p>索引文件通常由那个生成媒体段文件的分段器产生。或者，如果遵守规范，独立生成 .M3U8 文件和媒体段文件也是可能的。对于纯音频而言，你可以使用文本编辑器生成一个 .M3U8 文件，在文件里列出一系列存在的 .MP3 文件。</p>
-<p>###分发组件（Distribution Components）<br>分发系统是一个 web 服务器或者 web 缓存系统，系统将媒体文件和索引文件传递给基于 HTTP 的客户端。所有自定义的服务器模块都不必传递内容，而且一般只需要在 web 服务器上做很少的配置。</p>
+<h3 id="分发组件（Distribution-Components）"><a href="#分发组件（Distribution-Components）" class="headerlink" title="分发组件（Distribution Components）"></a>分发组件（Distribution Components）</h3><p>分发系统是一个 web 服务器或者 web 缓存系统，系统将媒体文件和索引文件传递给基于 HTTP 的客户端。所有自定义的服务器模块都不必传递内容，而且一般只需要在 web 服务器上做很少的配置。</p>
 <p>更详细介绍见 <a href="https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/DeployingHTTPLiveStreaming/DeployingHTTPLiveStreaming.html#//apple_ref/doc/uid/TP40008332-CH2-SW3" target="_blank" rel="external">Deploying HTTP Live Streaming</a>。</p>
-<p>###客户端<br>客户端软件先获取索引文件，基于 URL 来定位流。索引文件依次指定可用媒体文件、解码 key 和其他可用的替代流的位置。对于选中的流，客户端按序下载每一个可用媒体文件。每个文件包含了流的连续片段。一旦下载完成，客户端就开始给用户展示重新组装的媒体流。</p>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><p>客户端软件先获取索引文件，基于 URL 来定位流。索引文件依次指定可用媒体文件、解码 key 和其他可用的替代流的位置。对于选中的流，客户端按序下载每一个可用媒体文件。每个文件包含了流的连续片段。一旦下载完成，客户端就开始给用户展示重新组装的媒体流。</p>
 <p>客户端负责拉取所有解码 key，鉴权或者展示一个允许鉴权的界面，并按需解码媒体文件。</p>
 <p>这一过程将在索引文件执行到 #EXT-X-ENDLIST 标签后结束。如果没有  #EXT-X-ENDLIST 标签，系统将一直进行广播。在持续广播过程中，客户端会周期性地加载索引文件的新版本。客户端在更新后的索引中寻找新的媒体文件和解密 key，然后把这些 URL 添加到下载队列中。</p>
 
@@ -293,7 +296,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#概览"><span class="toc-text">概览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#服务器"><span class="toc-text">服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#媒体段文件（Media-Segment-Files）"><span class="toc-text">媒体段文件（Media Segment Files）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#索引文件（播放列表）"><span class="toc-text">索引文件（播放列表）</span></a></li></ol>
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#前言"><span class="toc-text">前言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#概览"><span class="toc-text">概览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#服务器"><span class="toc-text">服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#媒体段文件（Media-Segment-Files）"><span class="toc-text">媒体段文件（Media Segment Files）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#索引文件（播放列表）"><span class="toc-text">索引文件（播放列表）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#分发组件（Distribution-Components）"><span class="toc-text">分发组件（Distribution Components）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#客户端"><span class="toc-text">客户端</span></a></li></ol>
                 </div>
             </div>
         </div>
@@ -314,6 +317,9 @@
                         <a href="/tags/">FEATURED TAGS</a>
                     </h5>
                     <div class="tags">
+                        
+                        <a class="tag" href="/tags/#翻译"
+                           title="翻译">翻译</a>
                         
                         <a class="tag" href="/tags/#直播"
                            title="直播">直播</a>

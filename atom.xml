@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://frankxiong.xyz/"/>
-  <updated>2017-03-11T18:07:48.000Z</updated>
+  <updated>2017-03-11T18:12:36.000Z</updated>
   <id>http://frankxiong.xyz/</id>
   
   <author>
@@ -20,7 +20,7 @@
     <link href="http://frankxiong.xyz/2017/03/12/%E3%80%90%E8%AF%91%E3%80%91HLS%E6%9E%B6%E6%9E%84%E7%AE%80%E4%BB%8B/"/>
     <id>http://frankxiong.xyz/2017/03/12/【译】HLS架构简介/</id>
     <published>2017-03-11T18:03:01.000Z</published>
-    <updated>2017-03-11T18:07:48.000Z</updated>
+    <updated>2017-03-11T18:12:36.000Z</updated>
     
     <content type="html"><![CDATA[<blockquote>
 <p>原文：<a href="https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTPStreamingArchitecture/HTTPStreamingArchitecture.html#//apple_ref/doc/uid/TP40008332-CH101-SW9" target="_blank" rel="external">https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTPStreamingArchitecture/HTTPStreamingArchitecture.html#//apple_ref/doc/uid/TP40008332-CH101-SW9</a><br>译者：<a href="http://frankxiong.xyz">熊贤仁</a></p>
@@ -62,9 +62,9 @@
 </blockquote>
 <p>索引文件可能也包含了一些用于加密 key 文件的 URL，在不同的带宽下会替换成相应的索引文件。关于索引文件格式的更详细说明，见 IETF Internet-Draft 中  <a href="http://tools.ietf.org/html/draft-pantos-http-live-streaming" target="_blank" rel="external">HTTP Live Streaming specification</a> 部分。</p>
 <p>索引文件通常由那个生成媒体段文件的分段器产生。或者，如果遵守规范，独立生成 .M3U8 文件和媒体段文件也是可能的。对于纯音频而言，你可以使用文本编辑器生成一个 .M3U8 文件，在文件里列出一系列存在的 .MP3 文件。</p>
-<p>###分发组件（Distribution Components）<br>分发系统是一个 web 服务器或者 web 缓存系统，系统将媒体文件和索引文件传递给基于 HTTP 的客户端。所有自定义的服务器模块都不必传递内容，而且一般只需要在 web 服务器上做很少的配置。</p>
+<h3 id="分发组件（Distribution-Components）"><a href="#分发组件（Distribution-Components）" class="headerlink" title="分发组件（Distribution Components）"></a>分发组件（Distribution Components）</h3><p>分发系统是一个 web 服务器或者 web 缓存系统，系统将媒体文件和索引文件传递给基于 HTTP 的客户端。所有自定义的服务器模块都不必传递内容，而且一般只需要在 web 服务器上做很少的配置。</p>
 <p>更详细介绍见 <a href="https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/DeployingHTTPLiveStreaming/DeployingHTTPLiveStreaming.html#//apple_ref/doc/uid/TP40008332-CH2-SW3" target="_blank" rel="external">Deploying HTTP Live Streaming</a>。</p>
-<p>###客户端<br>客户端软件先获取索引文件，基于 URL 来定位流。索引文件依次指定可用媒体文件、解码 key 和其他可用的替代流的位置。对于选中的流，客户端按序下载每一个可用媒体文件。每个文件包含了流的连续片段。一旦下载完成，客户端就开始给用户展示重新组装的媒体流。</p>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><p>客户端软件先获取索引文件，基于 URL 来定位流。索引文件依次指定可用媒体文件、解码 key 和其他可用的替代流的位置。对于选中的流，客户端按序下载每一个可用媒体文件。每个文件包含了流的连续片段。一旦下载完成，客户端就开始给用户展示重新组装的媒体流。</p>
 <p>客户端负责拉取所有解码 key，鉴权或者展示一个允许鉴权的界面，并按需解码媒体文件。</p>
 <p>这一过程将在索引文件执行到 #EXT-X-ENDLIST 标签后结束。如果没有  #EXT-X-ENDLIST 标签，系统将一直进行广播。在持续广播过程中，客户端会周期性地加载索引文件的新版本。客户端在更新后的索引中寻找新的媒体文件和解密 key，然后把这些 URL 添加到下载队列中。</p>
 ]]></content>
@@ -78,6 +78,8 @@
     
       <category term="后端" scheme="http://frankxiong.xyz/categories/%E5%90%8E%E7%AB%AF/"/>
     
+    
+      <category term="翻译" scheme="http://frankxiong.xyz/tags/%E7%BF%BB%E8%AF%91/"/>
     
       <category term="直播" scheme="http://frankxiong.xyz/tags/%E7%9B%B4%E6%92%AD/"/>
     
