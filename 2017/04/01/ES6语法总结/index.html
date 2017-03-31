@@ -194,7 +194,7 @@
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
                 <h4 id="Arrow-Function"><a href="#Arrow-Function" class="headerlink" title="Arrow Function"></a>Arrow Function</h4><ul>
-<li>箭头函数可以让 this 绑定函数定义时所在的作用域，而不是指向运行时所在的作用域，利用这个特性可以解决一些在匿名回调函数中 this 指向的问题（以前通常用var that = this来缓存 this）</li>
+<li>箭头函数可以让 this 绑定函数定义时所在的作用域，而不是指向运行时所在的作用域，利用这个特性可以解决一些在匿名回调函数中 this 指向的问题（以前通常用 var that = this 来缓存 this）</li>
 </ul>
 <h4 id="Class"><a href="#Class" class="headerlink" title="Class"></a>Class</h4><ul>
 <li>原型链继承的一种语法糖</li>
@@ -218,19 +218,25 @@
 </ul>
 <h4 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h4><ul>
 <li>三种状态 Pending、Resolved、Rejected。</li>
-<li>缺点：无法中途取消 Promise、如果不设置回调，内部抛出的错误无法反应到外部，大量的 then() 语句导致语义不清楚。</li>
+<li>缺点：<ol>
+<li>无法中途取消 Promise。</li>
+<li>如果不设置回调，内部抛出的错误无法反应到外部。</li>
+<li>大量的 then() 语句导致语义不清楚。</li>
+</ol>
+</li>
 </ul>
 <h4 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h4><ul>
-<li>yield语句暂停函数执行。</li>
-<li>generator 返回一个迭代器对象，通过 next() 手动执行迭代器，将指针移向下一个状态。next() 返回一个对象{ done:true, value:xxx}，其中value属性的值等于yield后面的语句返回的值。</li>
-<li>使用for…of遍历Iterator对象generator作用：<ol>
+<li>yield 语句暂停函数执行。</li>
+<li>generator 返回一个迭代器对象，通过 next() 手动执行迭代器，将指针移向下一个状态。next() 返回一个对象 { done:true, value:xxx}，其中 value 属性的值等于 yield 后面的语句返回的值。</li>
+<li>使用 for…of 遍历 Iterator 对象</li>
+<li>generator 作用：<ol>
 <li>执行异步操作，将异步操作放在 yield 语句下，等到 next() 方法调用再执行。</li>
 <li>实现数组数据结构，每一项都是一个函数 。</li>
 </ol>
 </li>
-<li>generator缺点：<ol>
+<li>generator 缺点：<ol>
 <li>流程管理困难，需要手动执行。解决办法：<ul>
-<li>Thunk函数、传名调用。</li>
+<li>Thunk 函数、传名调用。</li>
 <li>使用 Co　</li>
 <li>将异步操作包装成 Promise 对象，用 then 方法交出执行权。</li>
 </ul>
