@@ -290,6 +290,31 @@
 
 <div class="post-preview "
      style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
+    <a href="/2016/03/16/CDN缓存原理/">
+        <h2 class="post-title">
+            CDN缓存原理
+        </h2>
+        <p class="post-meta">
+            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-03-16
+        </p>
+        
+        <div class="post-content-preview">
+            <p>
+                启用CDN缓存后浏览器访问的全过程：
+1.用户输入URL，浏览器将解析过后的域名发给DNS服务器
+2.CDN返回该域名对应的CNAME，此时浏览器需要再次对获得的CNAME进行解析，才能得到CDN缓存服务器的IP地址。在此过程中全局负载均衡DNS解析服务器会将用户的访问请求定位到离用户最近、负载..
+            </p>
+        </div>
+    </a>
+
+</div>
+
+<hr>
+
+
+
+<div class="post-preview "
+     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
     <a href="/2016/03/16/apply方法的妙用/">
         <h2 class="post-title">
             apply方法的妙用
@@ -463,29 +488,6 @@ In a block formatting context, boxes are laid out one after the other, verticall
 
 
 
-<div class="post-preview "
-     style="background-image: url('//oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg')">
-    <a href="/2016/03/09/什么是TCP连接的三次握手/">
-        <h2 class="post-title">
-            什么是TCP连接的三次握手
-        </h2>
-        <p class="post-meta">
-            <i class="fa fa-calendar" aria-hidden="true"></i> 2016-03-09
-        </p>
-        
-        <div class="post-content-preview">
-            <p>
-                第一次握手：客户端发送syn(syn=j)包到服务器；并进入SYN_SEND状态，等待服务器确认第二次握手：服务器收到syn包，确认客户的SYN(ack=j+1),同时自己也发送一个SYN包（syn=k），即SYN+ACK包，此时服务器进入SYN_RECV状态第三次握手：客户端收到服务器的SYN..
-            </p>
-        </div>
-    </a>
-
-</div>
-
-<hr>
-
-
-
 
 <!-- 翻页 pager -->
 
@@ -575,8 +577,7 @@ In a block formatting context, boxes are laid out one after the other, verticall
                 <div class="tags">
                     
                     
-                    <a href="/tags/#面试" title="面试"
-                       rel="2">面试</a>
+                    
                     
                     
                     
@@ -584,6 +585,9 @@ In a block formatting context, boxes are laid out one after the other, verticall
                        rel="2">性能优化</a>
                     
                     
+                    
+                    <a href="/tags/#JavaScript" title="JavaScript"
+                       rel="23">JavaScript</a>
                     
                     
                     
@@ -594,15 +598,13 @@ In a block formatting context, boxes are laid out one after the other, verticall
                     
                     
                     
-                    <a href="/tags/#JavaScript" title="JavaScript"
-                       rel="22">JavaScript</a>
-                    
-                    
-                    
-                    
-                    
                     <a href="/tags/#Vue" title="Vue"
                        rel="2">Vue</a>
+                    
+                    
+                    
+                    <a href="/tags/#面试" title="面试"
+                       rel="2">面试</a>
                     
                     
                     
@@ -623,10 +625,10 @@ In a block formatting context, boxes are laid out one after the other, verticall
                     
                     
                     
+                    
+                    
                     <a href="/tags/#翻译" title="翻译"
-                       rel="5">翻译</a>
-                    
-                    
+                       rel="6">翻译</a>
                     
                     
                     
