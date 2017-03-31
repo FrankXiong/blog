@@ -5,7 +5,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://frankxiong.xyz/"/>
-  <updated>2017-03-31T16:16:39.000Z</updated>
+  <updated>2017-03-31T16:43:59.000Z</updated>
   <id>http://frankxiong.xyz/</id>
   
   <author>
@@ -14,6 +14,86 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>ES6语法总结</title>
+    <link href="http://frankxiong.xyz/2017/04/01/ES6%E8%AF%AD%E6%B3%95%E6%80%BB%E7%BB%93/"/>
+    <id>http://frankxiong.xyz/2017/04/01/ES6语法总结/</id>
+    <published>2017-03-31T16:41:08.000Z</published>
+    <updated>2017-03-31T16:43:59.000Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="Arrow-Function"><a href="#Arrow-Function" class="headerlink" title="Arrow Function"></a>Arrow Function</h4><ul>
+<li>箭头函数可以让 this 绑定函数定义时所在的作用域，而不是指向运行时所在的作用域，利用这个特性可以解决一些在匿名回调函数中 this 指向的问题（以前通常用var that = this来缓存 this）</li>
+</ul>
+<h4 id="Class"><a href="#Class" class="headerlink" title="Class"></a>Class</h4><ul>
+<li>原型链继承的一种语法糖</li>
+<li><p>ES6 的类可以看过构造函数的另一种写法</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Point &#123;</span><br><span class="line">//...</span><br><span class="line">&#125;</span><br><span class="line">typeof Point //&apos;function&apos;</span><br><span class="line">Point === Point.prototype.constructor</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>类内部定义的方法都不可枚举(non-enumerable)</p>
+</li>
+<li>不存在变量提升(hoist)</li>
+<li>实现私有方法<ol>
+<li>将方法移出 Class，定义在全局作用域</li>
+<li>将私有方法的名字命名为一个 Symbol 值</li>
+</ol>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const bar = Symbol(&apos;bar&apos;);</span><br><span class="line">const snaf = Symbol(&apos;snaf&apos;);</span><br><span class="line">export default class myClass&#123;</span><br><span class="line">　// 公有方法</span><br><span class="line">　foo(baz) &#123;</span><br><span class="line">　　this[bar](baz);</span><br><span class="line">　&#125;</span><br><span class="line">　// 私有方法</span><br><span class="line">　[bar](baz) &#123;</span><br><span class="line">　　return this[snaf] = baz;</span><br><span class="line"> 　&#125;</span><br><span class="line">　// ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>允许继承原生构造函数</li>
+<li>添加静态属性，静态方法<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Foo &#123;</span><br><span class="line">　static classMethod() &#123;</span><br><span class="line">　　return &apos;hello&apos;;</span><br><span class="line">　&#125;</span><br><span class="line">&#125;</span><br><span class="line">Foo.prop = 1;</span><br><span class="line">Foo.prop // 1</span><br><span class="line">Foo.classMethod() // &apos;hello&apos;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h4 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h4><ul>
+<li>三种状态 Pending、Resolved、Rejected。</li>
+<li>缺点：无法中途取消 Promise、如果不设置回调，内部抛出的错误无法反应到外部，大量的 then() 语句导致语义不清楚。</li>
+</ul>
+<h4 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h4><ul>
+<li>yield语句暂停函数执行。</li>
+<li>generator 返回一个迭代器对象，通过 next() 手动执行迭代器，将指针移向下一个状态。next() 返回一个对象{ done:true, value:xxx}，其中value属性的值等于yield后面的语句返回的值。</li>
+<li>使用for…of遍历Iterator对象generator作用：<ol>
+<li>执行异步操作，将异步操作放在 yield 语句下，等到 next() 方法调用再执行。</li>
+<li>实现数组数据结构，每一项都是一个函数 。</li>
+</ol>
+</li>
+<li>generator缺点：<ol>
+<li>流程管理困难，需要手动执行。解决办法：<ul>
+<li>Thunk函数、传名调用。</li>
+<li>使用 Co　</li>
+<li>将异步操作包装成 Promise 对象，用 then 方法交出执行权。</li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<p>####Module</p>
+<ul>
+<li>编译时确定模块依赖，编译时加载，使得静态分析成为可能。</li>
+<li>ES6 模块不是对象。</li>
+<li>export 输出的是对外的接口。</li>
+<li>模块加载实质：CommonJS 输出值的拷贝，ES6 输出值的引用。</li>
+<li>循环加载：<ol>
+<li>CommonJS 特点：加载时执行。当发生循环加载时，就只输出已经执行的部分。</li>
+<li>ES6 模块是动态引用。只要引用存在，代码就可以执行。</li>
+</ol>
+</li>
+</ul>
+]]></content>
+    
+    <summary type="html">
+    
+      &lt;h4 id=&quot;Arrow-Function&quot;&gt;&lt;a href=&quot;#Arrow-Function&quot; class=&quot;headerlink&quot; title=&quot;Arrow Function&quot;&gt;&lt;/a&gt;Arrow Function&lt;/h4&gt;&lt;ul&gt;
+&lt;li&gt;箭头函数可以让 this 绑定函
+    
+    </summary>
+    
+      <category term="前端" scheme="http://frankxiong.xyz/categories/%E5%89%8D%E7%AB%AF/"/>
+    
+    
+      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
+    
+  </entry>
   
   <entry>
     <title>【译】异步：现在与将来#1</title>
@@ -798,35 +878,6 @@
     
     
       <category term="运维" scheme="http://frankxiong.xyz/tags/%E8%BF%90%E7%BB%B4/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>【JavaScript实现算法】快速排序</title>
-    <link href="http://frankxiong.xyz/2016/03/22/%E3%80%90JavaScript%E5%AE%9E%E7%8E%B0%E7%AE%97%E6%B3%95%E3%80%91%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F/"/>
-    <id>http://frankxiong.xyz/2016/03/22/【JavaScript实现算法】快速排序/</id>
-    <published>2016-03-22T13:13:54.000Z</published>
-    <updated>2016-03-22T13:15:06.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>快速排序是一种分而治之的算法,通过递归的方式将数据依次分解为包含较小元素和较大元素的不同子序列。该算法不断重复这个步骤直到所有数据都是有序的。</p>
-<p>快速排序的算法如下:<br>(1) 选择一个基准元素,将列表分隔成两个子序列;<br>(2) 对列表重新排序,将所有小于基准值的元素放在基准值的前面,所有大于基准值的元素放在基准值的后面;<br>(3) 分别对较小元素的子序列和较大元素的子序列重复步骤 1 和 2。</p>
-<p>这个算法的JavaScript实现如下：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//工具函数：交换两个值</span><br><span class="line">Array.prototype.swap = function (i, j) &#123;</span><br><span class="line">  var t = this[i];</span><br><span class="line">  this[i] = this[j];</span><br><span class="line">  this[j] = t;</span><br><span class="line">&#125;;</span><br><span class="line">Array.prototype.quickSort = function () &#123;</span><br><span class="line">  this.quickSortHelper(0, this.length-1);</span><br><span class="line">&#125;;</span><br><span class="line">Array.prototype.quickSortHelper = function(start,end)&#123;</span><br><span class="line">    if(start&gt;=end)&#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    var pivot = this[start];</span><br><span class="line">    var pivotIdx = start;</span><br><span class="line">    var i = start+1;</span><br><span class="line">    var n = end;</span><br><span class="line">    while(i&lt;=n)&#123;</span><br><span class="line">        if(this[i] &lt; pivot)&#123;</span><br><span class="line">            this.swap(pivotIdx,i);</span><br><span class="line">            i++;</span><br><span class="line">            pivotIdx = i;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            this.swap(n,i);</span><br><span class="line">            n--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    this.quickSortHelper(start,pivotIdx-1);</span><br><span class="line">    this.quickSortHelper(pivotIdx+1,end);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>测试一下快速排序的性能<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// test</span><br><span class="line">function test () &#123;</span><br><span class="line">    var arr = [];</span><br><span class="line">    for (var i = 0; i &lt; 1000000; i++) &#123;</span><br><span class="line">        arr.push(Math.round(Math.random(i) * 10000));</span><br><span class="line">    &#125;</span><br><span class="line">    doTest(arr, 1);</span><br><span class="line">&#125;</span><br><span class="line">function doTest(arr, n) &#123;</span><br><span class="line">    var tStart = (new Date()).getTime();</span><br><span class="line">    var re = arr.quickSort();</span><br><span class="line">    var tEnd = (new Date()).getTime();</span><br><span class="line">    console.log(&apos;快速排序使用时间是:&apos; + (tEnd - tStart) + &apos;ms&apos;);</span><br><span class="line">    return re;</span><br><span class="line">&#125;</span><br><span class="line">test();//输出：快速排序使用时间是:215ms</span><br></pre></td></tr></table></figure></p>
-]]></content>
-    
-    <summary type="html">
-    
-      &lt;p&gt;快速排序是一种分而治之的算法,通过递归的方式将数据依次分解为包含较小元素和较大元素的不同子序列。该算法不断重复这个步骤直到所有数据都是有序的。&lt;/p&gt;
-&lt;p&gt;快速排序的算法如下:&lt;br&gt;(1) 选择一个基准元素,将列表分隔成两个子序列;&lt;br&gt;(2) 对列表重新排序,将所有
-    
-    </summary>
-    
-      <category term="数据结构与算法" scheme="http://frankxiong.xyz/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="JavaScript" scheme="http://frankxiong.xyz/tags/JavaScript/"/>
-    
-      <category term="算法" scheme="http://frankxiong.xyz/tags/%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
