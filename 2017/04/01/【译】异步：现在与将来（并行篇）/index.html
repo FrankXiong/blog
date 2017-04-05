@@ -18,11 +18,11 @@
     <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.3/css/font-awesome.css">
     <title>
         
-        【译】为什么Vue.js不支持templateURL?｜Frank Xiong&#39;s blog
+        【译】异步：现在与将来（并行篇）｜Frank Xiong&#39;s blog
         
     </title>
 
-    <link rel="canonical" href="http://frankxiong.xyz/2016/08/03/【译】为什么Vue-js不支持templateURL/">
+    <link rel="canonical" href="http://frankxiong.xyz/2017/04/01/【译】异步：现在与将来（并行篇）/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -162,21 +162,18 @@
         <div class="row">
             <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 text-center">
                 <div class="post-heading">
-                    <h1>【译】为什么Vue.js不支持templateURL?</h1>
+                    <h1>【译】异步：现在与将来（并行篇）</h1>
                     
                     <span class="meta">
                          作者 Frank Xiong
                         <span>
-                          日期 2016-08-03
+                          日期 2017-04-01
                          </span>
                     </span>
                     <div class="tags text-center">
                         
                         <a class="tag" href="/tags/#JavaScript"
                            title="JavaScript">JavaScript</a>
-                        
-                        <a class="tag" href="/tags/#Vue"
-                           title="Vue">Vue</a>
                         
                         <a class="tag" href="/tags/#翻译"
                            title="翻译">翻译</a>
@@ -188,7 +185,7 @@
     </div>
     <div class="post-title-haojen">
         <span>
-            【译】为什么Vue.js不支持templateURL?
+            【译】异步：现在与将来（并行篇）
         </span>
     </div>
 </header>
@@ -199,20 +196,51 @@
         <div class="row">
             <!-- Post Container -->
             <div class="col-lg-8 col-lg-offset-1 col-sm-9 post-container">
-                <p>　　对于Vue新手，尤其是之前用过Angular的人来说，有一个非常普遍的问题：“我可以使用<code>templateURL</code>吗？”我（尤大）已经回答过很多次这个问题，发现最好写点东西来解释一下。<br>在Angular中，<code>templateURL</code>或者<code>ng-include</code>允许开发者在运行时动态地加载远程的模板文件。作为一个内建的特点，这点看起来很方便。但是让我们重新思考一下它解决了什么问题。<br><a id="more"></a><br>　　首先，templateURL允许我们在一个分离的HTML文件中写模板。可以让编辑器提供合适的语法高亮，这可能也是许多框架偏爱于这样做的原因吧。但是，分离模板和JavaScript代码真是的最好的方式吗？对于一个Vue组件，template和JavaScript被原生的紧密连在一起。事实上，如果这些东西仅仅在一个文件里会简单得多。上下文的来回跳转事实上会让开发体验变得更加糟糕。从概念上来说，组件是一个Vue应用的基本构建块，而template不是。每一个Vue.js template和一个伴随着的JavaScript上下文紧密连在一起，没有理由去进一步分离他们。<br>　　其次，由于<code>templateURL</code>通过Ajax在运行时加载模板，你不需要为了分离你的文件而增加一个构建的环节。这为开发提供了便利，但是当你想部署项目到生产环境的时候，这种方式带来了严重的开销。在HTTP/2被普遍支持之前，HTTP请求的数量依然是影响你的应用初次加载时性能的关键因素。现在想象你在应用中每一个组件中使用templateURL，浏览器需要在能展示页面之前做大量的HTTP请求，可能你不知道的是，大多数浏览器限制了它对于单个服务器的并行请求的数量。当你超过了这个限制，应用的初次渲染会承受额外的周转时间，因为浏览器要等待请求的加载。当然，现在也有构建工具，能够帮助你在<code>$templateCache</code>中预注册(pre-register)这些模板。但是，这事实上，不可避免的给前端开发增加了一个构建环节。<br>　　所以，没有templateURL，我们如何处理开发体验的问题？把模板作为行内JavaScript字符串来写是很糟糕的，以<code>&lt;script type=&quot;x/template&quot;&gt;</code>的方式来编写模板感觉像是一个hack。好吧，可能是时候去使用一个像 <a href="http://webpack.github.io/" target="_blank" rel="external">Webpack</a>或者<a href="http://browserify.org/" target="_blank" rel="external">Browserify</a>之类的模板加载器让程序跑起来。你如果之前没处理过这些问题的话可能会被吓到，但是相信我，做出这种改变是值得的。如果你想要去构建一个大型的可维护的项目时，合适的模块化是必不可少的。更重要的是，当你开始<strong>在单个文件中写Vue组件</strong>时，使用合适的语法高亮，享受着预加载器、热加载(hot-reloading)，ES2015带来的开发上的快感，以及自动补全和scoped css。这些会将开发体验提升10倍。<br>　　最后，Vue也允许懒加载组件。使用webpack的话，这将变得极其简单。尽管这有一个唯一值得担心的问题是，当初始模块太大时，你最好将它进一步分离。<br>　　<strong>以组件的方式去思考，而不是模板。</strong></p>
+                <h3 id="并行线程"><a href="#并行线程" class="headerlink" title="并行线程"></a>并行线程</h3><p>人们常常把 “异步” 和 “并行” 这两个术语混淆，但它们其实完全不同。记住，异步是关于 “现在” 和 “将来” 之间的间隙，而并行说的是能够同时发生的事情。</p>
+<p>进程和线程是并行计算最常用的工具。进程和线程独立运行，也可能同时运行：在多个独立的处理器上，或者多个独立的计算机上，而多线程可以在同一个进程上共享内存。</p>
+<p>相比之下，事件循环将工作分成多个任务，并串行执行它们，不允许对共享内存做并行访问和改变。通过独立线程中的相互协作的事件循环，并行化和 “串行化” 可以共存。</p>
+<p>并行线程的交错执行和异步事件的交错执行，其颗粒度是完全不同的。</p>
+<p>比如：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function later() &#123;</span><br><span class="line">	answer = answer * 2;</span><br><span class="line">	console.log( &quot;Meaning of life:&quot;, answer );</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>虽然 <code>later()</code> 的全部内容会被作为一个事件循环队列的入口，然而考虑这段代码运行在一个线程上，实际上可能有许多不同的底层操作。比如，<code>answer = answer * 2</code> 要先加载 <code>answer</code> 的当前值，接着把 <code>2</code> 放在某处，然后做乘法计算，然后取出结果，并把结果存回 <code>answer</code> 中。</p>
+<p>在单线程环境下，线程队列中的这些项目是底层操作其实是无所谓的，因为<br>线程不能被中断。但如果你有一个并行系统，其中两个不同的线程在同一个程序中运行，你很可能得到意想不到的结果。</p>
+<p>考虑：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var a = 20;</span><br><span class="line"></span><br><span class="line">function foo() &#123;</span><br><span class="line">	a = a + 1;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function bar() &#123;</span><br><span class="line">	a = a * 2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// ajax(..) is some arbitrary Ajax function given by a library</span><br><span class="line">ajax( &quot;http://some.url.1&quot;, foo );</span><br><span class="line">ajax( &quot;http://some.url.2&quot;, bar );</span><br></pre></td></tr></table></figure></p>
+<p>鉴于 JavaScript 的单线程特性，如果 <code>foo()</code> 在 <code>bar()</code> 之前运行， <code>a</code> 计算的结果为 <code>42</code>，但如果 <code>bar()</code> 在 <code>foo()</code>之前运行，<code>a</code> 的结果将是 <code>41</code>。</p>
+<p>如果共享相同数据的 JS 事件并行执行，那么问题就更加微妙了。考虑下面两列伪码， <code>foo()</code> 和 <code>bar()</code> 代码运行时所在的线程执行的是下面两列伪码，思考他们正好同一时刻运行会发生什么。</p>
+<p>线程 1 （<code>X</code> 和 <code>Y</code> 是临时内存地址）<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">foo():</span><br><span class="line">  a. load value of `a` in `X`</span><br><span class="line">  b. store `1` in `Y`</span><br><span class="line">  c. add `X` and `Y`, store result in `X`</span><br><span class="line">  d. store value of `X` in `a`</span><br></pre></td></tr></table></figure></p>
+<p>线程 2 （<code>X</code> 和 <code>Y</code> 是临时内存地址）<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">bar():</span><br><span class="line">  a. load value of `a` in `X`</span><br><span class="line">  b. store `2` in `Y`</span><br><span class="line">  c. multiply `X` and `Y`, store result in `X`</span><br><span class="line">  d. store value of `X` in `a`</span><br></pre></td></tr></table></figure></p>
+<p>现在，让我们假设这两个线程真的在并行运行。你可能会发现问题所在，对吗？它们在临时步骤中使用了共享的内存地址 <code>X</code> 和 <code>Y</code> 。</p>
+<p>如果上述步骤是这样的， <code>a</code> 的最终结果又是什么呢？<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1a  (load value of `a` in `X`   ==&gt; `20`)</span><br><span class="line">2a  (load value of `a` in `X`   ==&gt; `20`)</span><br><span class="line">1b  (store `1` in `Y`   ==&gt; `1`)</span><br><span class="line">2b  (store `2` in `Y`   ==&gt; `2`)</span><br><span class="line">1c  (add `X` and `Y`, store result in `X`   ==&gt; `22`)</span><br><span class="line">1d  (store value of `X` in `a`   ==&gt; `22`)</span><br><span class="line">2c  (multiply `X` and `Y`, store result in `X`   ==&gt; `44`)</span><br><span class="line">2d  (store value of `X` in `a`   ==&gt; `44`)</span><br></pre></td></tr></table></figure></p>
+<p><code>a</code> 的结果将是 44。那这样排列呢？<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">1a  (load value of `a` in `X`   ==&gt; `20`)</span><br><span class="line">2a  (load value of `a` in `X`   ==&gt; `20`)</span><br><span class="line">2b  (store `2` in `Y`   ==&gt; `2`)</span><br><span class="line">1b  (store `1` in `Y`   ==&gt; `1`)</span><br><span class="line">2c  (multiply `X` and `Y`, store result in `X`   ==&gt; `20`)</span><br><span class="line">1c  (add `X` and `Y`, store result in `X`   ==&gt; `21`)</span><br><span class="line">1d  (store value of `X` in `a`   ==&gt; `21`)</span><br><span class="line">2d  (store value of `X` in `a`   ==&gt; `21`)</span><br></pre></td></tr></table></figure></p>
+<p><code>a</code> 的结果将是 21。</p>
+<p>所以，多线程编程是相当复杂的，因为如果你不采取特殊步骤去防止此类冲突和交错的发生的话，你会的到非常意外的不确定的结果，这常常让人头痛不已。</p>
+<p>JavaScript 从不跨线程共享数据，这意味着我们不需要担心上述的不确定性。但也不意味着 JS 总是确定的。还记得前面提到的吗？<code>foo()</code> 和 <code>bar()</code> 的相对排列顺序导致了不同的结果（41 或 42）。</p>
+<p><strong>注意</strong>： 可能至今还不明显，但不是所有的不确定性都是有害的。它有时无关紧要，有时是我们刻意而为的。通过本章节的接下来的一些章节，我们将看到更多的这方面的例子。</p>
+<h3 id="完整运行"><a href="#完整运行" class="headerlink" title="完整运行"></a>完整运行</h3><p>由于 JavaScript 的单线程特性，<code>foo()</code> 和 <code>bar()</code> 内部的代码是原子的，这意味着一旦 <code>foo()</code> 开始运行，必须要等到这段代码全部执行完毕， <code>bar()</code> 中的代码才能开始运行，反之亦然。这被称为 “完整运行” 行为。</p>
+<p>事实上，如果 <code>foo()</code> 和 <code>bar()</code> 包含更多的代码，完整运行的语义会更清晰，比如：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var a = 1;</span><br><span class="line">var b = 2;</span><br><span class="line"></span><br><span class="line">function foo() &#123;</span><br><span class="line">	a++;</span><br><span class="line">	b = b * a;</span><br><span class="line">	a = b + 3;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function bar() &#123;</span><br><span class="line">	b--;</span><br><span class="line">	a = 8 + b;</span><br><span class="line">	b = a * 2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">// ajax(..) is some arbitrary Ajax function given by a library</span><br><span class="line">ajax( &quot;http://some.url.1&quot;, foo );</span><br><span class="line">ajax( &quot;http://some.url.2&quot;, bar );</span><br></pre></td></tr></table></figure></p>
+<p>因为 <code>foo()</code> 不能被 <code>bar()</code> 中断，<code>bar()</code> 也不能被 <code>foo()</code> 中断，所以这个程序只有两种可能的输出，这取决于哪个先运行——如果存在多线程，而且 <code>foo()</code> 和 <code>bar()</code> 中的语句可以交替运行的话，可能输出结果的数量将大大增加！</p>
+<p>块 1 是同步的（当前执行），但 块 2 和 3 是异步的（将来执行），这意味着他们的执行在时间上是分割的。</p>
+<p>块 1：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var a = 1;</span><br><span class="line">var b = 2;</span><br></pre></td></tr></table></figure></p>
+<p>块 2（<code>foo()</code>）：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">a++;</span><br><span class="line">b = b * a;</span><br><span class="line">a = b + 3;</span><br></pre></td></tr></table></figure></p>
+<p>块 3（<code>bar()</code>）：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">b--;</span><br><span class="line">a = 8 + b;</span><br><span class="line">b = a * 2;</span><br></pre></td></tr></table></figure></p>
+<p>块 2 和 块 3 的执行顺序不确定，所以这段程序有两个可能的输出，如下所示：</p>
+<p>输出 1：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var a = 1;</span><br><span class="line">var b = 2;</span><br><span class="line"></span><br><span class="line">// foo()</span><br><span class="line">a++;</span><br><span class="line">b = b * a;</span><br><span class="line">a = b + 3;</span><br><span class="line"></span><br><span class="line">// bar()</span><br><span class="line">b--;</span><br><span class="line">a = 8 + b;</span><br><span class="line">b = a * 2;</span><br><span class="line"></span><br><span class="line">a; // 11</span><br><span class="line">b; // 22</span><br></pre></td></tr></table></figure></p>
+<p>输出 2：<br><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var a = 1;</span><br><span class="line">var b = 2;</span><br><span class="line"></span><br><span class="line">// bar()</span><br><span class="line">b--;</span><br><span class="line">a = 8 + b;</span><br><span class="line">b = a * 2;</span><br><span class="line"></span><br><span class="line">// foo()</span><br><span class="line">a++;</span><br><span class="line">b = b * a;</span><br><span class="line">a = b + 3;</span><br><span class="line"></span><br><span class="line">a; // 183</span><br><span class="line">b; // 180</span><br></pre></td></tr></table></figure></p>
+<p>同一段代码有两种输出，这意味着仍然存在着不确定性！但这种不确定性是函数（事件）顺序级别的，而不是多线程下的语句顺序级别（或者说，其实是表达式执行顺序级别）。换句话说，这比多线程还是要确定的多。</p>
+<p>在 JavaScript 的特性中，这种函数顺序不确定性就是通常所说的 “竞态条件”，因为 foo() 和 bar() 在相互竞争，来看看谁先运行。具体来说，正因为无法可靠预测 a 和 b 的计算结果，所以它才是 “竞态条件”。</p>
+<p><strong>注意：</strong> 如果 JS 中有个函数，它无论如何也不具备完全执行的特性，我们会有更多种可能的输出，对吧？ES6 就引入了这样一个东西（见第四章 “Generators”），但现在别担心，我们以后会介绍这一部分的！</p>
 <hr>
-<p>作者：尤雨溪<br>原文地址：<a href="http://cn.vuejs.org/2015/10/28/why-no-template-url/" target="_blank" rel="external">http://cn.vuejs.org/2015/10/28/why-no-template-url/</a><br>译者：<a href="http://voidman.xyz" target="_blank" rel="external">熊贤仁</a></p>
+<p>本系列下一部分将介绍 “并发”</p>
 
                 <hr>
                 
                 <!-- 多说 Share start -->
                 <div class="ds-share"
                      style="text-align: right"
-                     data-thread-key="2016/08/03/【译】为什么Vue-js不支持templateURL/"
-                     data-title="【译】为什么Vue.js不支持templateURL?"
-                     data-url="http://frankxiong.xyz/2016/08/03/【译】为什么Vue-js不支持templateURL/"
+                     data-thread-key="2017/04/01/【译】异步：现在与将来（并行篇）/"
+                     data-title="【译】异步：现在与将来（并行篇）"
+                     data-url="http://frankxiong.xyz/2017/04/01/【译】异步：现在与将来（并行篇）/"
                      data-images=""
-                     data-content="　　对于Vue新手，尤其是之前用过Angular的人来说，有一个非常普遍的问题：“我可以使用t... | Frank Xiong&#39;s blog ">
+                     data-content="并行线程人们常常把 “异步” 和 “并行” 这两个术语混淆，但它们其实完全不同。记住，异步是关... | Frank Xiong&#39;s blog ">
                     <div class="ds-share-inline">
                         <ul class="ds-share-icons-16">
                             <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -231,14 +259,14 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2016/09/07/Vue2-0源码学习-0/" data-toggle="tooltip" data-placement="top"
-                           title="Vue2.0源码学习#0">&larr; Previous Post</a>
+                        <a href="/2017/04/01/ES6语法总结/" data-toggle="tooltip" data-placement="top"
+                           title="ES6语法总结">&larr; Previous Post</a>
                     </li>
                     
                     
                     <li class="next">
-                        <a href="/2016/06/26/Cookie和Session的区别总结/" data-toggle="tooltip" data-placement="top"
-                           title="Cookie和Session的区别总结">Next Post &rarr;</a>
+                        <a href="/2017/04/01/【译】异步：现在与将来（基础篇）/" data-toggle="tooltip" data-placement="top"
+                           title="【译】异步：现在与将来（基础篇）">Next Post &rarr;</a>
                     </li>
                     
                 </ul>
@@ -247,9 +275,9 @@
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                         data-thread-key="2016/08/03/【译】为什么Vue-js不支持templateURL/"
-                         data-title="【译】为什么Vue.js不支持templateURL?"
-                         data-url="http://frankxiong.xyz/2016/08/03/【译】为什么Vue-js不支持templateURL/">
+                         data-thread-key="2017/04/01/【译】异步：现在与将来（并行篇）/"
+                         data-title="【译】异步：现在与将来（并行篇）"
+                         data-url="http://frankxiong.xyz/2017/04/01/【译】异步：现在与将来（并行篇）/">
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
@@ -261,7 +289,7 @@
 
             <div class="hidden-xs col-sm-3 toc-col">
                 <div class="toc-wrap">
-                    
+                    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#并行线程"><span class="toc-text">并行线程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#完整运行"><span class="toc-text">完整运行</span></a></li></ol>
                 </div>
             </div>
         </div>
@@ -285,9 +313,6 @@
                         
                         <a class="tag" href="/tags/#JavaScript"
                            title="JavaScript">JavaScript</a>
-                        
-                        <a class="tag" href="/tags/#Vue"
-                           title="Vue">Vue</a>
                         
                         <a class="tag" href="/tags/#翻译"
                            title="翻译">翻译</a>
