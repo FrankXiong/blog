@@ -69,7 +69,7 @@ sidebar-avatar: //oi7ywoutt.bkt.clouddn.com/avatar.jpg # use absolute URL
 # featured-condition-size: 1              # A tag will be featured if the size of it is more than this condition value
 
 # friends
-friends:  http://less.coding.me/blog # 友链
+friends:  '' # 友链
 
 # Directory
 source_dir: source
