@@ -13,7 +13,7 @@ timezone:
 # more detail check out docs
 SEOTitle: Frank Xiong's blog
 header-img: //oi7ywoutt.bkt.clouddn.com/headimg.jpg
-portrait: //oi7ywoutt.bkt.clouddn.com/portrait.jpg
+portrait: //mares.oss-cn-qingdao.aliyuncs.com/IMG_0339.jpg
 email: xianrenxiong@qq.com
 description: "熊贤仁的个人博客"
 keyword: # seo key words
@@ -61,7 +61,7 @@ ga_domain:
 # Sidebar settings
 sidebar: true
 sidebar-about-description: Stay hungry Stay foolish # 个人描述
-sidebar-avatar: //oi7ywoutt.bkt.clouddn.com/avatar.jpg # use absolute URL
+sidebar-avatar: //mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg # use absolute URL
 
 
 # Featured Tags
@@ -141,7 +141,7 @@ deploy:
 
 
 # img CDN path
-cdn-url:  oi7ywoutt.bkt.clouddn.com # 你的CDN地址
+cdn-url:  mares.oss-cn-qingdao.aliyuncs.com # 你的CDN地址
 
 # Qiniu imageView2 API
 # More info http://developer.qiniu.com/code/v6/api/kodo-api/image/imageview2.html
@@ -150,8 +150,8 @@ clip-avatar: "?imageView2/2/w/300/h/300/interlace/1/q/90"
 clip-home-post-bg: "?imageView2/1/w/800/h/300/interlace/1/q/70"
 
 # post default images
-post-default-img: //oi7ywoutt.bkt.clouddn.com/going-to-quasar.jpg #博文默认的图片
-post-default-img-mobile: //oi7ywoutt.bkt.clouddn.com/m-going-to-quasar.jpg #移动端显示的图片
+post-default-img: //mares.oss-cn-qingdao.aliyuncs.com/gentrit-murati-1154703-unsplash.jpg?x-oss-process=style/big-img #博文默认的图片
+post-default-img-mobile: //mares.oss-cn-qingdao.aliyuncs.com/gentrit-murati-1154703-unsplash.jpg?x-oss-process=style/big-img #移动端显示的图片
 
 # search api , set your custom key
 swiftype_key:
@@ -165,8 +165,8 @@ archive:
 works:
   - title: "大熊直播"
     date: "2017.6"
-    link: "http://www.m.live.wenxin.info"
-    img_link: "//oi7ywoutt.bkt.clouddn.com/project-bearlive.jpg?imageView2/1/w/800/h/450/interlace/0/q/100"
+    link: ""
+    img_link: ""
     use:
       - Vue.js
       - Node.js
@@ -177,15 +177,15 @@ works:
   - title: "帮呗"
     date: "2017.3"
     link: "http://www.wandoujia.com/apps/com.xxr.srtp.helper"
-    img_link: "//oi7ywoutt.bkt.clouddn.com/project-helper.jpg?imageView2/1/w/800/h/450/interlace/0/q/100"
+    img_link: ""
     use:
       - Java
       - Android
     description: "“帮呗”是一个基于地理位置的生活服务交易平台。你可以在平台上发出各种个性化需求，并寻找附近能提供服务的人。比如家里的电视坏了，你可以发布一个需求，寻求附近的人帮你解决问题。另外，不仅能够在“帮呗”上助人为乐，还可以明码标价，用服务换来不错的报酬。"
   - title: "心理咨询专家系统"
     date: "2016.12"
-    link: "http://frankxiong.xyz"
-    img_link: "//oi7ywoutt.bkt.clouddn.com/project-expert-sys.jpg?imageView2/1/w/800/h/450/interlace/0/q/100"
+    link: ""
+    img_link: ""
     use:
       - Vue.js
       - Node.js
@@ -193,8 +193,8 @@ works:
     description: "一个基于产生式规则的专家系统，使用了nools作为规则引擎，可根据用户输入信息进行心理状态推理，并给出诊断建议。"
   - title: "课堂管理公众号"
     date: "2016.5"
-    link: "http://frankxiong.xyz"
-    img_link: "//oi7ywoutt.bkt.clouddn.com/project-classroom.jpg?imageView2/1/w/800/h/450/interlace/0/q/100"
+    link: ""
+    img_link: ""
     use:
       - jQuery
       - Node.js
@@ -203,7 +203,7 @@ works:
   - title: "Fun言"
     date: "2015.7"
     link: "http://www.wandoujia.com/apps/com.xiongxianren.funyan"
-    img_link: "//oi7ywoutt.bkt.clouddn.com/project-funyan.jpg?imageView2/1/w/800/h/450/interlace/0/q/100"
+    img_link: ""
     use:
       - Java
       - Android
