@@ -18,13 +18,13 @@ email: xianrenxiong@qq.com
 description: "熊贤仁的个人博客"
 keyword: # seo key words
 
-favicon: //oi7ywoutt.bkt.clouddn.com/favicon.png # your favicon png
+favicon: //mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg # your favicon png
 # custom end
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://less.coding.me/blog
-root: /blog
+url: http://blog.skrskrskrskr.com
+root: /
 permalink: passages/:title/
 permalink_defaults:
 
