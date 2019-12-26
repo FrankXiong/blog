@@ -4,7 +4,7 @@
 
 # Site
 title: Frank Xiong
-subtitle:
+subtitle: ''
 author: Frank Xiong
 language:
 timezone:
@@ -24,8 +24,8 @@ favicon: //oi7ywoutt.bkt.clouddn.com/favicon.png # your favicon png
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 url: http://less.coding.me/blog
-root: /blog/
-permalink: :year/:month/:day/:title/
+root: /blog
+permalink: passages/:title/
 permalink_defaults:
 
 # SNS settings
@@ -69,7 +69,7 @@ sidebar-avatar: //mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg # use absolute UR
 # featured-condition-size: 1              # A tag will be featured if the size of it is more than this condition value
 
 # friends
-friends:  '' # 友链
+# friends:  '' # 友链
 
 # Directory
 source_dir: source
@@ -128,7 +128,7 @@ markdown:
     - markdown-it-emoji
 
 ## Themes: https://hexo.io/themes/
-theme: Anisina
+theme: Lights
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
