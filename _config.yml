@@ -3,15 +3,15 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Frank Xiong
-subtitle: ''
+title: FrankXiong
+subtitle: 小熊写字的地方
 author: Frank Xiong
 language:
 timezone:
 
 # custom Site settings
 # more detail check out docs
-SEOTitle: Frank Xiong's blog
+SEOTitle: 小熊写字的地方
 header-img: //oi7ywoutt.bkt.clouddn.com/headimg.jpg
 portrait: //mares.oss-cn-qingdao.aliyuncs.com/IMG_0339.jpg
 email: xianrenxiong@qq.com
@@ -23,9 +23,9 @@ favicon: //mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg # your favicon png
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://blog.skrskrskrskr.com
+url: https://blog.skrskrskrskr.com
 root: /
-permalink: passages/:title/
+permalink: article/:title/
 permalink_defaults:
 
 # SNS settings
