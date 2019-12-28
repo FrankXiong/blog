@@ -1,12 +1,12 @@
 ---
-title: apply方法的妙用
+title: apply 方法的妙用
 date: 2016-03-16 00:37:39
 tags:
 - JavaScript
 categories:
 - 前端
 ---
-我们可以使用数组的push()方法来合并数组
+我们可以使用数组的 push() 方法来合并数组
 ```
 var a = [1,2,3];
 var b = [4,5,6];

@@ -1,5 +1,5 @@
 ---
-title: 【译】为什么Vue.js不支持templateURL?
+title: 【译】为什么 Vue.js 不支持 templateURL?
 date: 2016-08-03 01:48:42
 tags:
 - JavaScript
@@ -20,4 +20,4 @@ categories:
 ---------
 作者：尤雨溪
 原文地址：http://cn.vuejs.org/2015/10/28/why-no-template-url/
-译者：[熊贤仁](http://voidman.xyz)
+译者：[熊贤仁](https://blog.skrskrskrskr.com)

@@ -1,5 +1,5 @@
 ---
-title: 【译】真实的Virtual DOM
+title: 【译】真实的 Virtual DOM
 date: 2016-09-08 17:51:03
 tags:
 - JavaScript
@@ -113,4 +113,4 @@ React花了大量时间在scripting上，React比直接操作DOM慢的多。但�
 --------------
 
 原文作者：[Chris Minnick](https://www.accelebrate.com/blog/the-real-benefits-of-the-virtual-dom-in-react-js/)
-翻译：[熊贤仁](http://voidman.xyz)
+翻译：[熊贤仁](https://blog.skrskrskrskr.com)

@@ -1,5 +1,5 @@
 ---
-title: localStorage详解
+title: localStorage 详解
 date: 2016-03-07 21:07:48
 tags:
 - JavaScript

@@ -42,4 +42,5 @@ function test( ){
      console.log(scope);    
      scope = “local”;   
      console.log(scope);    
-}```
+}
+```

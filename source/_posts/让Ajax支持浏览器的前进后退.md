@@ -1,5 +1,5 @@
 ---
-title: 让Ajax支持浏览器的前进后退
+title: 让 Ajax 支持浏览器的前进后退
 date: 2016-05-01 01:13:43
 tags:
 - JavaScript

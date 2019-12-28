@@ -1,5 +1,5 @@
 ---
-title: ES6语法总结
+title: ES6 语法总结
 date: 2017-04-01 00:41:08
 tags:
 - JavaScript
@@ -73,7 +73,7 @@ Foo.classMethod() // 'hello'
       - 使用 Co　
       - 将异步操作包装成 Promise 对象，用 then 方法交出执行权。
 
-####Module
+#### Module
 - 编译时确定模块依赖，编译时加载，使得静态分析成为可能。
 - ES6 模块不是对象。
 - export 输出的是对外的接口。

@@ -1,5 +1,5 @@
 ---
-title: Cookie和Session的区别总结
+title: Cookie 和 Session 的区别总结
 date: 2016-06-26 13:55:10
 tags:
 - JavaScript

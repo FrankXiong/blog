@@ -1,5 +1,5 @@
 ---
-title: null和undefined的区别
+title: null 和 undefined 的区别
 date: 2016-03-08 21:52:17
 tags:
 - JavaScript

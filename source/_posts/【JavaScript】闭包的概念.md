@@ -52,15 +52,16 @@ console.log(myQuo.getStatus());```
 
 正确的例子·
 ```
-var addHandlers = function(nodes){
-        var helper = function(i){
-            return function(){
-                console.log(i);
-            };
-        };
-        var i;
-        // 避免在循环中创建函数
-        for(i=0;i<nodes.length;i++){
-            nodes[i].onclick = helper(i);
-        }
-    }```
+var addHandlers = function(nodes) {
+     var helper = function(i) {
+         return function() {
+             console.log(i);
+         };
+     };
+     var i;
+     // 避免在循环中创建函数
+     for (i=0; i < nodes.length; i++) {
+         nodes[i].onclick = helper(i);
+     }
+  }
+```

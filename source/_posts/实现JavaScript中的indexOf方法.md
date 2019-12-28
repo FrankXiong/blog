@@ -1,5 +1,5 @@
 ---
-title: 实现JavaScript中的indexOf方法
+title: 实现 JavaScript 中的 indexOf 方法
 date: 2016-03-21 17:43:49
 tags:
 - JavaScript

@@ -1,5 +1,5 @@
 ---
-title: 【JavaScript】splice方法实现原理分析
+title: 【JavaScript】splice 方法实现原理分析
 date: 2017-01-09 06:58:12
 tags:
 - JavaScript
@@ -75,7 +75,4 @@ categories:
 　在分析过程中，我对JavaScript中Array是对象这一概念也有了更深的了解。数组通过**DefineOwnProperty()**这一内建方法来为自己添加元素，它的 **Property Descriptor中Writable、Enumerable、Configurable等属性都为true**，其实就和普通的对象属性是一样的，因此数组元素的值都可以被动态地修改。
 　另外，splice()的所有操作都是在原数组上进行的。JavaScript还提供了一个数组方法slice()，它不会修改原数组，函数式编程爱好者比较喜欢它。
 
----------------------
-作者：[熊贤仁](http://frankxiong.xyz)
-　
 　

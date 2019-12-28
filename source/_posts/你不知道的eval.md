@@ -1,5 +1,5 @@
 ---
-title: 你不知道的eval
+title: 你不知道的 eval
 date: 2018-11-18 01:32:24
 tags:
 - JavaScript
@@ -56,13 +56,13 @@ var context = 'outside';
 事实上，eval 一直在被误解，它可能是最强大的一个 JavaScript 函数，但却因为一些人的误用，而被开发者们打入了冷宫。接下来，我来根据上述被质疑最多的几个点，给出一点自己的看法。
 
 1. 关于 eval 会拖慢性能 10 倍这个点，出自 Mozila 工程师的演讲 [“Know Your Engines - How to make your JavaScript Fast”](https://www.slideshare.net/newmovie/know-yourengines-velocity2011/4-lost_in_an_instantfunction_f)。
-![image.png](https://upload-images.jianshu.io/upload_images/192464-97e5c8ab319630c3.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](https://mares.oss-cn-qingdao.aliyuncs.com/blog/%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84eval/192464-97e5c8ab319630c3.png)
 
 这是一个发布于 2011 年的演讲，时至今日，JS 引擎早已做了各种优化。我们来测试现在的 JS 引擎中，eval 的实际性能。依然使用上图作为测试用例，测试环境为 node v8.11.1，设 N 的值为 10000。
-![image.png](https://upload-images.jianshu.io/upload_images/192464-fc057b2bb1edb308.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](https://mares.oss-cn-qingdao.aliyuncs.com/blog/%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84eval/192464-fc057b2bb1edb308.png)
 Benchmark 跑出的数据来看，当 N = 10000 时，用了 eval 的 function 执行性能，相比没有 eval 的情况，慢了 3 倍多。
 将 N 的值设为 1000000，eval 的性能下降到 8 倍。
-![image.png](https://upload-images.jianshu.io/upload_images/192464-a6970c681b262f83.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](https://mares.oss-cn-qingdao.aliyuncs.com/blog/%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84eval/192464-a6970c681b262f83.png)
 
 从测试结果可知，eval 的确会拖慢函数执行性能，而且随着函数规模增大，性能也越慢。但是在一般情况下（N < 1000000），性能差异并没有 10 倍那么夸张。
 
@@ -73,7 +73,7 @@ Benchmark 跑出的数据来看，当 N = 10000 时，用了 eval 的 function �
 
 ## 真香警告
 虽然大家嘴上说不要用，但是 eval 用起来却是真香。
-![](https://upload-images.jianshu.io/upload_images/192464-714d2a5fc4462fe0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![](https://mares.oss-cn-qingdao.aliyuncs.com/blog/%E4%BD%A0%E4%B8%8D%E7%9F%A5%E9%81%93%E7%9A%84eval/192464-714d2a5fc4462fe0.png)
 笔者做过的项目中，曾经为了让 HTML 模板（应该说是一套页面主题）也具备动态解析内联表达式的能力，用了 data-eval 将 js 代码存储在 dom 节点，然后渲染时用 with 语句（另一个 JS “毒瘤”，现在严格模式下已经禁用 with 了，rip...）将 data 加到作用域链上，再用 eval 解析执行。实现出来的效果类似这样：
 ```
 <div data-eval="data.count = data.count + 1">

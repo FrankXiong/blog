@@ -1,5 +1,5 @@
 ---
-title: DNS劫持与DNS污染的原理
+title: DNS 劫持与 DNS 污染的原理
 date: 2016-04-28 22:24:01
 tags:
 - DNS

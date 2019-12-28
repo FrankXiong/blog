@@ -1,5 +1,5 @@
 ---
-title: 【JavaScript实现数据结构】栈
+title: 【JavaScript 实现数据结构】栈
 date: 2016-03-21 17:39:09
 tags:
 - JavaScript

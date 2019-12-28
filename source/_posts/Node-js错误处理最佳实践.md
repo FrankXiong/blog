@@ -1,5 +1,5 @@
 ---
-title: Node.js 错误处理最佳实践
+title: 聊一聊 Node.js 错误处理
 date: 2019-12-26 17:39:59
 tags:
 - Node.js
@@ -199,7 +199,7 @@ app.listen(3000)
 参考链接：
 1. [深入理解 JavaScript Errors 和 Stack Traces](https://zhuanlan.zhihu.com/p/25338849)
 2. [关于 Error.captureStackTrace](http://blog.shaochuancs.com/about-error-capturestacktrace/)
-3. [[译] NodeJS 错误处理最佳实践](https://cnodejs.org/topic/55714dfac4e7fbea6e9a2e5d)
+3. [Error Handling in Node.js](https://www.joyent.com/node-js/production/design/errors)
 4. [Node.js 错误处理实践](https://jysperm.me/2016/10/nodejs-error-handling/)
 5. [学习使用 Node.js 中 async-hooks 模块](https://zhuanlan.zhihu.com/p/53036228)
 6. https://github.com/bmeurer/async-hooks-performance-impact

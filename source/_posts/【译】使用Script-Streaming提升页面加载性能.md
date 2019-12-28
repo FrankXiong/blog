@@ -69,5 +69,5 @@ B|95|2.2 MB|19|1.1 MB
 
 ---------
 > 原文作者： [Utkarsh Goel](https://www.utkarshgoel.in/)<br>
-> 译者： [熊贤仁](http://less.coding.me/blog)
+> 译者： [熊贤仁](https://blog.skrskrskrskr.com)
 

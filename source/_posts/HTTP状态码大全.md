@@ -1,5 +1,5 @@
 ---
-title: HTTP状态码大全
+title: HTTP 状态码大全
 date: 2016-03-13 01:08:51
 tags:
 - HTTP

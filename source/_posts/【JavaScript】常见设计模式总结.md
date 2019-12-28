@@ -1,5 +1,5 @@
 ---
-title: JavaScript设计模式汇总
+title: JavaScript 设计模式汇总
 date: 2018-01-23 00:04:48
 tags: 前端
 ---

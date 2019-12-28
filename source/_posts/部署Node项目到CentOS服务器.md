@@ -1,5 +1,5 @@
 ---
-title: 部署Node项目到CentOS服务器
+title: 部署 Node 项目到 CentOS 服务器
 date: 2016-04-05 14:15:56
 tags:
 - 运维

@@ -1,5 +1,5 @@
 ---
-title: 【JavaScript实现算法】快速排序
+title: 【JavaScript 实现算法】快速排序
 date: 2016-03-22 21:13:54
 tags:
 - JavaScript
