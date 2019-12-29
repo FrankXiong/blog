@@ -1,6 +1,6 @@
 ---
 title: 【JavaScript】闭包的概念
-date: 2016-03-07 16:56:03
+date: 2015-12-09 16:01:45
 tags:
 - JavaScript
 categories:

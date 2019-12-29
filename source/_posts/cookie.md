@@ -17,43 +17,44 @@ categories:
 　　同时要注意的是，Cookie的**domain只能设置为当前服务器的域**。如想实现Cookie在不同父域下的跨域访问，可参考其他跨域方式，如script标签、隐藏iframe等。
 ### 创建和存储Cookie
 对Cookie的所有操作都要通过**读写document对象的Cookie属性**来完成。Cookie的值都是以键值对的形式存储。
-```
+```js
 //创建一个名字Cookie，同时设置它的过期时间
 function setCookie(c_name,value,expiredays){
-     var exdate=new Date();
-     exdate.setDate(exdate.getDate()+expiredays);
-     //encodeURIComponent() 对 URI 进行编码
-     document.cookie=c_name+ "=" +encodeURIComponent(value)+
-((expiredays==null) ? "" : ";expires="+exdate.toGMTString());
+  var exdate=new Date();
+  exdate.setDate(exdate.getDate()+expiredays);
+  //encodeURIComponent() 对 URI 进行编码
+  document.cookie=c_name+ "=" +encodeURIComponent(value)+
+    ((expiredays==null) ? "" : ";expires="+exdate.toGMTString());
 }
 ```
 同样的，如果要设置path、domain等属性，只须以如下形式追加到Cookie值的后面:　
 　　;path=path
 ### 读取Cookie
 使用document.cookie可以获取到Cookie的值，不过这个值是一个字符串，为了更好地查看Cookie的值，往往会采用split()方法将Cookie中的名值对分离出来。
-```
-function getCookie(){
-    // 初始化要返回的对象
-    var cookie = {};
-    var all = document.cookie;
-    if(all === null){
-        return cookie;
-    }
-    //分离出Cookie的各个属性
-    var list = all.split(';');
-    for(var i = 0;i < list.length;i++){
-        // 查询出等号所在的位置
-        var p = list[i].indexOf('=');
-        // 分离出名字和值
-        var name = list[i].substring(0,p);
-        var value = list[i].substring(p+1);
-        //对值进行解码
-        value = decodeURIComponent(value);
-        // 将名值对存储到对象中
-        cookie[name] = value;
-    }
+```js
+function getCookie() {
+  // 初始化要返回的对象
+  var cookie = {};
+  var all = document.cookie;
+  if (all === null) {
     return cookie;
+  }
+  //分离出Cookie的各个属性
+  var list = all.split(';');
+  for (var i = 0; i < list.length; i++) {
+    // 查询出等号所在的位置
+    var p = list[i].indexOf('=');
+    // 分离出名字和值
+    var name = list[i].substring(0, p);
+    var value = list[i].substring(p + 1);
+    //对值进行解码
+    value = decodeURIComponent(value);
+    // 将名值对存储到对象中
+    cookie[name] = value;
+  }
+  return cookie;
 }
+
 ```
 ### Cookie的局限性
 1. Cookie只能存储少量的数据，每个Cookie的大小不超过4KB。RFC标准不允许浏览器保存超过300个Cookie，为每个web服务器保存的Cookie数不超过20个。

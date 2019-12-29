@@ -3,8 +3,10 @@ title: 部署 Node 项目到 CentOS 服务器
 date: 2016-04-05 14:15:56
 tags:
 - 运维
-categories:
 - Node.js
+- CentOS
+categories:
+- 后端
 ---
 最近开始折腾Node，跟着慕课网的教程写了个电影网站，于是想把网站部署到服务器上，本文记录了我整个环境搭建的流程。
 
