@@ -17,7 +17,7 @@ categories:
 - 操作系统：CentOS 7.0 64位
 
 首先SSH连接服务器管理终端：
-![](/uploads/node-deploy/1.png)
+![](https://mares.oss-cn-qingdao.aliyuncs.com/blog/node-deploy/1.png)
 
 # 安装Node
 Node.JS的安装方法很多，这里贴上一种方法以供参考。
@@ -28,19 +28,19 @@ http://yijiebuyi.com/blog/4fcce2f8b1aed8389f34c27f22864a04.html
 1.输入以下命令：curl -O https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-3.2.4.tgz
 mongoDB就开始下载了，也可以用wget来下载。(下载过程比较缓慢，不知道是我的网速还是curl的问题...)
 
-![](/uploads/node-deploy/2.png)
+![](https://mares.oss-cn-qingdao.aliyuncs.com/blog/node-deploy/2.png)
 2.下载结束后解压文件：tar xf mongodb-linux-x86_64-rhel70-3.2.4.tgz
 文件名太长了，重命名一下：mv mongodb-linux-x86_64-rhel70-3.2.4  mongodb
 3.进入mongodb文件夹，新建logs文件夹，并在其下创建一个mongodb.log文件用于保存日志。创建data文件夹，在data文件夹下再新建db文件夹，用于存储mongoDB的数据。
 
-![](/uploads/node-deploy/3.png)
+![](https://mares.oss-cn-qingdao.aliyuncs.com/blog/node-deploy/3.png)
 4.添加环境变量
 
-![](/uploads/node-deploy/4.png)
+![](https://mares.oss-cn-qingdao.aliyuncs.com/blog/node-deploy/4.png)
 5.重新加载环境变量,验证结果。
 用mongod -verison或者-v看到下面的结果，就证明mongoDB安装成功了
 
-![](/uploads/node-deploy/5.png)
+![](https://mares.oss-cn-qingdao.aliyuncs.com/blog/node-deploy/5.png)
 # 上传项目文件到服务器
 Mac上可以用scp上传，windows上用FTP。FTP上传工具很多，随意选一种即可。
 # 启动MongoDB
@@ -53,6 +53,6 @@ Mac上可以用scp上传，windows上用FTP。FTP上传工具很多，随意选�
 下面就能看到网站欢快地跑起来了~~~因为没做域名解析，暂时只能通过IP地址来访问
 附一张这个网站的截图
 
-![电影详情页](/uploads/node-deploy/6.png)
+![电影详情页](https://mares.oss-cn-qingdao.aliyuncs.com/blog/node-deploy/6.png)
 
 另：网站的Github地址 https://github.com/FrankXiong/imooc

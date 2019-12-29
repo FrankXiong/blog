@@ -45,12 +45,12 @@ overflow: hidden;
 ```
 生成效果如下：
 
-![图0.png](/uploads/fe-css-0.png)
+![图0.png](https://mares.oss-cn-qingdao.aliyuncs.com/blog/css-line-break/fe-css-0.png)
 
 
 另一个腾讯NBA官网的例子（看NBA视频无意间发现的...）
 
-![图1.jpg](/uploads/fe-css-1.jpg)
+![图1.jpg](https://mares.oss-cn-qingdao.aliyuncs.com/blog/css-line-break/fe-css-1.jpg)
 在这里，腾讯用了上述的三个属性
 ```css
 white-space: nowrap;
@@ -59,4 +59,4 @@ overflow: hidden;
 ```
 　　这里的文本只能单行显示，多余的文本将被截断。其实`word-break:keep-all`这行在这里是多余的，它的作用是控制所有字不能断开，但在后面加上`overflow:hidden`后依然会截断超出盒子宽度的文字。
 　　我把其中一行文本替换为一段英文，可以发现英文单词依然被直接截断。
-![图2.png](/uploads/fe-css-2.png)
+![图2.png](https://mares.oss-cn-qingdao.aliyuncs.com/blog/css-line-break/fe-css-2.png)

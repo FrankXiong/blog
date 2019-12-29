@@ -11,7 +11,7 @@ categories:
 # 前言
 先贴一个福利，也作为没有启用 HTTPS 的反面教材：
 
-![福利.png](/uploads/https-upgrade/1.png)
+![福利.png](https://mares.oss-cn-qingdao.aliyuncs.com/blog/https-upgrade/1.png)
 这是我参与开发过的一个外包网站，没有启用 HTTPS，网站页面被中间人劫持，并插入了一些奇怪的东西。下面是正文。
 
 # 预备条件
@@ -137,7 +137,7 @@ server {
 }
 ```
 这时再访问网站，浏览器地址栏就会出现一把小锁。
-![https.png](/uploads/https-upgrade/2.png)
+![https.png](https://mares.oss-cn-qingdao.aliyuncs.com/blog/https-upgrade/2.png)
 
 一旦升级 HTTPS，网站内的所有资源文件和请求的协议也必须为 HTTPS，你需要在前端代码里修改一下。
 

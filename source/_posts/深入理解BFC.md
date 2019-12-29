@@ -66,17 +66,17 @@ Block Formatting Context，中文直译为块级格式上下文。BFC就是一�
 ```
 一般情况下，它是这样的
 
-![图1](/uploads/bfc/1.png)
+![图1](https://mares.oss-cn-qingdao.aliyuncs.com/blog/bfc/1.png)
 
 但是当文字多了以后...
 
-![图2](/uploads/bfc/2.png)
+![图2](https://mares.oss-cn-qingdao.aliyuncs.com/blog/bfc/2.png)
 
 显然，这是文字受到了图片浮动的影响。当然，如果你想做文本绕排的效果，浮动是不二之选。不过在这里，这显然不是我们想要的。此时我们可以为P元素的内容建立一个BFC，让其内容消除对外界浮动元素的影响。给文字加上 `overflow:hidden`
-![图3](/uploads/bfc/3.png)
+![图3](https://mares.oss-cn-qingdao.aliyuncs.com/blog/bfc/3.png)
 
 两栏布局就完成了。我们改变图片的大小：
-![图4](/uploads/bfc/4.png)
+![图4](https://mares.oss-cn-qingdao.aliyuncs.com/blog/bfc/4.png)
 两栏布局的结构依然没有改变，如此就实现了两栏自适应布局。
 
 ------

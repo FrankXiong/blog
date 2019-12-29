@@ -24,7 +24,7 @@ script-streaming 加速了 JavaScript 的解析。作为一个 web 开发者，�
 
 开发者可以使用 [performance 开发者工具](https://developers.google.com/web/tools/chrome-devtools/evaluate-performance/reference)来研究 script-streaming 是否被用于解析大型 JavaScript 文件，因为这项技术可以显著提升页面性能。下图是 [www.akamai.com](http://www.akamai.com) 在 performance 面板上的一个截图，脚本就是被红框里的 ScriptStreamer 线程解析的。
 
-![](/uploads/Script-Streaming/1.png)
+![](https://mares.oss-cn-qingdao.aliyuncs.com/blog/Script-Streaming/1.png)
 
 # 提升解析速度的两种方法
 
@@ -44,7 +44,7 @@ B|95|2.2 MB|19|1.1 MB
 ## MacBook Pro 上的性能
 
 图 1 和图 2 展示了在一台 MacBook Pro 上，两个测试页面加载时间的 [CDF](https://www.andata.at/en/software-blog-reader/why-we-love-the-cdf-and-do-not-like-histograms-that-much.html)  分布。页面 A 上，重新排序 script 标签在 HTML 中的位置的页面加载时间减少了 6.2%。页面 B 上，加载重新排序的 scrip 标签的页面加载时间减少了 4.5%。
-![](/uploads/Script-Streaming/2.png)
+![](https://mares.oss-cn-qingdao.aliyuncs.com/blog/Script-Streaming/2.png)
 
 
 ##  Motorola Moto E 上的性能
@@ -52,7 +52,7 @@ B|95|2.2 MB|19|1.1 MB
 正如下图所示，重排序 script 标签的页面 A 的加载时间减少了 4.3%。
 
 页面 B（没有示例图）上没有出现更快的加载速度，这可能是因为在 Moto E 设备上，当移动版页面 A 加载时， script-streaming 线程被占用了。
-![](/uploads/Script-Streaming/3.png)
+![](https://mares.oss-cn-qingdao.aliyuncs.com/blog/Script-Streaming/3.png)
 
 
 
@@ -61,7 +61,7 @@ B|95|2.2 MB|19|1.1 MB
 如下图所示，重排序 script 标签的页面 A 的加载时间减少了 3.5%。
 
 页面 B 上，中等规模页面的加载时间减少了 1.9%。
-![](/uploads/Script-Streaming/4.png)
+![](https://mares.oss-cn-qingdao.aliyuncs.com/blog/Script-Streaming/4.png)
 
 
 # 总结

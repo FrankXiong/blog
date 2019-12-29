@@ -43,11 +43,11 @@ categories:
 2) 只插入元素
 3) 同时删除和插入元素
 
-![只删除元素](/uploads/splice/1.png)
+![只删除元素](https://mares.oss-cn-qingdao.aliyuncs.com/blog/splice/1.png)
 　如果itemCount = 0且actualDeleteCount > 0，即不插入元素，只删除元素，那么from及其后面的所有元素会被移动的k位置后面，因为此时to = k。
-![只插入元素](/uploads/splice/2.png)
+![只插入元素](https://mares.oss-cn-qingdao.aliyuncs.com/blog/splice/2.png)
 　如果itemCount > 0 且 actualDeleteCount = 0，即只插入元素的情况。此时from = k，即把k后面的所有元素移动到to后面，to = k + itemCount。
-![同时删除和插入](/uploads/splice/3.jpg)
+![同时删除和插入](https://mares.oss-cn-qingdao.aliyuncs.com/blog/splice/3.jpg)
 　如果itemCount > 0 且 actualDeleteCount > 0，既删除元素，也在插入元素。将from后面的元素移动到to后面。
 可以看到，这一步就是在插入元素数少于删除元素数时，进行元素的移动。
 

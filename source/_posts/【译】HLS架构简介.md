@@ -29,7 +29,7 @@ HLS 由三部分组成：服务器、分发组件（distribution component）和
 
 举个简单例子用于说明HTTP 流的配置
 
-![图1-1 基本配置](/uploads/hls/1.png)
+![图1-1 基本配置](https://mares.oss-cn-qingdao.aliyuncs.com/blog/hls/1.png)
 
 输入可以是实时的或者录制好的资源。输入文件通常被编码为 MPEG-4 （H.264 视频和 AAC 音频），并通过现有的硬件设备打包进一个 MPEG-2 传输流。MPEG-2 传输流被分段，保存为一系列的媒体文件。这一过程通常使用软件工具来完成，比如 Apple stream segmenter。
 

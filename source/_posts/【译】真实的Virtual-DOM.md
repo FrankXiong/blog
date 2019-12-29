@@ -79,10 +79,10 @@ categories:
 原生操作DOM总是会更快。我们来看一下证明过程。
 这是加载和渲染直接DOM操作的“Hello，World”页面的timeline（chrome）
 
-![原生DOM操作](/uploads/virtual-dom/1.png)
+![原生DOM操作](https://mares.oss-cn-qingdao.aliyuncs.com/blog/virtual-dom/1.png)
 这是加载和渲染React“Hello，World”页面的timeline（chrome）
 
-![React DOM操作](/uploads/virtual-dom/2.png)
+![React DOM操作](https://mares.oss-cn-qingdao.aliyuncs.com/blog/virtual-dom/2.png)
 React花了大量时间在scripting上，React比直接操作DOM慢的多。但是，它和jQuery比怎么样？
 ```
 <!DOCTYPE html>
@@ -103,7 +103,7 @@ React花了大量时间在scripting上，React比直接操作DOM慢的多。但�
 </html>
 ```
 
-![jQuery DOM操作](/uploads/virtual-dom/3.png)
+![jQuery DOM操作](https://mares.oss-cn-qingdao.aliyuncs.com/blog/virtual-dom/3.png)
 　jQuery的总时间比原生JS慢了50ms，但都比React快3倍。显然，原生JS和jQuery要快得多。一般来说，使用框架都比不使用框架慢。实际操作DOM前在内存中创建一个表示DOM的结构比直接操作DOM要慢。下面，我们讨论一下究竟该如何让Virtual DOM更快。
 
 # 如何使用Virtual DOM

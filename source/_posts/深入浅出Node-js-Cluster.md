@@ -9,7 +9,7 @@ categories:
 
 ## 前言
 如果大家用 PM2 管理 Node.js 进程，会发现它支持一种 cluster mode。开启 cluster mode 后，支持给 Node.js 创建多个进程。 如果将 cluster mode 下的 instances 设置为 max 的话，它还会根据服务器的 CPU 核心数，来创建对应数量的 Node 进程。
-![](/uploads/nodejs-cluster/1.jpg)
+![](https://mares.oss-cn-qingdao.aliyuncs.com/blog/nodejs-cluster/1.jpg)
  
 PM2 其实利用的是 Node.js Cluster 模块来实现的，这个模块的出现就是为了解决 Node.js 实例单线程运行，无法利用多核 CPU 的优势而出现的。那么，Cluster 内部又是如何工作的呢？多个进程间是如何通信的？多个进程是如何监听同一个端口的？Node.js 是如何将请求分发到各个进程上的？如果你对上述问题还不清楚，不妨接着往下看。
 

@@ -53,7 +53,7 @@ http://search.msn.com/ "MSN"
 \[id]: imgUrl "Title"
 
 上面两种方法都会输出 图片 为：
-![avatar.jpg](/uploads/avatar.jpg)
+![avatar.jpg](https://mares.oss-cn-qingdao.aliyuncs.com/blog/avatar.jpg)
 
 ### 代码
 在一般的段落文字中，你可以使用反引号`来标记代码区段，区段内的 & 、< 和 > 都会被自动的转换成 HTML 实体，这项特性让你可以很容易的在代码区段内插入 HTML 码：
