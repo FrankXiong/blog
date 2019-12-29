@@ -9,7 +9,7 @@ categories:
 ---
 
 > - 原文：[HTTP Streaming Architecture](https://developer.apple.com/library/content/documentation/NetworkingInternet/Conceptual/StreamingMediaGuide/HTTPStreamingArchitecture/HTTPStreamingArchitecture.html)
-- 译者：[熊贤仁](http://frankxiong.xyz)
+- 译者：[熊贤仁](https://blog.skrskrskrskr.com)
 
 ### 前言
 作为 Apple 提出的一种基于 HTTP 的协议，HLS（HTTP Live Streaming）用于解决实时音视频流的传输。尤其是在移动端，由于 iOS 不支持 flash，使得 HLS 成了移动端实时视频流传输的首选。HLS 经常用在直播领域，一些国内的直播云通常用 HLS 拉流（将视频流从服务器拉到客户端）。 HLS 值得诟病之处就是其延迟严重，延迟通常在 10-30s 之间。通过本文你可以了解到 HLS 延迟问题的原因，同时对直播系统的架构有个大概的认知。   
@@ -29,7 +29,7 @@ HLS 由三部分组成：服务器、分发组件（distribution component）和
 
 举个简单例子用于说明HTTP 流的配置
 
-![图1-1 基本配置](http://upload-images.jianshu.io/upload_images/192464-85b661e237015e11.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![图1-1 基本配置](/uploads/hls/1.png)
 
 输入可以是实时的或者录制好的资源。输入文件通常被编码为 MPEG-4 （H.264 视频和 AAC 音频），并通过现有的硬件设备打包进一个 MPEG-2 传输流。MPEG-2 传输流被分段，保存为一系列的媒体文件。这一过程通常使用软件工具来完成，比如 Apple stream segmenter。
 

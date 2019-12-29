@@ -8,26 +8,26 @@ categories:
 ---
 > 本文将介绍我是如何将一个 HTTP 网站升级到 HTTPS。系统环境：CentOS 7.0 + Nginx 1.12.0
 
-### 前言
+# 前言
 先贴一个福利，也作为没有启用 HTTPS 的反面教材：
 
-![福利.png](http://upload-images.jianshu.io/upload_images/192464-fe05fdae9ecca705.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![福利.png](/uploads/https-upgrade/1.png)
 这是我参与开发过的一个外包网站，没有启用 HTTPS，网站页面被中间人劫持，并插入了一些奇怪的东西。下面是正文。
 
-### 预备条件
+# 预备条件
 本文假定你已经拥有一个正确解析到服务器IP的域名，服务器上已安装 Nginx。Nginx 可以通过源码编译安装，也可以使用系统提供的包管理器安装，比如 RH 系的 yum 或者 Debian 系的 apt-get，具体步骤自行Google。
 
-### 获取证书
+# 获取证书
 HTTPS 证书分三类：1. DV 域名验证证书 2. OV 组织机构验证证书 3. EV 增强的组织机构验证证书。每类证书的审核要求不同，在浏览器地址栏也会有区分，对于个人网站而言，使用免费的 DV 证书就足够了。
 
 我使用了大名鼎鼎的 Let's Encrypt 来生成证书。
-###### 1. 安装 certbot
+## 1. 安装 certbot
 certbot 是 Let's Encrypt 提供的一套自动化工具。 
 ```
 yum install epel-release
 yum install certbot
 ```
-###### 2. 生成证书
+## 2. 生成证书
 这里采用 webroot 作为 Let's Encrypt 的认证方式。
 ```
 certbot certonly -a webroot --webroot-path=/your/project/path -d example.com -d www.example.com
@@ -38,7 +38,7 @@ webroot-path就是你的项目路径，使用 -d 可以添加多个域名。这�
 - fullchain.pem: 包括了cert.pem和chain.pem的内容
 - privkey.pem: 证书私钥
 
-###### 3. 生成迪菲-赫尔曼密钥交换组（ Strong Diffie-Hellman Group）
+## 3. 生成迪菲-赫尔曼密钥交换组（ Strong Diffie-Hellman Group）
 为了进一步提高安全性，你也可以生成一个 Strong Diffie-Hellman Group。
 ```
 openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
@@ -49,7 +49,7 @@ yum install openssl
 ```
 
 
-### 配置 Nginx
+# 配置 Nginx
 编辑 Nginx 配置文件，如果你不知道配置文件在哪，可以用 locate /nginx.conf 命令查找。添加以下内容，具体参数以你的实际情况为准。
 ```
 server {
@@ -120,7 +120,7 @@ nginx -t
 ```
 nginx -s reload
 ```
-### 重定向 HTTP 到 HTTPS
+# 重定向 HTTP 到 HTTPS
 修改原来 HTTP 网站的 Nginx 配置。
 ```
 server {
@@ -137,7 +137,7 @@ server {
 }
 ```
 这时再访问网站，浏览器地址栏就会出现一把小锁。
-![https.png](http://upload-images.jianshu.io/upload_images/192464-ccfdb88512841554.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![https.png](/uploads/https-upgrade/2.png)
 
 一旦升级 HTTPS，网站内的所有资源文件和请求的协议也必须为 HTTPS，你需要在前端代码里修改一下。
 
@@ -145,5 +145,5 @@ server {
 
 ---------
 参考链接：
-[Nginx 配置 HTTPS 服务器](https://aotu.io/notes/2016/08/16/nginx-https/)
-[How To Secure Nginx with Let's Encrypt on CentOS 7](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-centos-7)
+1. [Nginx 配置 HTTPS 服务器](https://aotu.io/notes/2016/08/16/nginx-https/)
+2. [How To Secure Nginx with Let's Encrypt on CentOS 7](https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-centos-7)

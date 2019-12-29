@@ -693,10 +693,10 @@ server.start();
 Prerender 省去了跨平台下载和安装 Chrome 的所有细节。要正确完成这一过程通常是相当棘手的，这也是 [Puppeteer](https://developers.google.com/web/tools/puppeteer/faq#q_which_chromium_version_does_puppeteer_use) 存在的原因之一。我也提了一些渲染我的部分应用的 issue。
 
 
-![浏览器中渲染的 Chrome 状态](http://upload-images.jianshu.io/upload_images/192464-4bffb2f24dc01f8c?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![浏览器中渲染的 Chrome 状态](/uploads/Puppeteer/1.png)
 
 
 
-![prerender 渲染的 Chrome 状态](http://upload-images.jianshu.io/upload_images/192464-edcc60b0273b8396?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+![prerender 渲染的 Chrome 状态](/uploads/Puppeteer/2.png)
 
 

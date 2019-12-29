@@ -11,7 +11,7 @@ categories:
 好在HTML5为我们带来了全新的本地存储方式：localStorage，有5M大小，而且从IE8就开始支持了。也就是说IE6、7是不支持localStorage的，Cookie可以成为IE6、7下的一种替代方案。
 
 以一个留言板为例,直接上代码：
-```
+```html
 <!DOCTYPE html>
 <html>
 <head>

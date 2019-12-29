@@ -38,8 +38,9 @@ categories:
 　　　　3. 证书发布者
 　　　　4. 来自证书发布者的数字签名
 
+------
 参考链接： 
-　[HTTPS科普扫盲帖](https://segmentfault.com/a/1190000004523659)
-　[SSL/TLS协议运行机制的概述](http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html)
+1. [HTTPS科普扫盲帖](https://segmentfault.com/a/1190000004523659)
+2. [SSL/TLS协议运行机制的概述](http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html)
 
           

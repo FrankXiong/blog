@@ -38,9 +38,11 @@ keep-all : 与所有非亚洲语言的normal相同。对于中文，韩文，日
 
 例子：
 让文本单行显示，并在溢出时，显示省略标记：
-`white-space:nowrap;
-text-overflow:ellipsis;
-overflow:hidden;`
+```css
+white-space: nowrap;
+text-overflow: ellipsis;
+overflow: hidden;
+```
 生成效果如下：
 
 ![图0.png](/uploads/fe-css-0.png)
@@ -50,9 +52,11 @@ overflow:hidden;`
 
 ![图1.jpg](/uploads/fe-css-1.jpg)
 在这里，腾讯用了上述的三个属性
-`white-space: nowrap;
+```css
+white-space: nowrap;
 word-break: keep-all;
-overflow: hidden;`
+overflow: hidden;
+```
 　　这里的文本只能单行显示，多余的文本将被截断。其实`word-break:keep-all`这行在这里是多余的，它的作用是控制所有字不能断开，但在后面加上`overflow:hidden`后依然会截断超出盒子宽度的文字。
 　　我把其中一行文本替换为一段英文，可以发现英文单词依然被直接截断。
 ![图2.png](/uploads/fe-css-2.png)
