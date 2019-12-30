@@ -10,7 +10,7 @@ categories:
 # 错误分类
 软件程序中，**我们可以将错误大致分为外部错误和内部错误两大类**。
 
-外部错误是正确编写的程序在运行时产生的错误。它并不是程序本身的 Bug，更多是一些外部原因导致的问题，比如请求超时、服务器返回500、内存不足等。
+外部错误是正确编写的程序在运行时产生的错误。它并不是程序本身的 bug，更多是一些外部原因导致的问题，比如请求超时、服务器返回500、内存不足等。
 
 而内部错误是程序里的 bug。比如传参类型错误、读取 undefined 的一个属性等。这类问题跟你选择的开发语言、开发者的编程经验、系统复杂度等因素息息相关，虽然无法避免，但可以通过修改代码来修复它。
 
@@ -197,10 +197,10 @@ app.listen(3000)
 
 ------
 参考链接：
-1. [深入理解 JavaScript Errors 和 Stack Traces](https://zhuanlan.zhihu.com/p/25338849)
-2. [关于 Error.captureStackTrace](http://blog.shaochuancs.com/about-error-capturestacktrace/)
-3. [Error Handling in Node.js](https://www.joyent.com/node-js/production/design/errors)
-4. [Node.js 错误处理实践](https://jysperm.me/2016/10/nodejs-error-handling/)
-5. [学习使用 Node.js 中 async-hooks 模块](https://zhuanlan.zhihu.com/p/53036228)
-6. https://github.com/bmeurer/async-hooks-performance-impact
-7. http://nodejs.cn/api/errors.html#errors_errors
+[1] 胡子大哈. 深入理解 JavaScript Errors 和 Stack Traces. https://zhuanlan.zhihu.com/p/25338849
+[2] Chuan's blog. 关于 Error.captureStackTrace. http://blog.shaochuancs.com/about-error-capturestacktrace
+[3] joyent. Error Handling in Node.js. https://www.joyent.com/node-js/production/design/errors
+[4] 王子亭. Node.js 错误处理实践. https://jysperm.me/2016/10/nodejs-error-handling
+[5] 张佃鹏. 学习使用 Node.js 中 async-hooks 模块. https://zhuanlan.zhihu.com/p/53036228
+[6] bmeurer. https://github.com/bmeurer/async-hooks-performance-impact
+[7] http://nodejs.cn/api/errors.html#errors_errors
