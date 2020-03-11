@@ -8,4 +8,10 @@ layout: about
 <center><a href="https://github.com/FrankXiong">Github</a></center>
 <center><a href="/atom.xml" target="_blank">RSS订阅</a></center>
 
+<center style="margin-top: 60px">小玩意儿</center>
+<center><a href="http://wave.skrskrskrskr.com" target="_blank">音浪</a></center>
+<center><a href="http://piano.skrskrskrskr.com" target="_blank">钢琴</a></center>
+
+
+
 
