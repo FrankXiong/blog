@@ -128,7 +128,7 @@ markdown:
     - markdown-it-emoji
 
 ## Themes: https://hexo.io/themes/
-theme: Lights
+theme: Light
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
