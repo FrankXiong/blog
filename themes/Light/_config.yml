@@ -5,12 +5,6 @@ menu: #TITLE: link
 profile_link: about/ #profile avatar-img link
 avatar: //mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg #Please also prepare a HDer picture and add suffix@2x put in the same directory.
 
-gitment:
- username: 
- repo: 
- id: 
- secret: 
-
 theme_color: a1d0f6
 
 hitokoto: false #Output a Chinese sentence to description
