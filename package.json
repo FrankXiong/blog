@@ -5,9 +5,6 @@
   "hexo": {
     "version": "3.5.0"
   },
-  "scrips": {
-    "d": "git"
-  },
   "dependencies": {
     "hexo": "^3.1.1",
     "hexo-browsersync": "^0.2.0",

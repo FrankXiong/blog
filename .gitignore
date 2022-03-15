@@ -1,4 +1,5 @@
 node_modules
 deploy.sh
+db.json
 .deploy_git
 .history
