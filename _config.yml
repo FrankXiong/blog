@@ -40,17 +40,6 @@ linkedin_username:
 # Build settings
 anchorjs: false                        # if you want to customize anchor. check out line:181 of `post.html`
 
-
-# Disqus settings
-# disqus_username:
-
-# Duoshuo settings
-# duoshuo_username:  frankxiong # 你的多说帐号
-# Share component is depend on Comment so we can NOT use share only.
-# duoshuo_share: true
-# set to false if you want to use Comment without Sharing
-
-
 # Analytics settings
 # Baidu Analytics
 ba_track_id:
@@ -128,16 +117,14 @@ markdown:
     - markdown-it-emoji
 
 ## Themes: https://hexo.io/themes/
-theme: Light
+theme: hexo-theme-one-paper
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
   type: git
-  # repo: https://github.com/FrankXiong/blog
-  # branch: gh-pages
-  repo:
-    coding: https://git.coding.net/less/blog.git,master
+  repo: https://github.com/FrankXiong/blog
+  branch: gh-pages
 
 
 # img CDN path
@@ -161,50 +148,3 @@ swiftype_key:
 archive:
     title: archives
     description:
-
-works:
-  - title: "大熊直播"
-    date: "2017.6"
-    link: ""
-    img_link: ""
-    use:
-      - Vue.js
-      - Node.js
-      - MongoDB
-      - Android
-    description: "“大熊直播”是一个基于 Nginx 的直播平台。支持 Android 端推送 RTMP 直播流，Web 端播放 RTMP/HLS 流。同时支持移动端和桌面端浏览器。"
-
-  - title: "帮呗"
-    date: "2017.3"
-    link: "http://www.wandoujia.com/apps/com.xxr.srtp.helper"
-    img_link: ""
-    use:
-      - Java
-      - Android
-    description: "“帮呗”是一个基于地理位置的生活服务交易平台。你可以在平台上发出各种个性化需求，并寻找附近能提供服务的人。比如家里的电视坏了，你可以发布一个需求，寻求附近的人帮你解决问题。另外，不仅能够在“帮呗”上助人为乐，还可以明码标价，用服务换来不错的报酬。"
-  - title: "心理咨询专家系统"
-    date: "2016.12"
-    link: ""
-    img_link: ""
-    use:
-      - Vue.js
-      - Node.js
-      - MongoDB
-    description: "一个基于产生式规则的专家系统，使用了nools作为规则引擎，可根据用户输入信息进行心理状态推理，并给出诊断建议。"
-  - title: "课堂管理公众号"
-    date: "2016.5"
-    link: ""
-    img_link: ""
-    use:
-      - jQuery
-      - Node.js
-      - MongoDB
-    description: "基于微信公众号的课堂管理系统，分为学生端和教师端。实现了签到、出题、答题、数据统计、在线聊天等功能。"
-  - title: "Fun言"
-    date: "2015.7"
-    link: "http://www.wandoujia.com/apps/com.xiongxianren.funyan"
-    img_link: ""
-    use:
-      - Java
-      - Android
-    description: "Fun言是一款粤语学习应用，主要功能有日常对话、听书、粤语歌曲、教学视频，通过文字、语音、视频等多种方式帮助用户轻松快速地学习粤语。同时，它还具备语音合成和语音听写的功能，可自动将用户输入的文字转化为各地方言语音，也可接受来自用户的语音，并将其翻译成文字。本应用集成了社交分享的功能，在“方言角”里，用户可以添加好友，发布动态，以及点赞等。"
