@@ -16,7 +16,7 @@ header-img: //oi7ywoutt.bkt.clouddn.com/headimg.jpg
 portrait: //mares.oss-cn-qingdao.aliyuncs.com/IMG_0339.jpg
 email: xianrenxiong@qq.com
 description: "熊贤仁的个人博客"
-keyword: "软件开发，web前端，技术，程序员，思考" # seo key words
+keywords: "Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考" # seo key words
 
 favicon: //mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg # your favicon png
 # custom end
