@@ -3,9 +3,9 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: FrankXiong
+title: Lynx
 subtitle: 小熊写字的地方
-author: Frank Xiong
+author: Lynx
 language:
 timezone:
 
@@ -16,7 +16,7 @@ header-img: //oi7ywoutt.bkt.clouddn.com/headimg.jpg
 portrait: //mares.oss-cn-qingdao.aliyuncs.com/IMG_0339.jpg
 email: xianrenxiong@qq.com
 description: "熊贤仁的个人博客"
-keyword: # seo key words
+keyword: "软件开发，web前端，技术，程序员，思考" # seo key words
 
 favicon: //mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg # your favicon png
 # custom end
@@ -146,5 +146,11 @@ swiftype_key:
 
 # archive page title
 archive:
-    title: archives
-    description:
+  title: archives
+  description:
+
+# 自动生成sitemap
+sitemap:
+  path: sitemap.xml
+baidusitemap:
+  path: baidusitemap.xml
