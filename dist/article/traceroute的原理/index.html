@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            traceroute 的原理
+        </div>
+        <div class="post-meta">
+            2016-05-23
+        </div>
+    
+
+    <div class="post-md">
+        <h1 id="什么是-traceroute"><a href="#什么是-traceroute" class="headerlink" title="什么是 traceroute?"></a>什么是 traceroute?</h1><p> traceroute， Linux 系统称为 tracepath，Windows 系统称为 tracert，是一种计算机网络工具。它可显示数据包在 IP 网络经过的路由器的 IP 地址。通过 traceroute 我们可以知道信息从你的计算机到互联网另一端的主机是走的什么路径。</p>
+<a id="more"></a>
+<p>traceroute 有不同的实现版本：常规的 traceroute(基于 UDP 和 ICMP)和 tcptraceroute(基于 TCP)</p>
+<h1 id="traceroute-原理"><a href="#traceroute-原理" class="headerlink" title="traceroute 原理"></a>traceroute 原理</h1><p>常规的 traceroute 和 tcptraceroute 具有相同的工作原理：</p>
+<blockquote>
+<ol>
+<li>发送一个 TTL(Time-To-Live) 相当小的包，TTL 经过每一跳时会递减。当它减为 0 时，数据包就被丢弃。</li>
+<li>当 TTL 失效后，看哪个路由器返回一个带有表明的 ICMP “time exceeded”</li>
+<li>如果返回的路由器就是最终的目的地，停止 trace</li>
+<li>否则，TTL 加 1 并返回到步骤 1</li>
+</ol>
+</blockquote>
+<p>两者的不同点：</p>
+<blockquote>
+<ul>
+<li>常规的 traceroute 使用 UDP 包或 ICMP “Echo” 包，这两种包都可能会被防火墙拦截。</li>
+</ul>
+</blockquote>
+<ul>
+<li>tcptraceroute 使用 TCP “SYN” 包。发送带SYN标志位的数据段是 TCP 建立连接时进行“三次握手”的第一次握手，只要目标地址是被允许访问的，通常这种包不会被防火墙拦截。但是防火墙会拦截其他的不是用于建立连接的 TCP 包。</li>
+<li>基于 TCP 的 traceroute 拥有更高的访问权限。以 amazon.com 为例。基于 UDP 的 traceroute 停在 205.251.248.5，这个地址很可能是某种防火墙。基于 TCP 的 traceroute 访问 80 端口，这是 amazon.com 的默认端口，然后进入下一步，最终停在 72.21.194.212</li>
+</ul>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

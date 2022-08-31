@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            部署 Node 项目到 CentOS 服务器
+        </div>
+        <div class="post-meta">
+            2016-04-05
+        </div>
+    
+
+    <div class="post-md">
+        <p>最近开始折腾Node，跟着慕课网的教程写了个电影网站，于是想把网站部署到服务器上，本文记录了我整个环境搭建的流程。</p>
+<p>通常Node和mongoDB一起搭配使用，再加上Node的一个热门的开发框架Express，以及angular.js，共同构成了整个web开发的技术架构（这次的开发中没有用到angular）。取其首字母，也就是所谓的”MEAN”。不废话了，下面是正文。</p>
+<hr>
+<h1 id="服务器配置"><a href="#服务器配置" class="headerlink" title="服务器配置"></a>服务器配置</h1><ul>
+<li>阿里云ECS 单核1G内存（这里要安利一下阿里云的学生优惠活动，一个月只要￥10，学生党的福利~）</li>
+<li>操作系统：CentOS 7.0 64位</li>
+</ul>
+<p>首先SSH连接服务器管理终端：<br><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/node-deploy/1.png"></p>
+<h1 id="安装Node"><a href="#安装Node" class="headerlink" title="安装Node"></a>安装Node</h1><p>Node.JS的安装方法很多，这里贴上一种方法以供参考。<br><a href="http://yijiebuyi.com/blog/4fcce2f8b1aed8389f34c27f22864a04.html" target="_blank" rel="noopener">http://yijiebuyi.com/blog/4fcce2f8b1aed8389f34c27f22864a04.html</a></p>
+<h1 id="安装MongoDB"><a href="#安装MongoDB" class="headerlink" title="安装MongoDB"></a>安装MongoDB</h1><p>在MongoDB官网上看了下，没找到在centOS直接用apt-get安装mongo的方法，那就手动来下载安装吧。<br>1.输入以下命令：curl -O <a href="https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-3.2.4.tgz" target="_blank" rel="noopener">https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-3.2.4.tgz</a><br>mongoDB就开始下载了，也可以用wget来下载。(下载过程比较缓慢，不知道是我的网速还是curl的问题…)</p>
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/node-deploy/2.png"><br>2.下载结束后解压文件：tar xf mongodb-linux-x86_64-rhel70-3.2.4.tgz<br>文件名太长了，重命名一下：mv mongodb-linux-x86_64-rhel70-3.2.4  mongodb<br>3.进入mongodb文件夹，新建logs文件夹，并在其下创建一个mongodb.log文件用于保存日志。创建data文件夹，在data文件夹下再新建db文件夹，用于存储mongoDB的数据。</p>
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/node-deploy/3.png"><br>4.添加环境变量</p>
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/node-deploy/4.png"><br>5.重新加载环境变量,验证结果。<br>用mongod -verison或者-v看到下面的结果，就证明mongoDB安装成功了</p>
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/node-deploy/5.png"></p>
+<h1 id="上传项目文件到服务器"><a href="#上传项目文件到服务器" class="headerlink" title="上传项目文件到服务器"></a>上传项目文件到服务器</h1><p>Mac上可以用scp上传，windows上用FTP。FTP上传工具很多，随意选一种即可。</p>
+<h1 id="启动MongoDB"><a href="#启动MongoDB" class="headerlink" title="启动MongoDB"></a>启动MongoDB</h1><p>进入mongo目录的bin文件夹，输入如下命令，dbpath后指定的是Node项目的路径，这样就可以直接通过该项目启动数据库<br><code>mongod --dbpath &quot;/developer/mongodb/imooc&quot;</code></p>
+<h1 id="连接MongoDB"><a href="#连接MongoDB" class="headerlink" title="连接MongoDB"></a>连接MongoDB</h1><p>在Node项目根目录下输入mongo命令就可以建立与数据库的连接。另外，如果你前面没有指定在启动mongoDB的时候指定项目路径的话，你就还需要使用use命令建立两者的关联。当时我忘了这一点，于是注册后的帐号等数据都没有被保存到数据库中。</p>
+<hr>
+<p>下面就能看到网站欢快地跑起来了~~~因为没做域名解析，暂时只能通过IP地址来访问<br>附一张这个网站的截图</p>
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/node-deploy/6.png" alt="电影详情页"></p>
+<p>另：网站的Github地址 <a href="https://github.com/FrankXiong/imooc" target="_blank" rel="noopener">https://github.com/FrankXiong/imooc</a></p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

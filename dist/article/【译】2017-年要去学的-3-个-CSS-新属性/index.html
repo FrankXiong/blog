@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            【译】2017 年要去学的 3 个 CSS 新属性
+        </div>
+        <div class="post-meta">
+            2017-02-05
+        </div>
+    
+
+    <div class="post-md">
+        <blockquote>
+<ul>
+<li>原文地址：<a href="https://bitsofco.de/3-new-css-features-to-learn-in-2017/" target="_blank" rel="noopener">3 New CSS Features to Learn in 2017</a></li>
+</ul>
+</blockquote>
+<ul>
+<li>原文作者：<a href="https://twitter.com/ireaderinokun" target="_blank" rel="noopener">ireaderinokun</a></li>
+<li>译文出自：<a href="https://github.com/xitu/gold-miner" target="_blank" rel="noopener">掘金翻译计划</a></li>
+<li>译者： <a href="https://github.com/FrankXiong" target="_blank" rel="noopener">熊贤仁</a></li>
+<li>校对者： <a href="https://github.com/Professor-Z" target="_blank" rel="noopener">Professor-Z</a> <a href="https://github.com/aleen42" target="_blank" rel="noopener">aleen42</a></li>
+</ul>
+<h1 id="2017-年要去学的-3-个-CSS-新属性"><a href="#2017-年要去学的-3-个-CSS-新属性" class="headerlink" title="2017 年要去学的 3 个 CSS 新属性"></a>2017 年要去学的 3 个 CSS 新属性</h1><h2 id="1-特性查询（Feature-Queries）"><a href="#1-特性查询（Feature-Queries）" class="headerlink" title="1. 特性查询（Feature Queries）"></a>1. 特性查询（Feature Queries）</h2><p>不久前，我写过一篇关于特性查询的文章 —— <a href="https://bitsofco.de/the-one-css-feature/" target="_blank" rel="noopener">《一个我十分期待的CSS特性 - the one CSS feature I really want》</a>。如今果然出现了。除了 IE浏览器之外，所有主流浏览器（包括 Opera Mini）均已支持特性查询。</p>
+<p>特性查询采用 <code>@supports</code> 规则，它使得我们可以将 CSS 代码包裹一个条件块中。只有当浏览器的用户代理（user agent）支持某个特定的 CSS 属性-值对时，该条件块中的样式代码才会生效。下面举个简单的例子来说：只有支持 display: flex 的浏览器才会应用 Flexbox 样式</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@supports ( display: flex ) &#123;</span><br><span class="line">  .foo &#123; display: flex; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>另外，我们甚至可以使用像 <code>and</code> 和 <code>not</code> 这类操作符来创建更为复杂的特性查询。例如，检测一个浏览器是否只支持老式的 Flexbox 语法</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@supports ( display: flexbox )</span><br><span class="line">          and</span><br><span class="line">          ( not ( display: flex ) ) &#123;</span><br><span class="line">  .foo &#123; display: flexbox; &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="兼容性"><a href="#兼容性" class="headerlink" title="兼容性"></a>兼容性</h3><p><img src="http://i1.piimg.com/567571/bd5cfc239fccdda6.jpg"></p>
+<h2 id="2-栅格布局（Grid-Layout）"><a href="#2-栅格布局（Grid-Layout）" class="headerlink" title="2. 栅格布局（Grid Layout）"></a>2. 栅格布局（Grid Layout）</h2><p><a href="https://drafts.csswg.org/css-grid/" target="_blank" rel="noopener">CSS 栅格布局模块（CSS Grid Layout Module）</a> 定义了一个用于创建基于栅格布局的系统。它和 <a href="https://www.w3.org/TR/css-flexbox-1/" target="_blank" rel="noopener">弹性盒子布局模块（Flexbible Box Layout Module）</a> 有些相似，但由于其专为页面布局而设计，因此拥有许多不同的特性。</p>
+<h3 id="显式定位元素"><a href="#显式定位元素" class="headerlink" title="显式定位元素"></a>显式定位元素</h3><p>一个栅格由栅格容器（由 <code>display: grid</code> 所创建）和栅格项（子元素）组成。在 CSS 中，我们可以简单且显式地组织栅格项的位置及顺序，并独立于 markup 语言中元素的位置。</p>
+<p>在<a href="https://bitsofco.de/holy-grail-layout-css-grid/" target="_blank" rel="noopener">《CSS栅格实现圣杯布局》</a>这篇文章中，我演示了如何使用栅格布局模块来创建万恶的“圣杯布局”。</p>
+<p><img src="https://bitsofco.de/content/images/2016/03/Holy_Grail_CSS_Grid.gif" alt="Holy Grail Layout Demo"></p>
+<p>下列 CSS 代码仅有 31 行</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.hg__header &#123; grid-area: header; &#125;</span><br><span class="line">.hg__footer &#123; grid-area: footer; &#125;</span><br><span class="line">.hg__main &#123; grid-area: main; &#125;</span><br><span class="line">.hg__left &#123; grid-area: navigation; &#125;</span><br><span class="line">.hg__right &#123; grid-area: ads; &#125;</span><br><span class="line"></span><br><span class="line">.hg &#123;</span><br><span class="line">    display: grid;</span><br><span class="line">    grid-template-areas: &quot;header header header&quot;</span><br><span class="line">                         &quot;navigation main ads&quot;</span><br><span class="line">                         &quot;footer footer footer&quot;;</span><br><span class="line">    grid-template-columns: 150px 1fr 150px;</span><br><span class="line">    grid-template-rows: 100px</span><br><span class="line">                        1fr</span><br><span class="line">                        30px;</span><br><span class="line">    min-height: 100vh;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@media screen and (max-width: 600px) &#123;</span><br><span class="line">    .hg &#123;</span><br><span class="line">        grid-template-areas: &quot;header&quot;</span><br><span class="line">                             &quot;navigation&quot;</span><br><span class="line">                             &quot;main&quot;</span><br><span class="line">                             &quot;ads&quot;</span><br><span class="line">                             &quot;footer&quot;;</span><br><span class="line">        grid-template-columns: 100%;</span><br><span class="line">        grid-template-rows: 100px</span><br><span class="line">                            50px</span><br><span class="line">                            1fr</span><br><span class="line">                            50px</span><br><span class="line">                            30px;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="弹性长度"><a href="#弹性长度" class="headerlink" title="弹性长度"></a>弹性长度</h3><p>CSS 栅格模块引入了一个新的长度单位：<code>fr</code> ，用于表示栅格容器中所剩空间的占比。</p>
+<p>这样我们可以根据栅格容器中的可用空间来分配栅格项的宽高。比如在圣杯布局中，我们可以通过下面的简单代码使得 <code>main</code> 区域占用两个边栏外的余下空间。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.hg &#123;</span><br><span class="line">  grid-template-columns: 150px 1fr 150px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="槽（Gutters）"><a href="#槽（Gutters）" class="headerlink" title="槽（Gutters）"></a>槽（Gutters）</h3><p>我们可以使用 <code>grid-row-gap</code>，<code>grid-column-gap</code>，和 <code>grid-gap</code> 属性来为栅格布局明确地定义槽。这些属性接受一个 <a href="https://bitsofco.de/generic-css-data-types/#percentages" target="_blank" rel="noopener"><code>&lt;length-percentage&gt;</code> 数据类型</a> 作为值，以表示内容区大小的相对百分比。</p>
+<p>比如设置一个 5% 的槽，我们可以这样写</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">.hg &#123;</span><br><span class="line">  display: grid;</span><br><span class="line">  grid-column-gap: 5%;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="兼容性-1"><a href="#兼容性-1" class="headerlink" title="兼容性"></a>兼容性</h3><p>CSS 栅格模块最早将在今年三月份被浏览器们支持。</p>
+<p><img src="http://i1.piimg.com/567571/229e6ea502a22d93.jpg"></p>
+<h2 id="3-原生变量（Native-Variables）"><a href="#3-原生变量（Native-Variables）" class="headerlink" title="3. 原生变量（Native Variables）"></a>3. 原生变量（Native Variables）</h2><p>最后，原生 CSS 变量（<a href="https://drafts.csswg.org/css-variables/" target="_blank" rel="noopener">层叠变量模块（Cascading Variables Module）的自定义属性</a>）来了。该模块引入了一个用于创建用户自定义变量的方法，变量可被赋值给 CSS 属性。</p>
+<p>譬如，若有多个样式表使用同一个主题颜色，那么我们就可以将其抽象成一个变量，并引用该变量，而非重复书写。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">:root &#123;</span><br><span class="line">  --theme-colour: cornflowerblue;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">h1 &#123; color: var(--theme-colour); &#125;  </span><br><span class="line">a &#123; color: var(--theme-colour); &#125;  </span><br><span class="line">strong &#123; color: var(--theme-colour); &#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们之前可以用像 SASS 这种 CSS 预处理器来做到这一点，但 CSS 变量的优势是能实际运行于浏览器中。这就意味着，变量的值可以被动态的更新。比如要修改以上所有 –theme-colour 属性，我们只需要这样做</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const rootEl = document.documentElement;  </span><br><span class="line">rootEl.style.setProperty(&apos;--theme-colour&apos;,&apos;plum&apos;);</span><br></pre></td></tr></table></figure>
+
+<h3 id="兼容性-2"><a href="#兼容性-2" class="headerlink" title="兼容性"></a>兼容性</h3><p> <img src="http://i1.piimg.com/567571/fe40f3b4ec633b1c.jpg"></p>
+<h2 id="关于兼容性？"><a href="#关于兼容性？" class="headerlink" title="关于兼容性？"></a>关于兼容性？</h2><p>如你所见，以上所有特性目前都没有被所有浏览器完全支持，那么我们如何在生产环境中舒服地用上他们呢？渐进增强（Progressive Enhancement）！去年的前端开发者大会上，我就曾就如何在 CSS 中进行渐进增强做过一次分享。点击下面可以看到</p>
+<p><a href="https://player.vimeo.com/video/194815985" target="_blank" rel="noopener"><img src="http://bitsofco.de/content/images/2017/01/Screen-Shot-2017-01-09-at-20.58.09--2-.png" alt="JavaScript Array Methods -　Mutator"></a></p>
+<p>2017年有哪些 CSS 特性令你激动不已想要学习？</p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

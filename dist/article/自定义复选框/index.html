@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            自定义复选框
+        </div>
+        <div class="post-meta">
+            2016-05-18
+        </div>
+    
+
+    <div class="post-md">
+        <blockquote>
+<p>思路：借助于组合选择符和before伪元素，利用content属性改变伪元素的内容，为其添加我们想要的样式。并将原来的复选框隐藏掉。</p>
+</blockquote>
+<a id="more"></a>
+<p>HTML结构如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;input type=&quot;checkbox&quot; id=&quot;awesome&quot;&gt;</span><br><span class="line">&lt;label for=&quot;awesome&quot;&gt;Awesome!&lt;/label&gt;</span><br></pre></td></tr></table></figure>
+
+<p>首先，生成一个伪元素，先给这个伪元素添加一些样式。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">input[type=&quot;checkbox&quot;] + label::before&#123;</span><br><span class="line">    content: &apos;\a0&apos;; /*不换行空格*/</span><br><span class="line">    display: inline-block;</span><br><span class="line">    vertical-align: .2em;</span><br><span class="line">    width: .8em;</span><br><span class="line">    height: .8em;</span><br><span class="line">    margin-right: .2em;</span><br><span class="line">    border-radius: .2em;</span><br><span class="line">    background: silver;</span><br><span class="line">    text-indent: .15em;</span><br><span class="line">    line-height: .65;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/css-checkbox/checkbox_1.png" alt="左边是原生复选框，右边是经过我们初步自定义的复选框"><br>然后给伪元素添加勾选状态下的样式</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">input[type=&quot;checkbox&quot;]:checked + label::before&#123;</span><br><span class="line">    content: &apos;\2713&apos;;</span><br><span class="line">    background: yellowgreen;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/css-checkbox/checkbox_2.png" alt="为伪元素添加选中状态下的样式"><br>这时，这个伪元素已经是经过简单美化后的复选框了。然后，我们需要将原来的复选框以一种不损失访问性的方式隐藏起来。因此，不能使用display:none，那样会完全删除这个dom元素。用另一种办法：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">input[type=&quot;checkbox&quot;]&#123;</span><br><span class="line">    position: absolute;</span><br><span class="line">    clip:rect(0,0,0,0);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这时候，我们自定义的复选框就已经完成了。</p>
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/css-checkbox/checkbox_3.png" alt="接近完成"></p>
+<p>最后，可以给这个复选框再加上聚焦和禁用状态下的样式。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">input[type=&quot;checkbox&quot;]:focus + label::before&#123;</span><br><span class="line">    box-shadow: 0 0 .1em .1em #58a;</span><br><span class="line">&#125;</span><br><span class="line">input[type=&quot;checkbox&quot;]:disabled + label::before&#123;</span><br><span class="line">    background: gray;</span><br><span class="line">    box-shadow: none;</span><br><span class="line">    color: #555;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/css-checkbox/checkbox_4.png" alt="最终效果"></p>
+<hr>
+<p>参考：<a href="http://www.ituring.com.cn/book/1695" target="_blank" rel="noopener">《CSS揭秘》</a></p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            网站性能优化的 14 条规则
+        </div>
+        <div class="post-meta">
+            2016-03-16
+        </div>
+    
+
+    <div class="post-md">
+        <p><strong>1.减少HTTP请求</strong><br>　　减少HTTP请求的方式很多，常见的包括CSS Sprites、合并JS和CSS、图片地图等。遵守这条规则可以改善首次访问网站的响应时间。</p>
+<p><strong>2.使用CDN（内容发布网络）</strong><br>　　只有10%-20%的最终用户响应时间花在了下载HTML文档上，其余的80%-90%时间花在了下载页面中的所有组件上。如果web服务器离服务器更近，则一个HTTP请求的响应时间将缩短。CDN是一组分布在多个不同地理位置的web服务器，每个服务器都拥有所有网站的文件副本，用户访问网站时，就可以从离用户最近的服务器发送所需的文件给客户端。Yahoo！Shopping网站使用CDN后响应时间减少了20%。</p>
+<p><strong>3.添加Expires头</strong><br>　　通过使用Expires头，浏览器可以在用户首次访问网站后，将页面的资源缓存下来。可以为Expires指定过期时间，在指定时间后，缓存将失效。</p>
+<p><strong>4.启用Gzip</strong><br>　　客户端可以通过HTTP请求中的Accept-Encoding头来标识对压缩的支持（Accept-Encoding：gzip,deflate），服务器看到请求中有这个头，就会使用客户端列出的一种方法来压缩响应。大多数网站使用gzip压缩了HTML。</p>
+<p><strong>5.将CSS放在顶部</strong><br>　　将CSS放在底部会发生无样式闪烁，浏览器会先加载HTML，然后加载CSS，会出现一段没有任何样式的“白屏时间”。而将CSS放在顶部则能规避这个问题。</p>
+<p><strong>6.将脚本放在底部</strong><br>　　将脚本放在顶部或页面中，浏览器会对script标签内的内容进行解析，从而阻塞样式的渲染。除此之外，HTTP1.1规范建议浏览器从每个主机并行的下载两个组件，在高版本的IE和chrome、Firefox等浏览器则支持并行下载六个组件。但script会阻塞并行下载。因此我们应该将脚本放在底部。</p>
+<p><strong>7.避免CSS表达式</strong><br>　　CSS表达式具备求值计算能力，然而每次页面发生重绘时，CSS表达式会影响页面的加载时间。</p>
+<p><strong>8.使用外部JavaScript和CSS</strong><br>　　使用大量内联的JS和CSS就不能实现样式、结构、行为的分离，这样会在维护上造成很多麻烦，同时也会增大网页的体积。</p>
+<p><strong>9.减少DNS查询</strong><br>　　通过使用Keep-Alive和较少的域名可以减少DNS查询</p>
+<p><strong>10.精简JavaScript和CSS</strong><br>　　进行代码混淆可以压缩JS文件的大小，这个通过gulp等构建工具可以自动化的进行。</p>
+<p><strong>11.避免重定向</strong><br>　　重定向用于将用户从一个URL重新路由到另一个URL。重定向有很多种，包括301永久重定向、302临时重定向，304 Not Modified并不是真正的重定向，它是用来响应Get请求，避免下载已经存在于浏览器缓存中的数据。在URL的结尾加上斜线（&#x2F;）可以避免一部分重定向。</p>
+<p><strong>12.移除重复脚本</strong><br><strong>13.配置ETag</strong><br>　　实体标签（Entity Tag）是web服务器和浏览器用于确认缓存资源的有效性的一种机制，它可以检测浏览器中缓存的资源与原始服务器上的资源是否匹配。ETag是唯一标识资源的一个特定版本的字符串，浏览器要验证一个资源，它会使用If-None-Match头将ETag传回原始服务器。如果ETag是匹配的，就会返回304状态码，从而使用浏览器缓存。</p>
+<p><strong>14.缓存Ajax</strong><br>　　确保Ajax请求具有长久的Expires头</p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

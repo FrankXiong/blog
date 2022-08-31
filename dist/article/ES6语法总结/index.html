@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            ES6 语法总结
+        </div>
+        <div class="post-meta">
+            2017-04-01
+        </div>
+    
+
+    <div class="post-md">
+        <h1 id="Arrow-Function"><a href="#Arrow-Function" class="headerlink" title="Arrow Function"></a>Arrow Function</h1><p>箭头函数可以让 this 绑定函数定义时所在的作用域，而不是指向运行时所在的作用域，利用这个特性可以解决一些在匿名回调函数中 this 指向的问题（以前通常用 var that &#x3D; this 来缓存 this）</p>
+<h1 id="Class"><a href="#Class" class="headerlink" title="Class"></a>Class</h1><p>原型链继承的一种语法糖，ES6 的类可以看作是构造函数的另一种写法。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Point &#123;</span><br><span class="line">//...</span><br><span class="line">&#125;</span><br><span class="line">typeof Point //&apos;function&apos;</span><br><span class="line">Point === Point.prototype.constructor</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>类内部定义的方法都不可枚举(non-enumerable)</li>
+<li>不存在变量提升(hoist)</li>
+<li>实现私有方法<br>　　1. 将方法移出 Class，定义在全局作用域<br>　　2. 将私有方法的名字命名为一个 Symbol 值</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const bar = Symbol(&apos;bar&apos;);</span><br><span class="line">const snaf = Symbol(&apos;snaf&apos;);</span><br><span class="line">export default class myClass&#123;</span><br><span class="line">　// 公有方法</span><br><span class="line">　foo(baz) &#123;</span><br><span class="line">　　this[bar](baz);</span><br><span class="line">　&#125;</span><br><span class="line">　// 私有方法</span><br><span class="line">　[bar](baz) &#123;</span><br><span class="line">　　return this[snaf] = baz;</span><br><span class="line"> 　&#125;</span><br><span class="line">　// ...</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>允许继承原生构造函数</li>
+<li>添加静态属性，静态方法<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">class Foo &#123;</span><br><span class="line">　static classMethod() &#123;</span><br><span class="line">　　return &apos;hello&apos;;</span><br><span class="line">　&#125;</span><br><span class="line">&#125;</span><br><span class="line">Foo.prop = 1;</span><br><span class="line">Foo.prop // 1</span><br><span class="line">Foo.classMethod() // &apos;hello&apos;</span><br></pre></td></tr></table></figure></li>
+</ul>
+<h1 id="Promise"><a href="#Promise" class="headerlink" title="Promise"></a>Promise</h1><ul>
+<li>三种状态 Pending、Resolved、Rejected。</li>
+<li>缺点：<br>　　1. 无法中途取消 Promise。<br>　　2. 如果不设置回调，内部抛出的错误无法反应到外部。<br>　　3. 大量的 then() 语句导致语义不清楚。</li>
+</ul>
+<h1 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h1><ul>
+<li>yield 语句暂停函数执行。</li>
+<li>generator 返回一个迭代器对象，通过 next() 手动执行迭代器，将指针移向下一个状态。next() 返回一个对象 { done:true, value:xxx}，其中 value 属性的值等于 yield 后面的语句返回的值。</li>
+<li>使用 for…of 遍历 Iterator 对象</li>
+<li>generator 作用：<br>　　1. 执行异步操作，将异步操作放在 yield 语句下，等到 next() 方法调用再执行。<br>　　2. 实现数组数据结构，每一项都是一个函数 。</li>
+<li>generator 缺点：流程管理困难，需要手动执行。解决办法：<br>　　1. Thunk 函数、传名调用。<br>　　2. 使用 Co　<br>　　3. 将异步操作包装成 Promise 对象，用 then 方法交出执行权。</li>
+</ul>
+<h1 id="Module"><a href="#Module" class="headerlink" title="Module"></a>Module</h1><ul>
+<li>编译时确定模块依赖，编译时加载，使得静态分析成为可能。</li>
+<li>ES6 模块不是对象。</li>
+<li>export 输出的是对外的接口。</li>
+<li>模块加载实质：CommonJS 输出值的拷贝，ES6 输出值的引用。</li>
+<li>循环加载：<br>　　1. CommonJS 是加载时执行。当发生循环加载时，就只输出已经执行的部分。<br>　　2. ES6 模块是动态引用。只要引用存在，代码就可以执行。</li>
+</ul>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

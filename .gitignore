@@ -3,4 +3,3 @@ deploy.sh
 db.json
 .deploy_git
 .history
-public

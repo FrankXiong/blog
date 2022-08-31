@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            Fastify 如何实现高性能路由
+        </div>
+        <div class="post-meta">
+            2022-03-15
+        </div>
+    
+
+    <div class="post-md">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>对于一个 Node.js web 框架来说，路由系统的设计是重中之重。所谓路由，干的事情就是根据 HTTP method 和 URL 路径匹配需要执行的处理函数，并在处理函数中提供有关请求和回应的上下文。借助原生的 HTTP 模块，我们可以写出这样的代码，来实现一个简易的路由功能：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> http = <span class="built_in">require</span>(<span class="string">"http"</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> host = <span class="string">'localhost'</span>;</span><br><span class="line"><span class="keyword">const</span> port = <span class="number">8000</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> requestListener = <span class="function"><span class="keyword">function</span> (<span class="params">req, res</span>) </span>&#123;</span><br><span class="line">  res.setHeader(<span class="string">"Content-Type"</span>, <span class="string">"application/json"</span>);</span><br><span class="line">  <span class="keyword">switch</span> (req.url) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">"/hello"</span>:</span><br><span class="line">            res.writeHead(<span class="number">200</span>);</span><br><span class="line">            res.end(<span class="built_in">JSON</span>.stringify(&#123;<span class="string">"message"</span>: <span class="string">"world"</span>&#125;));</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            res.writeHead(<span class="number">404</span>);</span><br><span class="line">            res.end(<span class="built_in">JSON</span>.stringify(&#123;<span class="attr">error</span>:<span class="string">"Resource not found"</span>&#125;));</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> server = http.createServer(requestListener);</span><br><span class="line">server.listen(port, host, () =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">`Server is running on http://<span class="subst">$&#123;host&#125;</span>:<span class="subst">$&#123;port&#125;</span>`</span>);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>上面的这段代码有几个可优化点：</p>
+<ol>
+<li>我们知道 HTTP 是一个文本传输协议，请求和响应内容实际上是一段字符串。因此我们在这里用了 JSON.stringify 来序列化响应 JSON，而响应内容的数据结构通常是固定的，这就给了我们优化的空间。比如已知会返回 <code>{&quot;message&quot;: msg}</code>，那直接做字符串拼接 <code>&#39;{&quot;message&quot;:&#39;  + msg + &#39;}&#39;</code>，它的执行速度就会比 JSON.stringify 快。关于这块的性能优化，我会放到下一篇文章中单独介绍。</li>
+<li>从可维护性的角度来看，它的请求分发逻辑和处理逻辑是耦合在一起的。在大型项目中，我们可能有成百上千个路由，这样的代码会变得难以维护。</li>
+<li>路由查询性能。在这里例子中还不太能体现出来，因为它一共就1条路由规则。但假设项目中有 1000 条路由规则，怎么样根据请求方法和 path，快速匹配到对应的处理函数，这就需要一个高效的路由算法。</li>
+</ol>
+<h1 id="集中式路由-vs-分散式路由"><a href="#集中式路由-vs-分散式路由" class="headerlink" title="集中式路由 vs 分散式路由"></a>集中式路由 vs 分散式路由</h1><p>对于第 2 点，我们很容易可以想到的一个优化方案是：将所有路由注册到一个映射表上。这个映射表大概是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">get / =&gt; home#index</span><br><span class="line">get /name =&gt; user#index</span><br><span class="line">post /user =&gt; user#create</span><br></pre></td></tr></table></figure>
+
+<p>箭头左边是请求方法和URL路径，右边是对应的处理函数。这样需要新增路由的时候，只需要更新映射表，而不用调整原有代码逻辑。这也是一种很常见的代码优化技巧。这种我将其称之为集中式路由，因为所有路由规则都是集中管理的。基于这种设计，写出来的 Controller 大概长这样：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">AppController</span> </span>&#123;</span><br><span class="line">  index()&#123;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        status: <span class="string">'ok'</span></span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当请求过来时，框架要找到对应的处理函数，首先要去逐行读取这个映射表文件，对每一行做正则匹配，拿到它的 Controller 名和处理函数名。其次框架要对 Controller 的命名和位置做约束，这样才能根据 Controller 名和处理函数名定位到具体的处理函数。</p>
+<p>还有一种思路是，将路由规则的定义放到对应的Controller内部，这样路由的注册就分散到各个Controller了。以 <a href="https://github.com/searchfe/hoth" target="_blank" rel="noopener">hoth</a>(百度内部基于 Fastify 自研的 Node 框架)为例，比如：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;Controller, GET&#125; <span class="keyword">from</span> <span class="string">'@hoth/decorators'</span>;</span><br><span class="line"><span class="keyword">import</span> type &#123;FastifyReply, FastifyRequest&#125; <span class="keyword">from</span> <span class="string">'fastify'</span>;</span><br><span class="line"></span><br><span class="line">@Controller(<span class="string">'/index'</span>)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">AppController</span> </span>&#123;</span><br><span class="line">    @GET()</span><br><span class="line">    getApp(req: FastifyRequest, <span class="attr">reply</span>: FastifyReply) &#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">            status: <span class="string">'ok'</span></span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>它使用了 Controller 和 GET 两个装饰器，实现了路由规则和处理函数的解耦，提升了代码的可读性和可维护性。装饰器只是一个语法糖，最终它还是走的 fastify 内部的路由注册逻辑：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">fastify.get(<span class="string">'/index'</span>, (req, reply) =&gt; &#123;&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这里的 fastify.get 方法会在 Node.js 应用启动时执行，将路由规则加载到内存中。</p>
+<p>对于小型项目，采用集中式路由或是分散式路由，对性能的影响微乎其微。这两种方案只有在大型项目中才能体现出性能优劣。集中式路由的问题在于，新增了一个（或多个）文件来单独存储这些路由规则，注册路由时框架需要解析文件，这就涉及到文件 IO；查询路由时可能还需要用到正则匹配，这对性能也是一种损耗。而像 fastify 采用的这种分散式路由，路由规则提前被注册到内存中，没有文件 IO，也不用正则来解析规则。</p>
+<p>而且集中式注册路由也不利于应用的横向扩展，试想下有多个子应用的场景，框架就需要知道所有子应用的路由规则。</p>
+<h1 id="更高效的路由算法"><a href="#更高效的路由算法" class="headerlink" title="更高效的路由算法"></a>更高效的路由算法</h1><p>除了上面讲到的注册路由的方式，存储路由的数据结构，对性能也有着不小的影响。最简单的可以想到用数组存储路由，它的查询性能是 O(n)，随着路由数量增加，性能会越来越差。而在实际场景中，许多 HTTP 请求的路径有着相同的前缀。某些框架，比如 go 的 <a href="https://github.com/labstack/echo" target="_blank" rel="noopener">echo</a> 和 <a href="https://github.com/gin-gonic/gin" target="_blank" rel="noopener">gin</a>，Node.js 的 fastify 会引入另一种数据结构：Radix-Trie，来存储路由。</p>
+<blockquote>
+<p>在<a href="https://zh.wikipedia.org/wiki/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%A7%91%E5%AD%A6" target="_blank" rel="noopener">计算机科学</a>中，<strong>基数树</strong>（<strong>Radix Trie</strong>，也叫<strong>基数特里树</strong>或<strong>压缩前缀树</strong>）是一种数据结构，是一种更节省空间的<a href="https://zh.wikipedia.org/wiki/Trie" target="_blank" rel="noopener">Trie</a>（前缀树），其中作为唯一子节点的每个节点都与其父节点合并，边既可以表示为元素序列又可以表示为单个元素。 因此每个内部节点的子节点数最多为基数树的基数<em>r</em> ，其中<em>r</em>为正整数，<em>x</em>为2的幂，<em>x</em>≥1，这使得基数树更适用于对于较小的集合（尤其是字符串很长的情况下）和有很长相同前缀的字符串集合。</p>
+</blockquote>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5ba49c1c14f64a26a68cc46ddfb8f9f6~tplv-k3u1fbpfcp-zoom-1.image" alt="ds-radix-tree"></p>
+<p>Radix-Trie 的插入、删除、查询的时间复杂度均为 <code>O(k)</code>(k为字符串集合中最长的字符串长度），因此无论路由规则增长多少，它都可以保证查询性能始终是常量级的。</p>
+<p>fastify 的核心路由逻辑是另一个库 <a href="https://github.com/delvedor/find-my-way" target="_blank" rel="noopener">find-my-way</a> 实现的，fastify 提供了 get、post、all 等方法用来注册路由，它们的内部调用了 find-my-way 上的 router.on 方法。当应用启动时，它会将所有路由构建成多个 Radix-Trie，比如：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">fastify.get(&apos;/index&apos;, (req, reply) =&gt; &#123;&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>它其实就是在 Radix-Trie 上插入了一个新节点，tree 的数据结构大体是这样的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  prefix: &apos;/&apos;,</span><br><span class="line">  label: &apos;/&apos;,</span><br><span class="line">  method: &apos;GET&apos;,</span><br><span class="line">  children: &#123;</span><br><span class="line">    i: &#123;</span><br><span class="line">      prefix: &apos;index&apos;,</span><br><span class="line">      label: &apos;i&apos;,</span><br><span class="line">      method: &apos;GET&apos;,</span><br><span class="line">      children: [Object],</span><br><span class="line">      numberOfChildren: 1,</span><br><span class="line">      kind: 0,</span><br><span class="line">      handler: [Object],</span><br><span class="line">    &#125;,</span><br><span class="line">    u: &#123;</span><br><span class="line">      prefix: &apos;user&apos;,</span><br><span class="line">      label: &apos;u&apos;,</span><br><span class="line">      method: &apos;GET&apos;,</span><br><span class="line">      children: [Object],</span><br><span class="line">      numberOfChildren: 1,</span><br><span class="line">      kind: 0,</span><br><span class="line">      handler: [Object],</span><br><span class="line">    &#125;,</span><br><span class="line">    numberOfChildren: 2,</span><br><span class="line">    kind: 0,</span><br><span class="line">    handler: [Object],</span><br><span class="line">    params: []</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>fastify 根据不同 method，将路由划分到多个树中。prefix 标记路由前缀，如果某个节点只有一个子节点，那么会与其父节点合并。kind 用于标记路由的类型，find-my-way 支持这五种路由类型：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  STATIC: 0, // 静态路由，/info/version</span><br><span class="line">  PARAM: 1, // 带参数路由 /aaa/:id</span><br><span class="line">  MATCH_ALL: 2, // 通配路由 /aaa/*</span><br><span class="line">  REGEX: 3, // 正则路由 /at/(^\\d+)</span><br><span class="line">  MULTI_PARAM: 4 // 多参数路由 /foo/:param1-:param2</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在有这样几条路由（省略了handler）：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">GET /user</span><br><span class="line">GET /user/list</span><br><span class="line">GET /user/info</span><br><span class="line">GET /admin/group</span><br><span class="line">GET /admin/delete</span><br></pre></td></tr></table></figure>
+
+<p>它们构成的 tree 长这样：</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d8001a6470e14b03be68b4bdf74fbcec~tplv-k3u1fbpfcp-watermark.image" alt="radix-tree1.png"></p>
+<p>现在要新增一条路由 GET &#x2F;usage，假定它是节点 a，插入节点 a 到 tree 的步骤如下：</p>
+<ol>
+<li><p>遍历 tree，找到节点在树中的最长公共前缀长度 len，这里 usage 在树中的最长公共前缀是us，长度是2。</p>
+</li>
+<li><p>如果最长公共前缀长度 maxCommonPrefixLen 等于当前节点的前缀长度 prefixLen，将（a - 公共前缀）插入到这个节点的子节点。显然节点 a 的 maxCommonPrefixLen 是小于 prefixLen 的。</p>
+</li>
+<li><p>如果 maxCommonPrefixLen 小于 prefixLen，将节点 a 拆分为公共前缀 + 剩余b，将公共前缀作为父节点，插入树中，然后对剩余部分 b 重复上述步骤。这里会将 us 作为父节点，插入到树中，然后将剩余部分 age 作为子节点插入。</p>
+</li>
+</ol>
+<p>最终，新的 tree 长这样：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/233faffc68654bd2b744a4e5769e0faf~tplv-k3u1fbpfcp-watermark.image" alt="radix-tree2.png"></p>
+<p>讲完了路由节点的插入，再来看路由的查询。这里直接上代码：</p>
+<figure class="highlight javascript"><table><tr><td class="code"><pre><span class="line">Router.prototype.find = <span class="function"><span class="keyword">function</span> <span class="title">find</span>(<span class="params">method, path</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> currentNode = <span class="keyword">this</span>.trees[method];</span><br><span class="line">    <span class="keyword">if</span> (!currentNode) <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> originalPath = path;</span><br><span class="line">    <span class="keyword">var</span> originalPathLength = path.length;</span><br><span class="line">    <span class="keyword">var</span> i = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">var</span> idxInOriginalPath = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span> (<span class="literal">true</span>) &#123;</span><br><span class="line">        <span class="keyword">var</span> pathLen = path.length;</span><br><span class="line">        <span class="keyword">var</span> prefix = currentNode.prefix;</span><br><span class="line">        <span class="keyword">var</span> prefixLen = prefix.length;</span><br><span class="line">        <span class="keyword">var</span> len = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">var</span> previousPath = path;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 找到路由，返回handler</span></span><br><span class="line">        <span class="keyword">if</span> (pathLen === <span class="number">0</span> || path === prefix) &#123;</span><br><span class="line">            <span class="keyword">var</span> handle = currentNode.handler;</span><br><span class="line">            <span class="keyword">if</span> (handle !== <span class="literal">null</span> &amp;&amp; handle !== <span class="literal">undefined</span>) &#123;</span><br><span class="line">                <span class="keyword">return</span> &#123;</span><br><span class="line">                    handler: handle.handler</span><br><span class="line">                &#125;;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 寻找最长公共前缀长度</span></span><br><span class="line">        i = pathLen &lt; prefixLen ? pathLen : prefixLen;</span><br><span class="line">        <span class="keyword">while</span> (len &lt; i &amp;&amp; path.charCodeAt(len) === prefix.charCodeAt(len)) len++;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 如果最长公共前缀等于当前节点的前缀，将节点一分为二，公共前缀+剩余部分</span></span><br><span class="line">        <span class="comment">// 继续对剩余部分遍历</span></span><br><span class="line">        <span class="keyword">if</span> (len === prefixLen) &#123;</span><br><span class="line">            path = path.slice(len);</span><br><span class="line">            pathLen = path.length;</span><br><span class="line">            idxInOriginalPath += len;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">var</span> node = currentNode.findChild(path);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 没有子节点，退回到前一次查询的节点</span></span><br><span class="line">        <span class="keyword">if</span> (node === <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">var</span> goBack = previousPath.charCodeAt(<span class="number">0</span>) === <span class="number">47</span> ? previousPath : <span class="string">'/'</span> + previousPath;</span><br><span class="line">            <span class="keyword">if</span> (originalPath.indexOf(goBack) === <span class="number">-1</span>) &#123;</span><br><span class="line">                <span class="keyword">var</span> pathDiff = originalPath.slice(<span class="number">0</span>, originalPathLength - pathLen);</span><br><span class="line">                previousPath = pathDiff.slice(pathDiff.lastIndexOf(<span class="string">'/'</span>) + <span class="number">1</span>, pathDiff.length) + path;</span><br><span class="line">            &#125;</span><br><span class="line">            idxInOriginalPath = idxInOriginalPath - (previousPath.length - path.length);</span><br><span class="line">            path = previousPath;</span><br><span class="line">            pathLen = previousPath.length;</span><br><span class="line">            len = prefixLen;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 静态路由</span></span><br><span class="line">        <span class="keyword">if</span> (node.kind === NODE_TYPES.STATIC) &#123;</span><br><span class="line">            currentNode = node;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">      	<span class="comment">// 还有对带参路由、正则路由等类型的判断，这里简化了</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>web 框架中路由的性能主要取决于路由注册和路由匹配两个环节，采用何种介质、何种数据结构存储路由规则，很大程度影响了路由库的性能。本文介绍了一种数据结构 Radix-Trie，及其它在 fastify 中的应用。</p>
+<p>除了路由之外，数据序列化也是一个性能优化点，在进程通信、请求响应等环节都会涉及到序列化。下一篇文章将介绍 fastify 中如何实现的高性能 JSON 序列化。</p>
+<hr>
+<p>欢迎加微信 xxr0314 聊一聊技术、人生，本人微信公众号：小熊写字的地方</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6e6ad279d1cf4813926c726968f27334~tplv-k3u1fbpfcp-watermark.image" alt="qrcode_for_gh_a2d61e1595a5_258.jpg"></p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

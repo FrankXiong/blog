@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            聊一聊浏览器缓存
+        </div>
+        <div class="post-meta">
+            2019-01-06
+        </div>
+    
+
+    <div class="post-md">
+        <h1 id="缓存的概念"><a href="#缓存的概念" class="headerlink" title="缓存的概念"></a>缓存的概念</h1><h2 id="什么是缓存"><a href="#什么是缓存" class="headerlink" title="什么是缓存"></a>什么是缓存</h2><blockquote>
+<p>In computing, a cache is a hardware or software component that stores data so future requests for that data can be served faster.</p>
+</blockquote>
+<p>cache 是一个硬件或软件的组件，用来存储将来会请求到的数据，让数据获取更快。狭义上，cache 指介于 CPU 和内存之间存储介质。广义上，凡是位于速度相差较大的两种硬件之间，用于协调两者数据传输速度差异的结构，均可称之为 cache。</p>
+<p>缓存可分为硬件缓存和软件缓存两类。</p>
+<ul>
+<li>硬件 cache：CPU cache，GPU cache，DSP；</li>
+<li>软件 cache：Disk Cache，Web Cache 等。</li>
+</ul>
+<p>两者主要区别在于，硬件缓存完全由硬件管理，而软件缓存是由软件来管理的。这里我们主要讨论软件缓存中的 Web Cache。</p>
+<p>Web 缓存是一项临时存储 Web 资源的技术，以减少服务器负载。</p>
+<p><strong>Web 页面为什么要有缓存？</strong></p>
+<ol>
+<li>缓解服务器压力</li>
+<li>提升性能</li>
+<li>减少带宽消耗</li>
+</ol>
+<h2 id="Web-缓存的分类"><a href="#Web-缓存的分类" class="headerlink" title="Web 缓存的分类"></a>Web 缓存的分类</h2><ul>
+<li>浏览器缓存: 针对单个用户</li>
+<li>代理缓存</li>
+<li>网关缓存：CDN</li>
+<li>数据库缓存<br>数据库缓存是为了减少数据库查询，数据库缓存的数据都基本都存储在内存中。</li>
+</ul>
+<h1 id="浏览器缓存"><a href="#浏览器缓存" class="headerlink" title="浏览器缓存"></a>浏览器缓存</h1><blockquote>
+<p>计算机科学领域只有两个难题，缓存失效和命名。  —— Phil Karlton</p>
+</blockquote>
+<h2 id="浏览器的缓存策略"><a href="#浏览器的缓存策略" class="headerlink" title="浏览器的缓存策略"></a>浏览器的缓存策略</h2><h3 id="缓存的目标"><a href="#缓存的目标" class="headerlink" title="缓存的目标"></a>缓存的目标</h3><ul>
+<li>一个检索请求的成功响应: 对于 GET请求，响应状态码为：200，则表示为成功。一个包含例如HTML文档，图片，或者文件的响应；</li>
+<li>不变的重定向: 响应状态码：301；</li>
+<li>可用缓存响应：响应状态码：304，这个存在疑问，Chrome会缓存304中的缓存设置，Firefox；</li>
+<li>错误响应: 响应状态码：404 的一个页面；</li>
+<li>不完全的响应: 响应状态码 206，只返回局部的信息；</li>
+<li>除了 GET 请求外，如果匹配到作为一个已被定义的cache键名的响应；</li>
+</ul>
+<p>浏览器对于缓存的处理是根据<strong>第一次请求资源时返回的响应头</strong>来确定的。</p>
+<h3 id="强缓存"><a href="#强缓存" class="headerlink" title="强缓存"></a>强缓存</h3><p>强缓存就是向浏览器缓存查找该请求结果，并根据该结果的缓存规则来决定是否使用该缓存结果的过程。控制强制缓存的字段分别是 Expires 和 Cache-Control，其中 Cache-Control 优先级比 Expires 高。</p>
+<p><strong>Expires</strong><br>Expires 是 HTTP&#x2F;1.0 控制网页缓存的字段，其值为服务器返回该请求结果缓存的到期的绝对时间，即再次发起该请求时，如果客户端的时间小于 Expires 的值时，直接使用缓存结果。</p>
+<p><strong>Cache-Control</strong><br>在 HTTP&#x2F;1.1 中，Cache-Control 是最重要的规则，主要用于控制网页缓存，主要取值为：</p>
+<ul>
+<li>public：所有内容都将被缓存（客户端和代理服务器都可缓存）</li>
+<li>private：所有内容只有客户端可以缓存，Cache-Control的默认取值</li>
+<li>no-cache：可以使用缓存内容，但是每次是否使用缓存，需要经过协商缓存来验证决定</li>
+<li>no-store：所有内容都不会被缓存，即不使用强制缓存，也不使用协商缓存</li>
+<li>max-age&#x3D;xxx (xxx is numeric)：缓存内容将在xxx秒后失效</li>
+</ul>
+<p>from memory cache代表使用内存中的缓存，from disk cache则代表使用的是硬盘中的缓存，浏览器读取缓存的顺序为memory –&gt; disk。</p>
+<p><strong>内存缓存(from memory cache)</strong><br>内存缓存具有两个特点，分别是快速读取和时效性：</p>
+<ol>
+<li>快速读取：内存缓存会将编译解析后的文件，直接存入该进程的内存中，占据该进程一定的内存资源，以方便下次运行使用时的快速读取。</li>
+<li>时效性：一旦该进程关闭，则该进程的内存则会清空。</li>
+</ol>
+<p><strong>硬盘缓存(from disk cache)</strong><br>硬盘缓存则是直接将缓存写入硬盘文件中，读取缓存需要对该缓存存放的硬盘文件进行I&#x2F;O操作，然后重新解析该缓存内容，读取复杂，速度比内存缓存慢。</p>
+<p>在浏览器中，浏览器会在js和图片等文件解析执行后直接存入内存缓存中，那么当刷新页面时只需直接从内存缓存中读取(from memory cache)；而css文件则会存入硬盘文件中，所以每次渲染页面都需要从硬盘读取缓存(from disk cache)。内存缓存和磁盘缓存都只能用于派生类的资源请求。</p>
+<h3 id="协商缓存"><a href="#协商缓存" class="headerlink" title="协商缓存"></a>协商缓存</h3><p>协商缓存就是强制缓存失效后，浏览器携带缓存标识向服务器发起请求，由服务器根据缓存标识决定是否使用缓存的过程。协商缓存是无法减少请求数的开销的，但是可以减少返回的正文大小。主要有以下两种情况：</p>
+<p>协商缓存生效，返回304<br>协商缓存失效，返回200和请求结果结果</p>
+<p>控制协商缓存的字段分别有：Last-Modified&#x2F;If-Modified-Since 和 Etag&#x2F;If-None-Match，其中 Etag&#x2F;If-None-Match 的优先级比 Last-Modified&#x2F;If-Modified-Since 高。</p>
+<p><strong>Last-Modified &#x2F; If-Modified-Since</strong><br>Last-Modified是服务器响应请求时，返回该资源文件在服务器最后被修改的时间，如下。<br><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/%E8%81%8A%E4%B8%80%E8%81%8A%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98/1.png" alt="f78610c56fac74d69ea5bea30ff4ce8f.png"><br>If-Modified-Since则是客户端再次发起该请求时，携带上次请求返回的Last-Modified值，通过此字段值告诉服务器该资源上次请求返回的最后被修改时间。服务器收到该请求，发现请求头含有If-Modified-Since字段，则会根据If-Modified-Since的字段值与该资源在服务器的最后被修改时间做对比，若服务器的资源最后被修改时间大于If-Modified-Since的字段值，则重新返回资源，状态码为200；否则则返回304，代表资源无更新，可继续使用缓存文件，如下。</p>
+<p><strong>Etag&#x2F;If-None-Match</strong><br>Etag 是服务器响应请求时，返回当前资源文件的一个唯一标识(由服务器生成)，如下。<br><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/%E8%81%8A%E4%B8%80%E8%81%8A%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98/2.png" alt="1751531d0244181a16d8d01a27be7b1a.png"><br>ETag的值有可能包含一个 W&#x2F; 前缀，来提示应该采用弱比较算法。</p>
+<p>If-None-Match 是客户端再次发起该请求时，携带上次请求返回的唯一标识Etag值，通过此字段值告诉服务器该资源上次请求返回的唯一标识值。服务器收到该请求后，发现该请求头中含有If-None-Match，则会根据If-None-Match的字段值与该资源在服务器的Etag值做对比，一致则返回304，代表资源无更新，继续使用缓存文件；不一致则重新返回资源文件，状态码为200，如下。</p>
+<h3 id="启发式缓存"><a href="#启发式缓存" class="headerlink" title="启发式缓存"></a>启发式缓存</h3><p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/%E8%81%8A%E4%B8%80%E8%81%8A%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98/3.png" alt="ae5076aeb2713256708f6389fbee55d1.png"></p>
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/%E8%81%8A%E4%B8%80%E8%81%8A%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98/4.png" alt="f15c74ca21c152411b97997fd6607287.png"><br>浏览器用来确定缓存过期时间的字段一个都没有！那该怎么办？有人可能会说下次请求直接进入协商缓存阶段，携带If-Moified-Since呗，不是的，浏览器还有个启发式缓存阶段😎<br>根据响应头中2个时间字段 Date 和 Last-Modified 之间的时间差值，取其值的10%作为缓存时间周期。</p>
+<h2 id="用户操作行为对缓存的影响"><a href="#用户操作行为对缓存的影响" class="headerlink" title="用户操作行为对缓存的影响"></a>用户操作行为对缓存的影响</h2><p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/%E8%81%8A%E4%B8%80%E8%81%8A%E6%B5%8F%E8%A7%88%E5%99%A8%E7%BC%93%E5%AD%98/5.png" alt="0ddeed8a00c722ce4fbd9b08f0985b87.png"></p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            【译】图解Map、Reduce和Filter数组方法
+        </div>
+        <div class="post-meta">
+            2019-04-11
+        </div>
+    
+
+    <div class="post-md">
+        <p><img src="https://pic2.zhimg.com/v2-9dd8df75fdcd10028747cf1a5a19f495_r.jpg"></p>
+<blockquote>
+<ul>
+<li>原文地址：<a href="https://css-tricks.com/an-illustrated-and-musical-guide-to-map-reduce-and-filter-array-methods/" target="_blank" rel="noopener">An Illustrated (and Musical) Guide to Map, Reduce, and Filter Array Methods</a></li>
+<li>原文作者：<a href="https://css-tricks.com/author/unakravets/" target="_blank" rel="noopener">Una Kravets</a></li>
+<li>译文出自：<a href="https://github.com/xitu/gold-miner" target="_blank" rel="noopener">掘金翻译计划</a></li>
+<li>本文永久链接：<a href="https://github.com/xitu/gold-miner/blob/master/TODO1/an-illustrated-and-musical-guide-to-map-reduce-and-filter-array-methods.md" target="_blank" rel="noopener">https://github.com/xitu/gold-miner/blob/master/TODO1/an-illustrated-and-musical-guide-to-map-reduce-and-filter-array-methods.md</a></li>
+<li>译者：<a href="https://github.com/FrankXiong" target="_blank" rel="noopener">熊贤仁</a></li>
+<li>校对者：<a href="https://github.com/Endone" target="_blank" rel="noopener">Endone</a>、<a href="https://github.com/Reaper622" target="_blank" rel="noopener">Reaper622</a></li>
+</ul>
+</blockquote>
+<p>map、reduce 和 filter 是三个非常实用的 JavaScript 数组方法，赋予了开发者四两拨千斤的能力。我们直接进入正题，看看如何使用（并记住）这些超级好用的方法！</p>
+<h2 id="Array-map"><a href="#Array-map" class="headerlink" title="Array.map()"></a>Array.map()</h2><p><code>Array.map()</code> 根据传递的转换函数，更新给定数组中的每个值，并返回一个相同长度的新数组。它接受一个回调函数作为参数，用以执行转换过程。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> newArray = oldArray.map(<span class="function">(<span class="params">value, index, array</span>) =&gt;</span> &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>一个帮助记住 map 的方法：Morph Array Piece-by-Piece（逐个改变数组）</p>
+</blockquote>
+<p>你可以使用 map 代替 for-each 循环，来遍历并对每个值应用转换函数。这个方法适用于当你想更新数组的同时保留原始值。它不会潜在地删除任何值（filter 方法会），也不会计算出一个新的输出（就像 reduce 那样）。map 允许你逐个改变数组。一起来看一个例子：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">[<span class="number">1</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">14</span>, <span class="number">32</span>, <span class="number">78</span>].map(<span class="function"><span class="params">val</span> =&gt;</span> val * <span class="number">10</span>)</span><br><span class="line"><span class="comment">// the result is: [10, 40, 60, 140, 320, 780]</span></span><br></pre></td></tr></table></figure>
+
+<p>上面的例子中，我们使用一个初始数组（<code>[1, 4, 6, 14, 32, 78]</code>），映射每个值到它自己的十倍（<code>val * 10</code>）。结果是一个新数组，初始数组的每个值被这个等式转换：<code>[10, 40, 60, 140, 320, 780]</code>。</p>
+<p><img src="https://pic2.zhimg.com/80/v2-cf49ef90fe996d9d31d97b0609e03b9d_hd.jpg" alt="本节代码图解"></p>
+<h2 id="Array-filter"><a href="#Array-filter" class="headerlink" title="Array.filter()"></a>Array.filter()</h2><p>当我们想要过滤数组的值到另一个数组，新数组中的每个值都通过一个特定检查，<code>Array.filter()</code> 这个快捷实用的方法就派上用场了。</p>
+<p>类似搜索过滤器，filter 基于传递的参数来过滤出值。</p>
+<p>举个例子，假定有个数字数组，想要过滤出大于 10 的值，可以这样写：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">[<span class="number">1</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">14</span>, <span class="number">32</span>, <span class="number">78</span>].filter(<span class="function"><span class="params">val</span> =&gt;</span> val &gt; <span class="number">10</span>)</span><br><span class="line"><span class="comment">// the result is: [14, 32, 78]</span></span><br></pre></td></tr></table></figure>
+
+<p>如果在这个数组上使用 <strong>map</strong> 方法，比如在上面这个例子，会返回一个带有 <code>val &gt; 10</code> 判断的和原始数组长度相同的数组，其中每个值都经过转换或者检查。如果原始值大于 10，会被转换为真值。就像这样：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">[<span class="number">1</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">14</span>, <span class="number">32</span>, <span class="number">78</span>].map(<span class="function"><span class="params">val</span> =&gt;</span> val &gt; <span class="number">10</span>)</span><br><span class="line"><span class="comment">// the result is: [false, false, false, true, true, true]</span></span><br></pre></td></tr></table></figure>
+
+<p>但是 filter 方法，<strong>只</strong>返回真值。因此如果所有值都执行指定的检查的话，结果的长度会小于等于原始数组。</p>
+<blockquote>
+<p>把 filter 想象成一个漏斗。部分混合物会从中穿过进入结果，而另一部分则会被留下并抛弃。</p>
+</blockquote>
+<p><img src="https://pic2.zhimg.com/80/v2-9dd8df75fdcd10028747cf1a5a19f495_hd.jpg" alt="本节代码图解，演示了数字从漏斗上面进去，其中小部分从下面出来，并附上手写的代码"></p>
+<p>假设宠物训练学校有一个四只狗的小班，学校里的所有狗都会经过各种挑战，然后参加一个分级期末考试。我们用一个对象数组来表示这些狗狗：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> students = [</span><br><span class="line">  &#123;</span><br><span class="line">    name: <span class="string">"Boops"</span>,</span><br><span class="line">    finalGrade: <span class="number">80</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    name: <span class="string">"Kitten"</span>,</span><br><span class="line">    finalGrade: <span class="number">45</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    name: <span class="string">"Taco"</span>,</span><br><span class="line">    finalGrade: <span class="number">100</span></span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    name: <span class="string">"Lucy"</span>,</span><br><span class="line">    finalGrade: <span class="number">60</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<p>如果狗狗们的期末考试成绩高于 70 分，它们会获得一个精美的证书；反之，它们就要去重修。为了知道证书打印的数量，要写一个方法来返回通过考试的狗狗。不必写循环来遍历数组的每个对象，我们可以用 <code>filter</code> 简化代码！</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> passingDogs = students.filter(<span class="function">(<span class="params">student</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> student.finalGrade &gt;= <span class="number">70</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">passingDogs = [</span></span><br><span class="line"><span class="comment">  &#123;</span></span><br><span class="line"><span class="comment">    name: "Boops",</span></span><br><span class="line"><span class="comment">    finalGrade: 80</span></span><br><span class="line"><span class="comment">  &#125;,</span></span><br><span class="line"><span class="comment">  &#123;</span></span><br><span class="line"><span class="comment">    name: "Taco",</span></span><br><span class="line"><span class="comment">    finalGrade: 100</span></span><br><span class="line"><span class="comment">  &#125;</span></span><br><span class="line"><span class="comment">]</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<p>你也看到了，Boops 和 Taco 是好狗狗（其实所有狗都很不错），它们取得了通过课程的成就证书！利用箭头函数的隐式返回特性，一行代码就能实现。因为只有一个参数，所以可以删掉箭头函数的括号：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> passingDogs = students.filter(<span class="function"><span class="params">student</span> =&gt;</span> student.finalGrade &gt;= <span class="number">70</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">passingDogs = [</span></span><br><span class="line"><span class="comment">  &#123;</span></span><br><span class="line"><span class="comment">    name: "Boops",</span></span><br><span class="line"><span class="comment">    finalGrade: 80</span></span><br><span class="line"><span class="comment">  &#125;,</span></span><br><span class="line"><span class="comment">  &#123;</span></span><br><span class="line"><span class="comment">    name: "Taco",</span></span><br><span class="line"><span class="comment">    finalGrade: 100</span></span><br><span class="line"><span class="comment">  &#125;</span></span><br><span class="line"><span class="comment">]</span></span><br><span class="line"><span class="comment">*/</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Array-reduce"><a href="#Array-reduce" class="headerlink" title="Array.reduce()"></a>Array.reduce()</h2><p><code>reduce()</code> 方法接受一个数组作为输入值并返回一个值。这点挺有趣的。reduce 接受一个回调函数，回调函数参数包括一个累计器（数组每一段的累加值，它会<a href="https://css-tricks.com/understanding-the-almighty-reducer/" target="_blank" rel="noopener">像雪球一样增长</a>），当前值，和索引。reduce 也接受一个初始值作为第二个参数：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">let</span> finalVal = oldArray.reduce(<span class="function">(<span class="params">accumulator, currentValue, currentIndex, array</span>) =&gt;</span> &#123;</span><br><span class="line">  ...</span><br><span class="line">&#125;), initalValue;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://pic2.zhimg.com/v2-35dcbef05dface894a23b2930952d729_r.jpg" alt="本节代码图解，演示了用炖锅调制调料，并附上手写的代码"></p>
+<p>来写一个炒菜函数和一个作料清单：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// our list of ingredients in an array</span></span><br><span class="line"><span class="keyword">const</span> ingredients = [<span class="string">'wine'</span>, <span class="string">'tomato'</span>, <span class="string">'onion'</span>, <span class="string">'mushroom'</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment">// a cooking function</span></span><br><span class="line"><span class="keyword">const</span> cook = <span class="function">(<span class="params">ingredient</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="string">`cooked <span class="subst">$&#123;ingredient&#125;</span>`</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果我们想要把这些作料做成一个调味汁（开玩笑的），用 <code>reduce()</code> 来归约！</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> wineReduction = ingredients.reduce(<span class="function">(<span class="params">sauce, item</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> sauce += cook(item) + <span class="string">', '</span></span><br><span class="line">&#125;, <span class="string">''</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// wineReduction = "cooked wine, cooked tomato, cooked onion, cooked mushroom, "</span></span><br></pre></td></tr></table></figure>
+
+<p>初始值（这个例子中的 <code>&#39;&#39;</code>）很重要，它决定了第一个作料能够进行烹饪。这里输出的结果不太靠谱，自己炒菜时要当心。下面的例子就是我要说到的情况：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> wineReduction = ingredients.reduce(<span class="function">(<span class="params">sauce, item</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> sauce += cook(item) + <span class="string">', '</span></span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="comment">// wineReduction = "winecooked tomato, cooked onion, cooked mushroom, "</span></span><br></pre></td></tr></table></figure>
+
+<p>最后，确保新字符串的末尾没有额外的空白，我们可以传递索引和数组来执行转换：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> wineReduction = ingredients.reduce(<span class="function">(<span class="params">sauce, item, index, array</span>) =&gt;</span> &#123;</span><br><span class="line">  sauce += cook(item)</span><br><span class="line">  <span class="keyword">if</span> (index &lt; array.length - <span class="number">1</span>) &#123;</span><br><span class="line">    sauce += <span class="string">', '</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> sauce</span><br><span class="line">&#125;, <span class="string">''</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// wineReduction = "cooked wine, cooked tomato, cooked onion, cooked mushroom"</span></span><br></pre></td></tr></table></figure>
+
+<p>可以用三目操作符、模板字符串和隐式返回，写的更简洁（一行搞定！）：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> wineReduction = ingredients.reduce(<span class="function">(<span class="params">sauce, item, index, array</span>) =&gt;</span> &#123;</span><br><span class="line">  <span class="keyword">return</span> (index &lt; array.length - <span class="number">1</span>) ? sauce += <span class="string">`<span class="subst">$&#123;cook(item)&#125;</span>, `</span> : sauce += <span class="string">`<span class="subst">$&#123;cook(item)&#125;</span>`</span></span><br><span class="line">&#125;, <span class="string">''</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">// wineReduction = "cooked wine, cooked tomato, cooked onion, cooked mushroom"</span></span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>记住这个方法的简单办法就是回想你怎么做调味汁：把多个作料归约到单个。</p>
+</blockquote>
+<h2 id="和我一起唱起来！"><a href="#和我一起唱起来！" class="headerlink" title="和我一起唱起来！"></a>和我一起唱起来！</h2><p>我想要用一首歌来结束这篇博文，给数组方法写了一个小调，来帮助你们记忆：</p>
+<p><a href="https://youtu.be/-_YEbB_y3Mk" target="_blank" rel="noopener">Video</a></p>
+<blockquote>
+<p>如果发现译文存在错误或其他需要改进的地方，欢迎到 <a href="https://github.com/xitu/gold-miner" target="_blank" rel="noopener">掘金翻译计划</a> 对译文进行修改并 PR，也可获得相应奖励积分。文章开头的 <strong>本文永久链接</strong> 即为本文在 GitHub 上的 MarkDown 链接。</p>
+</blockquote>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

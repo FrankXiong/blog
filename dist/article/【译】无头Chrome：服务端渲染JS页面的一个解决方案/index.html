@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            【译】无头 Chrome：服务端渲染 JS 页面的一个解决方案
+        </div>
+        <div class="post-meta">
+            2018-09-17
+        </div>
+    
+
+    <div class="post-md">
+        <h3 id="TL-DR"><a href="#TL-DR" class="headerlink" title="TL;DR"></a>TL;DR</h3><blockquote>
+<p><a href="https://developers.google.com/web/updates/2017/04/headless-chrome" target="_blank" rel="noopener">无头 Chrome</a> 是一个将动态 JS 页面转成静态 HTML 页面的即插即用的解决方案。将其运行于 web 服务器之上，你可以<strong>预渲染任何现代 JS 特性</strong>，从而提速内容加载，并且是<strong>可被搜索引擎索引的</strong>。</p>
+</blockquote>
+<p>本篇文章介绍的技术，旨在教大家如何使用 <a href="https://developers.google.com/web/tools/puppeteer/" target="_blank" rel="noopener">Puppeteer</a> 的 API，给一个 Express 服务器添加服务端渲染（SSR）能力。最棒的地方是，<strong>应用本身几乎不需要修改任何代码</strong>。无头 Chrome 做了所有的重活。三两行代码，SSR 页面带回家。</p>
+<p>大餐之前先来点甜点：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import puppeteer from &apos;puppeteer&apos;;</span><br><span class="line"></span><br><span class="line">async function ssr(url) &#123;</span><br><span class="line">  const browser = await puppeteer.launch(&#123;headless: true&#125;);</span><br><span class="line">  const page = await browser.newPage();</span><br><span class="line">  await page.goto(url, &#123;waitUntil: &apos;networkidle0&apos;&#125;);</span><br><span class="line">  const html = await page.content(); // serialized HTML of page DOM.</span><br><span class="line">  await browser.close();</span><br><span class="line">  return html;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong> 我会在文章中使用 ES 模块（<code>import</code>），这要求 Node 8.5.0+，并在运行时加上 <code>--experimental-modules</code> 标志。觉得麻烦的话可以自行使用 <code>require()</code> 语句。关于 Node 上的 ES 模块支持可以读读<a href="https://nodejs.org/api/esm.html" target="_blank" rel="noopener">这篇文章</a>。</p>
+<br>
+## 导论
+----------------------------
+
+<p>如果我对 <a href="https://en.wikipedia.org/wiki/Search_engine_optimization" target="_blank" rel="noopener">SEO</a> 理解没有偏差的话，你读到这篇文章可能因为下面两个原因之一。首先，你已经搭建了一个 web 应用，并且它没有被搜索引擎索引！你的应用可能是 SPA，<a href="https://developers.google.com/web/progressive-web-apps/" target="_blank" rel="noopener">PWA</a>，使用了 vanilla JS，或者使用了其他更复杂的框架或类库。老实说，你使用何种技术并不重要。重要的是，你花费了大量时间搭建出优秀的 web 页面，然而用户却搜不到它。你读这篇文章的另一个理由可能是因为，网上一些文章说了服务端渲染可以提升性能。你希望快速减少<a href="https://developers.google.com/web/fundamentals/performance/optimizing-content-efficiency/javascript-startup-optimization/" target="_blank" rel="noopener"> JavaScript 启动时间</a>，提升<a href="https://developers.google.com/web/tools/lighthouse/audits/first-meaningful-paint" target="_blank" rel="noopener">首次有效绘制</a>速度。</p>
+<p>一些框架，比如 Preact 使用了<a href="https://github.com/developit/preact-render-to-string" target="_blank" rel="noopener">工具</a>来实现服务端渲染。如果你使用的框架具备预渲染的解决方案，请继续使用。没有任何理由引入另一个工具（无头 Chrome &#x2F; Puppeteer）。</p>
+<h3 id="爬取现代网站"><a href="#爬取现代网站" class="headerlink" title="爬取现代网站"></a>爬取现代网站</h3><p>搜索引擎爬虫，社交平台，<a href="https://en.wikipedia.org/wiki/Lynx_(web_browser)" target="_blank" rel="noopener">甚至浏览器</a>自诞生至今就唯一依赖于静态 HTML 标记，来索引 web 页面和表层内容。现代 web 页面已经演变的大为不同。基于 JavaScript 的应用，在很多时候，需要保持网站内容是对于爬取工具是可见的。</p>
+<p>一些爬虫，比如 Google 搜索，已经变得更智能了！Google 的爬虫使用 Chrome 41 <a href="https://developers.google.com/search/docs/guides/rendering" target="_blank" rel="noopener">执行 JavaScript</a>，并渲染出最终的页面。但是这个方案才刚出来，还不完美。举个例子，使用了新特性的页面，比如 ES6 Class，<a href="https://www.chromestatus.com/feature/5365692190687232" target="_blank" rel="noopener">模块</a>，箭头函数等，将会在这个比较老的浏览器上报错，使得页面不能正确渲染。至于其他搜索引擎，鬼知道它们在干嘛！？¯_(ツ)_&#x2F;¯</p>
+<h2 id="使用无头-Chrome-预渲染页面"><a href="#使用无头-Chrome-预渲染页面" class="headerlink" title="使用无头 Chrome 预渲染页面"></a>使用无头 Chrome 预渲染页面</h2><hr>
+<p>所有的爬虫程序都能够理解 HTML。我们要“解决”索引问题的话需要一个工具，它来执行 JS 生成 HTML。我不会告诉你现在已经有这样一个工具了！</p>
+<ol>
+<li>该工具可以运行所有类型的现代 JavaScript，并吐出静态 HTML。</li>
+<li>出现新特性时，该工具可以保持更新</li>
+<li>已有应用上只需少量代码就可以运行这个工具</li>
+</ol>
+<p>听起来很不错吧？<strong>这个工具就是浏览器</strong>！</p>
+<p>无头 Chrome 不在乎你使用什么库、框架或者工具。它将 JavaScript 作为早餐，在午饭前吐出静态 HTML。可能会更快一点 :) -Eric</p>
+<p>如果你用的 Node，Puppeteer 容易上手。它的 API 提供了预渲染客户端应用的能力。下面用个例子演示下。</p>
+<h3 id="1-JS-应用示例"><a href="#1-JS-应用示例" class="headerlink" title="1. JS 应用示例"></a>1. JS 应用示例</h3><p>我们以一个 JavaScript 生成 HTML 的动态页面为例：</p>
+<p><strong>public&#x2F;index.html</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div id=&quot;container&quot;&gt;</span><br><span class="line">    &lt;!-- Populated by the JS below. --&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">function renderPosts(posts, container) &#123;</span><br><span class="line">  const html = posts.reduce((html, post) =&gt; &#123;</span><br><span class="line">    return `$&#123;html&#125;</span><br><span class="line">      &lt;li class=&quot;post&quot;&gt;</span><br><span class="line">        &lt;h2&gt;$&#123;post.title&#125;&lt;/h2&gt;</span><br><span class="line">        &lt;div class=&quot;summary&quot;&gt;$&#123;post.summary&#125;&lt;/div&gt;</span><br><span class="line">        &lt;p&gt;$&#123;post.content&#125;&lt;/p&gt;</span><br><span class="line">      &lt;/li&gt;`;</span><br><span class="line">  &#125;, &apos;&apos;);</span><br><span class="line"></span><br><span class="line">  // CAREFUL: assumes html is sanitized.</span><br><span class="line">  container.innerHTML = `&lt;ul id=&quot;posts&quot;&gt;$&#123;html&#125;&lt;/ul&gt;`;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">(async() =&gt; &#123;</span><br><span class="line">  const container = document.querySelector(&apos;#container&apos;);</span><br><span class="line">  const posts = await fetch(&apos;/posts&apos;).then(resp =&gt; resp.json());</span><br><span class="line">  renderPosts(posts, container);</span><br><span class="line">&#125;)();</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-服务端渲染函数"><a href="#2-服务端渲染函数" class="headerlink" title="2. 服务端渲染函数"></a>2. 服务端渲染函数</h3><p>接下来，我们会使用之前提到的 <code>ssr()</code> 函数，并充实它的内容。</p>
+<p><strong>ssr.mjs</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import puppeteer from &apos;puppeteer&apos;;</span><br><span class="line"></span><br><span class="line">// In-memory cache of rendered pages. Note: this will be cleared whenever the</span><br><span class="line">// server process stops. If you need true persistence, use something like</span><br><span class="line">// Google Cloud Storage (https://firebase.google.com/docs/storage/web/start).</span><br><span class="line">const RENDER_CACHE = new Map();</span><br><span class="line"></span><br><span class="line">async function ssr(url) &#123;</span><br><span class="line">  if (RENDER_CACHE.has(url)) &#123;</span><br><span class="line">    return &#123;html: RENDER_CACHE.get(url), ttRenderMs: 0&#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  const start = Date.now();</span><br><span class="line"></span><br><span class="line">  const browser = await puppeteer.launch();</span><br><span class="line">  const page = await browser.newPage();</span><br><span class="line">  try &#123;</span><br><span class="line">    // networkidle0 waits for the network to be idle (no requests for 500ms).</span><br><span class="line">    // The page&apos;s JS has likely produced markup by this point, but wait longer</span><br><span class="line">    // if your site lazy loads, etc.</span><br><span class="line">    await page.goto(url, &#123;waitUntil: &apos;networkidle0&apos;&#125;);</span><br><span class="line">    await page.waitForSelector(&apos;#posts&apos;); // ensure #posts exists in the DOM.</span><br><span class="line">  &#125; catch (err) &#123;</span><br><span class="line">    console.error(err);</span><br><span class="line">    throw new Error(&apos;page.goto/waitForSelector timed out.&apos;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  const html = await page.content(); // serialized HTML of page DOM.</span><br><span class="line">  await browser.close();</span><br><span class="line"></span><br><span class="line">  const ttRenderMs = Date.now() - start;</span><br><span class="line">  console.info(`Headless rendered page in: $&#123;ttRenderMs&#125;ms`);</span><br><span class="line"></span><br><span class="line">  RENDER_CACHE.set(url, html); // cache rendered page.</span><br><span class="line"></span><br><span class="line">  return &#123;html, ttRenderMs&#125;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export &#123;ssr as default&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>主要的变化：</p>
+<ol>
+<li>添加了缓存。缓存已渲染的 HTML 对于加速响应时间居功至伟。当页面再次有请求过来，避免了无头 Chrome 的重复执行。我随后会讨论其他的<a href="#optimizations">优化</a> 。</li>
+<li>添加加载页面超时时的基本错误处理。</li>
+<li>添加了 <code>page.waitForSelector(&#39;#posts&#39;)</code> 这行代码。确保在丢弃这个序列化页面之前，posts 节点存在于 DOM 之中。</li>
+<li>记录无头浏览器渲染页面所用时间。</li>
+<li>代码都被封装进名为 <code>ssr.mjs</code> 的模块中。</li>
+</ol>
+<h3 id="3-web-服务器示例"><a href="#3-web-服务器示例" class="headerlink" title="3. web 服务器示例"></a>3. web 服务器示例</h3><p>最后，一个小的 express 服务器完成了所有的工作。它预渲染 URL <code>http://localhost/index.html</code>（主页），并在响应中返回渲染结果。由于响应中包含了静态 HTML， 当用户访问页面，posts 节点会立刻呈现。</p>
+<p><strong>server.mjs</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import express from &apos;express&apos;;</span><br><span class="line">import ssr from &apos;./ssr.mjs&apos;;</span><br><span class="line"></span><br><span class="line">const app = express();</span><br><span class="line"></span><br><span class="line">app.get(&apos;/&apos;, async (req, res, next) =&gt; &#123;</span><br><span class="line">  const &#123;html, ttRenderMs&#125; = await ssr(`$&#123;req.protocol&#125;://$&#123;req.get(&apos;host&apos;)&#125;/index.html`);</span><br><span class="line">  // Add Server-Timing! See https://w3c.github.io/server-timing/.</span><br><span class="line">  res.set(&apos;Server-Timing&apos;, `Prerender;dur=$&#123;ttRenderMs&#125;;desc=&quot;Headless render time (ms)&quot;`);</span><br><span class="line">  return res.status(200).send(html); // Serve prerendered page as response.</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">app.listen(8080, () =&gt; console.log(&apos;Server started. Press Ctrl+C to quit&apos;));</span><br></pre></td></tr></table></figure>
+
+<p>要运行这个例子，需安装依赖 (<code>npm i --save puppeteer express</code>)，然后使用 Node 8.5.0+ 并带有 <code>--experimental-modules</code> 标志来运行服务器。</p>
+<p>这是一个该服务器返回的响应示例：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div id=&quot;container&quot;&gt;</span><br><span class="line">    &lt;ul id=&quot;posts&quot;&gt;</span><br><span class="line">      &lt;li class=&quot;post&quot;&gt;</span><br><span class="line">        &lt;h2&gt;Title 1&lt;/h2&gt;</span><br><span class="line">        &lt;div class=&quot;summary&quot;&gt;Summary 1&lt;/div&gt;</span><br><span class="line">        &lt;p&gt;post content 1&lt;/p&gt;</span><br><span class="line">      &lt;/li&gt;</span><br><span class="line">      &lt;li class=&quot;post&quot;&gt;</span><br><span class="line">        &lt;h2&gt;Title 2&lt;/h2&gt;</span><br><span class="line">        &lt;div class=&quot;summary&quot;&gt;Summary 2&lt;/div&gt;</span><br><span class="line">        &lt;p&gt;post content 2&lt;/p&gt;</span><br><span class="line">      &lt;/li&gt;</span><br><span class="line">      ...</span><br><span class="line">    &lt;/ul&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">...</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<h4 id="Server-Timing-API-的一个最佳用例"><a href="#Server-Timing-API-的一个最佳用例" class="headerlink" title="Server-Timing API 的一个最佳用例"></a>Server-Timing API 的一个最佳用例</h4><p><a href="https://w3c.github.io/server-timing/" target="_blank" rel="noopener">Server-Timing</a> API 支持将服务器性能指标（比如请求&#x2F;响应时间，数据库查询）返回给浏览器。客户端可以使用这些信息来追踪 web 应用的所有性能数据。</p>
+<p>Server-Timing 的一个最佳用例是上报无头 Chrome 预渲染页面的时间！只需在响应上添加 <code>Server-Timing</code> 头，就可以实现这一点：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">res.set(&apos;Server-Timing&apos;,  `Prerender;dur=1000;desc=&quot;Headless render time (ms)&quot;`);</span><br></pre></td></tr></table></figure>
+
+<p>客户端上，<a href="https://developer.mozilla.org/en-US/docs/Web/API/Performance_Timeline" target="_blank" rel="noopener">Performance Timeline API</a> 和 <a href="https://developer.mozilla.org/en-US/docs/Web/API/PerformanceObserver" target="_blank" rel="noopener">PerformanceObserver</a> 可以获取这些指标：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">  const entry = performance.getEntriesByType(&apos;navigation&apos;).find(</span><br><span class="line">    e =&gt; e.name === location.href);</span><br><span class="line">console.log(entry.serverTiming[0].toJSON());</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;name&quot;: &quot;Prerender&quot;,</span><br><span class="line">  &quot;duration&quot;: 3808,</span><br><span class="line">  &quot;description&quot;: &quot;Headless render time (ms)&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="性能结果"><a href="#性能结果" class="headerlink" title="性能结果"></a>性能结果</h3><p><strong>注意：</strong> 这些数据体现了我随后讨论的大多数性能<a href="#optimizations">优化</a>。</p>
+<p>性能数据怎么样？在我的一个<a href="https://devwebfeed.appspot.com/ssr" target="_blank" rel="noopener">应用</a>(<a href="https://github.com/ebidel/devwebfeed/blob/master/server.mjs" target="_blank" rel="noopener">代码</a>)上，无头 Chrome 渲染页面大约需要 1s。页面被缓存后， <strong>3G 低网速模拟</strong>下，<a href="https://developers.google.com/web/fundamentals/performance/user-centric-performance-metrics" target="_blank" rel="noopener">FCP</a> 要比客户端渲染版本的<strong>快 8.37s</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>&amp;nbsp;</th>
+<th><strong>首次绘制 (FP)</strong></th>
+<th><strong>首次内容绘制 (FCP)</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>客户端渲染</td>
+<td>4s</td>
+<td>11s</td>
+</tr>
+<tr>
+<td>服务端渲染</td>
+<td>2.3s</td>
+<td>~2.3s</td>
+</tr>
+</tbody></table>
+<p>这些结果很有用。因为服务端渲染页面<strong>不再依赖于 JavaScript 的加载</strong>，用户看到有意义的内容比以前快得多。</p>
+<br>
+
+<h2 id="Preventing-re-hydration"><a href="#Preventing-re-hydration" class="headerlink" title="Preventing re-hydration"></a>Preventing re-hydration</h2><hr>
+<p>还记得我说“我们无需在客户端应用上改任何代码”吗？那是骗你们的。</p>
+<p>Express 应用接收请求，使用 Puppeteer 将页面加载进无头浏览器，然后在响应中返回结果。但这里有一个问题。</p>
+<p>浏览器加载页面时，<strong>无头 Chrome 中相同的 JS</strong> 会在服务器上<strong>再次执行</strong>。有两处都在生成 HTML。 </p>
+<p>一起来修复这个问题。我们要告知页面，它的 HTML 早就名花有主了。我找到的解决方案是，在页面加载时判断 <code>&lt;ul id=&quot;posts&quot;&gt;</code> 是否已在 DOM 中，如果在，页面就已经在服务端渲染过了，这样就可以避免重新创建 DOM。</p>
+<p><strong>public&#x2F;index.html</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div id=&quot;container&quot;&gt;</span><br><span class="line">    &lt;!-- Populated by JS (below) or by prerendering (server). Either way,</span><br><span class="line">         #container gets populated with the posts markup:</span><br><span class="line">      &lt;ul id=&quot;posts&quot;&gt;...&lt;/ul&gt;</span><br><span class="line">    --&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">...</span><br><span class="line">(async() =&gt; &#123;</span><br><span class="line">  const container = document.querySelector(&apos;#container&apos;);</span><br><span class="line"></span><br><span class="line">  // Posts markup is already in DOM if we&apos;re seeing a SSR&apos;d.</span><br><span class="line">  // Don&apos;t re-hydrate the posts here on the client.</span><br><span class="line">  const PRE_RENDERED = container.querySelector(&apos;#posts&apos;);</span><br><span class="line">  if (!PRE_RENDERED) &#123;</span><br><span class="line">    const posts = await fetch(&apos;/posts&apos;).then(resp =&gt; resp.json());</span><br><span class="line">    renderPosts(posts, container);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<br>
+
+<h2 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h2><hr>
+<p>除了缓存渲染结果之外，还有一些有趣的优化技巧。有的优化可以快速见效，而有的可能带有猜测性的。</p>
+<h3 id="中止不必要的请求"><a href="#中止不必要的请求" class="headerlink" title="中止不必要的请求"></a>中止不必要的请求</h3><p>现在，整个页面（以及它请求的所有资源）都无脑地加载进无头 Chrome。然而，我们只关注于两件事情：</p>
+<ol>
+<li>渲染 HTML</li>
+<li>生成 HTML 的 JS</li>
+</ol>
+<p><strong>不构造 DOM 的网络请求是浪费的</strong>。一些资源，比如图片、字体、样式表和媒体内容，不参与页面的 HTML 构建。它们负责添加样式，补充页面的结构，但并不显式地创建页面。我们应该告诉浏览器去忽略掉这些资源！这样可以减少无头 Chrome 的工作负担，从而<strong>节省带宽</strong>，并且潜在地<strong>加速了大型页面的预渲染时间</strong>。</p>
+<p><a href="https://chromedevtools.github.io/devtools-protocol/" target="_blank" rel="noopener">Protocol 开发者工具</a>提供了一个强大的特性，叫做<a href="https://chromedevtools.github.io/devtools-protocol/tot/Network#event-requestIntercepted" target="_blank" rel="noopener">网络拦截</a>。它可以用于<strong>在浏览器发出之前修改请求</strong>。Puppeteer 也支持网络拦截，它是通过打开 <a href="https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pagesetrequestinterceptionvalue" target="_blank" rel="noopener"><code>page.setRequestInterception(true)</code></a>，监听<a href="https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#event-request" target="_blank" rel="noopener">页面的 <code>request</code> 事件</a>来实现的。这样我们可以中止某些资源请求。</p>
+<p><strong>ssr.mjs</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">async function ssr(url) &#123;</span><br><span class="line">  ...</span><br><span class="line">  const page = await browser.newPage();</span><br><span class="line"></span><br><span class="line">  // 1. Intercept network requests.</span><br><span class="line">  await page.setRequestInterception(true);</span><br><span class="line"></span><br><span class="line">  page.on(&apos;request&apos;, req =&gt; &#123;</span><br><span class="line">    // 2. Ignore requests for resources that don&apos;t produce DOM</span><br><span class="line">    // (images, stylesheets, media).</span><br><span class="line">    const whitelist = [&apos;document&apos;, &apos;script&apos;, &apos;xhr&apos;, &apos;fetch&apos;];</span><br><span class="line">    if (!whitelist.includes(req.resourceType())) &#123;</span><br><span class="line">      return req.abort();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // 3. Pass through all other requests.</span><br><span class="line">    req.continue();</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  await page.goto(url, &#123;waitUntil: &apos;networkidle0&apos;&#125;);</span><br><span class="line">  const html = await page.content(); // serialized HTML of page DOM.</span><br><span class="line">  await browser.close();</span><br><span class="line"></span><br><span class="line">  return &#123;html&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>注意：</strong> 安全起见，我使用了一个白名单，允许所有其他类型的请求能够继续正常发出。预先避免中止掉其他必要的请求。</p>
+<h3 id="内联关键资源"><a href="#内联关键资源" class="headerlink" title="内联关键资源"></a>内联关键资源</h3><p>使用构建工具（比如 <code>gulp</code>）编译应用，并在构建时将关键 CSS&#x2F;JS 内联到页面内，是一种很常见的做法。由于浏览器初始化页面加载时的请求数更少了，这样也就加速了首次有效绘制时间。</p>
+<p>别用构建工具了，<strong>浏览器就是你的构建工具</strong>！我们可以用 Puppeteer 管理页面 DOM，内联样式，JavaScript， 或者其他任何你想在预渲染之前加到页面中的东西。</p>
+<p>这个例子演示了如何拦截本地样式表的响应，并将这些资源内联进 <code>&lt;style&gt;</code> 标签中：</p>
+<p><strong>ssr.mjs</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import urlModule from &apos;url&apos;;</span><br><span class="line">const URL = urlModule.URL;</span><br><span class="line"></span><br><span class="line">async function ssr(url) &#123;</span><br><span class="line">  ...</span><br><span class="line">  const stylesheetContents = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  // 1. Stash the responses of local stylesheets.</span><br><span class="line">  page.on(&apos;response&apos;, async resp =&gt; &#123;</span><br><span class="line">    const responseUrl = resp.url();</span><br><span class="line">    const sameOrigin = new URL(responseUrl).origin === new URL(url).origin;</span><br><span class="line">    const isStylesheet = resp.request().resourceType() === &apos;stylesheet&apos;;</span><br><span class="line">    if (sameOrigin &amp;&amp; isStylesheet) &#123;</span><br><span class="line">      stylesheetContents[responseUrl] = await resp.text();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  // 2. Load page as normal, waiting for network requests to be idle.</span><br><span class="line">  await page.goto(url, &#123;waitUntil: &apos;networkidle0&apos;&#125;);</span><br><span class="line"></span><br><span class="line">  // 3. Inline the CSS.</span><br><span class="line">  // Replace stylesheets in the page with their equivalent &lt;style&gt;.</span><br><span class="line">  await page.$$eval(&apos;link[rel=&quot;stylesheet&quot;]&apos;, (links, content) =&gt; &#123;</span><br><span class="line">    links.forEach(link =&gt; &#123;</span><br><span class="line">      const cssText = content[link.href];</span><br><span class="line">      if (cssText) &#123;</span><br><span class="line">        const style = document.createElement(&apos;style&apos;);</span><br><span class="line">        style.textContent = cssText;</span><br><span class="line">        link.replaceWith(style);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;, stylesheetContents);</span><br><span class="line"></span><br><span class="line">  // 4. Get updated serialized HTML of page.</span><br><span class="line">  const html = await page.content();</span><br><span class="line">  await browser.close();</span><br><span class="line"></span><br><span class="line">  return &#123;html&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这段代码：</p>
+<ol>
+<li>使用一个 <a href="https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#event-response" target="_blank" rel="noopener"><code>page.on(&#39;response&#39;)</code></a> 处理器来监听网络响应。</li>
+<li>储藏本地样式表的响应。</li>
+<li>找到 DOM 中所有的 <code>&lt;link rel=&quot;stylesheet&quot;&gt;</code>，将它们替换成一个等价的 <code>&lt;style&gt;</code>。具体见 <a href="https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pageevalselector-pagefunction-args" target="_blank" rel="noopener"><code>page.$$eval</code></a> API 文档。<code>style.textContent</code> 被设为样式表的响应内容。</li>
+</ol>
+<h3 id="自动压缩资源"><a href="#自动压缩资源" class="headerlink" title="自动压缩资源"></a>自动压缩资源</h3><p>另一个可以借助网络拦截玩的小把戏是<strong>修改请求的响应内容</strong>。</p>
+<p>举个例子，你想要压缩 CSS，但也希望开发阶段不要被压缩，这样开发时能方便些。假设你已经用另一个工具来预压缩 <code>styles.css</code>，可以用 <code>Request.respond()</code>，将 <code>styles.css</code> 的内容重写为 <code>styles.min.css</code>。</p>
+<p><strong>ssr.mjs</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import fs from &apos;fs&apos;;</span><br><span class="line"></span><br><span class="line">async function ssr(url) &#123;</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  // 1. Intercept network requests.</span><br><span class="line">  await page.setRequestInterception(true);</span><br><span class="line"></span><br><span class="line">  page.on(&apos;request&apos;, req =&gt; &#123;</span><br><span class="line">    // 2. If request is for styles.css, respond with the minified version.</span><br><span class="line">    if (req.url().endsWith(&apos;styles.css&apos;)) &#123;</span><br><span class="line">      return req.respond(&#123;</span><br><span class="line">        status: 200,</span><br><span class="line">        contentType: &apos;text/css&apos;,</span><br><span class="line">        body: fs.readFileSync(&apos;./public/styles.min.css&apos;, &apos;utf-8&apos;)</span><br><span class="line">      &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line"></span><br><span class="line">    req.continue();</span><br><span class="line">  &#125;);</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  const html = await page.content();</span><br><span class="line">  await browser.close();</span><br><span class="line"></span><br><span class="line">  return &#123;html&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="重用-Chrome-实例实现交叉渲染"><a href="#重用-Chrome-实例实现交叉渲染" class="headerlink" title="重用 Chrome 实例实现交叉渲染"></a>重用 Chrome 实例实现交叉渲染</h3><p>每次预渲染都启动新的浏览器会很浪费。相反，你希望只启动一个实例，然后在多个页面渲染时重用它。</p>
+<p>Puppeteer 可以通过调用 <a href="https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#puppeteerconnectoptions" target="_blank" rel="noopener"><code>puppeteer.connect()</code></a>，连接到一个已有的 Chrome 实例，它接收实例的远程调试 URL 作为参数。为保证浏览器实例的长时间运行，我们可以将 <code>ssr()</code> 函数启动 Chrome 这部分代码移到 Express 服务器里。</p>
+<p><strong>server.mjs</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import express from &apos;express&apos;;</span><br><span class="line">import puppeteer from &apos;puppeteer&apos;;</span><br><span class="line">import ssr from &apos;./ssr.mjs&apos;;</span><br><span class="line"></span><br><span class="line">let browserWSEndpoint = null;</span><br><span class="line">const app = express();</span><br><span class="line"></span><br><span class="line">app.get(&apos;/&apos;, async (req, res, next) =&gt; &#123;</span><br><span class="line">  if (!browserWSEndpoint) &#123;</span><br><span class="line">    const browser = await puppeteer.launch();</span><br><span class="line">    browserWSEndpoint = await browser.wsEndpoint();</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  const url = `$&#123;req.protocol&#125;://$&#123;req.get(&apos;host&apos;)&#125;/index.html`;</span><br><span class="line">  const &#123;html&#125; = await ssr(url, browserWSEndpoint);</span><br><span class="line"></span><br><span class="line">  return res.status(200).send(html);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p><strong>ssr.mjs</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import puppeteer from &apos;puppeteer&apos;;</span><br><span class="line"></span><br><span class="line">/**</span><br><span class="line"> * @param &#123;string&#125; url URL to prerender.</span><br><span class="line"> * @param &#123;string&#125; browserWSEndpoint Optional remote debugging URL. If</span><br><span class="line"> *     provided, Puppeteer&apos;s reconnects to the browser instance. Otherwise,</span><br><span class="line"> *     a new browser instance is launched.</span><br><span class="line"> */</span><br><span class="line">async function ssr(url, browserWSEndpoint) &#123;</span><br><span class="line">  ...</span><br><span class="line">  console.info(&apos;Connecting to existing Chrome instance.&apos;);</span><br><span class="line">  const browser = await puppeteer.connect(&#123;browserWSEndpoint&#125;);</span><br><span class="line"></span><br><span class="line">  const page = await browser.newPage();</span><br><span class="line">  ...</span><br><span class="line">  await page.close(); // Close the page we opened here (not the browser).</span><br><span class="line"></span><br><span class="line">  return &#123;html&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="例子：实现周期性预渲染的定时任务"><a href="#例子：实现周期性预渲染的定时任务" class="headerlink" title="例子：实现周期性预渲染的定时任务"></a>例子：实现周期性预渲染的定时任务</h4><p>在 <a href="https://devwebfeed.appspot.com/ssr" target="_blank" rel="noopener">App 引擎面板应用</a> 里，我创建了一个<a href="https://cloud.google.com/appengine/docs/flexible/nodejs/scheduling-jobs-with-cron-yaml" target="_blank" rel="noopener">定时处理器</a>，来周期性的重复渲染排名前几位的页面。帮助用户快速看到最新内容，他们根本感知不到一个新页面的启动性能消耗。在这个例子中，生成多个 Chrome 实例会很浪费。相反，我用了一个共享的浏览器实例来一次性渲染这些页面。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import puppeteer from &apos;puppeteer&apos;;</span><br><span class="line">import * as prerender from &apos;./ssr.mjs&apos;;</span><br><span class="line">import urlModule from &apos;url&apos;;</span><br><span class="line">const URL = urlModule.URL;</span><br><span class="line"></span><br><span class="line">app.get(&apos;/cron/update_cache&apos;, async (req, res) =&gt; &#123;</span><br><span class="line">  if (!req.get(&apos;X-Appengine-Cron&apos;)) &#123;</span><br><span class="line">    return res.status(403).send(&apos;Sorry, cron handler can only be run as admin.&apos;);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  const browser = await puppeteer.launch();</span><br><span class="line">  const homepage = new URL(`$&#123;req.protocol&#125;://$&#123;req.get(&apos;host&apos;)&#125;`);</span><br><span class="line"></span><br><span class="line">  // Re-render main page and a few pages back.</span><br><span class="line">  prerender.clearCache();</span><br><span class="line">  await prerender.ssr(homepage.href, await browser.wsEndpoint());</span><br><span class="line">  await prerender.ssr(`$&#123;homepage&#125;?year=2018`);</span><br><span class="line">  await prerender.ssr(`$&#123;homepage&#125;?year=2017`);</span><br><span class="line">  await prerender.ssr(`$&#123;homepage&#125;?year=2016`);</span><br><span class="line">  await browser.close();</span><br><span class="line"></span><br><span class="line">  res.status(200).send(&apos;Render cache updated!&apos;);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>我还在 <strong>ssr.js</strong> export 上加了一个 <code>clearCache()</code> 函数。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">...</span><br><span class="line">function clearCache() &#123;</span><br><span class="line">  RENDER_CACHE.clear();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">export &#123;ssr, clearCache&#125;;</span><br></pre></td></tr></table></figure>
+
+<br>
+## 其他因素
+------------------------------------
+
+<h3 id="告诉页面：“你正在被无头浏览器渲染”"><a href="#告诉页面：“你正在被无头浏览器渲染”" class="headerlink" title="告诉页面：“你正在被无头浏览器渲染”"></a>告诉页面：“你正在被无头浏览器渲染”</h3><p>当页面正在服务器上的无头 Chrome 中渲染时，客户端逻辑很有必要知道这一信息。我的应用使用了钩子来“关闭”部分不参与渲染 post 节点的页面。举例来说，我禁用了懒加载 <a href="https://firebase.google.com/docs/web/setup" target="_blank" rel="noopener">firebase-auth.js</a> 这部分代码。根本不需要用户登录！</p>
+<p>在 URL 上加一个 <code>?headless</code> 参数，是一个给页面加钩子的简单方法：</p>
+<p><strong>ssr.mjs</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">import urlModule from &apos;url&apos;;</span><br><span class="line">const URL = urlModule.URL;</span><br><span class="line"></span><br><span class="line">async function ssr(url) &#123;</span><br><span class="line">  ...</span><br><span class="line">  // Add ?headless to the URL so the page has a signal</span><br><span class="line">  // it&apos;s being loaded by headless Chrome.</span><br><span class="line">  const renderUrl = new URL(url);</span><br><span class="line">  renderUrl.searchParams.set(&apos;headless&apos;, &apos;&apos;);</span><br><span class="line">  await page.goto(renderUrl, &#123;waitUntil: &apos;networkidle0&apos;&#125;);</span><br><span class="line">  ...</span><br><span class="line"></span><br><span class="line">  return &#123;html&#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以在页面内查询该参数：</p>
+<p><strong>public&#x2F;index.html</strong></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;html&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">  &lt;div id=&quot;container&quot;&gt;</span><br><span class="line">    &lt;!-- Populated by the JS below. --&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line">&lt;script&gt;</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line">(async() =&gt; &#123;</span><br><span class="line">  const params = new URL(location.href).searchParams;</span><br><span class="line"></span><br><span class="line">  const RENDERING_IN_HEADLESS = params.has(&apos;headless&apos;);</span><br><span class="line">  if (RENDERING_IN_HEADLESS) &#123;</span><br><span class="line">    // Being rendered by headless Chrome on the server.</span><br><span class="line">    // e.g. shut off features, don&apos;t lazy load non-essential resources, etc.</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  const container = document.querySelector(&apos;#container&apos;);</span><br><span class="line">  const posts = await fetch(&apos;/posts&apos;).then(resp =&gt; resp.json());</span><br><span class="line">  renderPosts(posts, container);</span><br><span class="line">&#125;)();</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Tip：<a href="https://github.com/GoogleChrome/puppeteer/blob/master/docs/api.md#pageevaluateonnewdocumentpagefunction-args" target="_blank" rel="noopener"><code>Page.evaluateOnNewDocument()</code></a> 也可以方便的查询参数。它会在页面中注入代码，让 Puppeteer 在页面中剩余待执行的 JavaScript 之前运行这些代码。</p>
+<h3 id="避免-PV-膨胀"><a href="#避免-PV-膨胀" class="headerlink" title="避免 PV 膨胀"></a>避免 PV 膨胀</h3><p>你如果正在页面上使用分析工具，那么要小心了。预渲染的页面可能会造成 PV 出现膨胀。具体来说，<strong>打点数据将会提升2倍</strong>，一半是在无头 Chrome 渲染时，另一半出现在用户浏览器渲染时。</p>
+<p>那么怎么修复这个问题呢？将所有加载分析脚本的请求拦截掉。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">page.on(&apos;request&apos;, req =&gt; &#123;</span><br><span class="line">  // Don&apos;t load Google Analytics lib requests so pageviews aren&apos;t 2x.</span><br><span class="line">  const blacklist = [&apos;www.google-analytics.com&apos;, &apos;/gtag/js&apos;, &apos;ga.js&apos;, &apos;analytics.js&apos;];</span><br><span class="line">  if (blacklist.find(regex =&gt; req.url().match(regex))) &#123;</span><br><span class="line">    return req.abort();</span><br><span class="line">  &#125;</span><br><span class="line">  ...</span><br><span class="line">  req.continue();</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>代码不加载，页面访问就不会被记录。真 Skr 个机灵鬼 💥。</p>
+<p>或者，你也可以继续加载分析脚本，来获悉服务器上运行的预渲染器数。</p>
+<br>
+
+<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><hr>
+<p>Puppeteer 通过运行无头 Chrome，不费吹灰之力就实现了服务端渲染。<strong>提升加载性能</strong>和<strong>没有改动大量代码就增强了应用的可索引性</strong>，是这个方案中我最喜欢的“特性”。</p>
+<p><strong>注意：</strong> 如果你对文章中描述的技术感兴趣，可以去看看<a href="https://devwebfeed.appspot.com/ssr" target="_blank" rel="noopener">这个应用</a>，以及<a href="https://github.com/ebidel/devwebfeed/blob/master/server.mjs" target="_blank" rel="noopener">它的代码</a>。</p>
+<br>
+
+<h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><hr>
+<h3 id="现有技术的讨论"><a href="#现有技术的讨论" class="headerlink" title="现有技术的讨论"></a>现有技术的讨论</h3><p>很难在服务端上渲染客户端应用。有多难？去看看大家给这个话题奉献了多少个 <a href="https://www.npmjs.com/search?q=server%20side%20rendering" target="_blank" rel="noopener">npm 包</a>就知道了。有数不清的<a href="https://en.wikipedia.org/wiki/Isomorphic_JavaScript" target="_blank" rel="noopener">模式</a>，<a href="https://github.com/GoogleChrome/rendertron" target="_blank" rel="noopener">工具</a>，和<a href="https://prerender.io/" target="_blank" rel="noopener">服务</a>来辅助服务端渲染的 JS 应用。</p>
+<h4 id="同构-JavaScript"><a href="#同构-JavaScript" class="headerlink" title="同构 JavaScript"></a>同构 JavaScript</h4><p>同构 JavaScript 的概念很简单：同样的代码既能在服务端运行，也能在客户端（浏览器）运行。服务器和客户端共享代码，美滋滋！</p>
+<p>实践中，我发现同构 JS 很难实现。这是我自己的问题…</p>
+<blockquote>
+<p>我最近开始做一个<a href="https://github.com/ebidel/devwebfeed/blob/master/server.mjs" target="_blank" rel="noopener">项目</a>，尝试下 <a href="https://github.com/Polymer/lit-html" target="_blank" rel="noopener">lit-html</a>。Lit 是一个优秀的库，它可以允许你写使用 JS 模板字符串写 <a href="https://www.html5rocks.com/en/tutorials/webcomponents/template/" target="_blank" rel="noopener">HTML &lt;template&gt;</a>，然后高效地将这些模板渲染为 DOM。问题是它的核心特性（使用 <code>&lt;template&gt;</code> 元素）只能在浏览器上工作。这意味着它在 Node 服务器上不能运行。我希望 Node 和前端共享的 SSR 代码能够脱离 window 对象。</p>
+</blockquote>
+<blockquote>
+<p>最后我意识到可以使用无头 Chrome 来服务端渲染应用，Chrome 是经用户的手运行或是在服务器上自动运行并不重要，它反正是愉快地执行了所有 JS。不要多问。 </p>
+</blockquote>
+<p>无头 Chrome 在服务器和客户端上启用 “同构 JS”。它对于当前库不支持服务端（Node）给出了一个不错的解决方案。</p>
+<h4 id="预渲染工具"><a href="#预渲染工具" class="headerlink" title="预渲染工具"></a>预渲染工具</h4><p>Node 社区已经诞生了好几吨解决服务端渲染 JS 应用的工具。毫无新意！个人而言，我发现各人对于这些工具的体会可能不同，所以使用这些工具前肯定要做好功课。比如说，一些服务端渲染工具比较老，并且没有使用无头 Chrome（或者任何其他无头浏览器）。相反，它们使用 PhantomJS（又名旧 Safari），这意味着使用新特性时页面不会正确渲染。</p>
+<p>一个值得注意的例外是 <a href="https://github.com/prerender/prerender/" target="_blank" rel="noopener">Prerender</a>。Prerender 使用了无头 Chrome 和 <a href="https://github.com/prerender/prerender-node" target="_blank" rel="noopener">Express 中间件</a>。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const prerender =  require(&apos;prerender&apos;);  </span><br><span class="line">const server = prerender();  </span><br><span class="line">server.use(prerender.removeScriptTags());  </span><br><span class="line">server.use(prerender.blockResources());  </span><br><span class="line">server.start();</span><br></pre></td></tr></table></figure>
+
+<p>Prerender 省去了跨平台下载和安装 Chrome 的所有细节。要正确完成这一过程通常是相当棘手的，这也是 <a href="https://developers.google.com/web/tools/puppeteer/faq#q_which_chromium_version_does_puppeteer_use" target="_blank" rel="noopener">Puppeteer</a> 存在的原因之一。我也提了一些渲染我的部分应用的 issue。</p>
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/Puppeteer/1.png" alt="浏览器中渲染的 Chrome 状态"></p>
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/Puppeteer/2.png" alt="prerender 渲染的 Chrome 状态"></p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

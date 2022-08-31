@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            HTTPS 知识点
+        </div>
+        <div class="post-meta">
+            2016-03-09
+        </div>
+    
+
+    <div class="post-md">
+        <p>1.网景公司首创，所有主要浏览器和服务器都支持此协议<br>2.使用HTTPS时，所有的HTTP请求和响应数据在发送到网络之前，都要进行加密。HTTPS在HTTP和TCP之间加入了一个传输级的安全层，可以使用SSL或者TLS。TLS&#x2F;SSL中使用了非对称加密、对称加密、Hash算法等。<br>3.密钥是一种参数，它是在明文转换为密文或将密文转换为明文的算法中输入的参数。密钥分为对称密钥与非对称密钥。<br>4.数字加密<br>　1）对称密钥加密（DES、RC2、RC4）<br>　　　加密和解密使用相同的密钥。<br>　　　优点:加密解密的效率比较高    <br>　　　缺点：发送端和接收端需要共享一把密钥。对于有多个数据交换需求的个体，两两之间需要分配并维护一把密钥，带来巨大的成本开销<br>　2）非对称密钥加密（RSA）<br>　　　使用两个不同的密钥进行编码和解码，编码密钥是公开的，但只有主机才知道私有的解密密钥。<br>　　　公钥加密的数据只能通过私钥解开，私钥加密的数据只能通过公钥解开。<br>　　　<strong>问题1：数据传输仅单向安全</strong>。因为公钥也可以解开私钥加密的数据，而公钥又是公开的，那么只要中间代理拿到公钥后就可以在数据发回浏览器的途中解开数据。HTTPS结合使用了非对称加密、对称加密，避免了这个问题。<br>　　　　　整个加密通信的流程如下：<br>　　　　　　１．小明访问XX,XX将自己的证书发给浏览器<br>　　　　　　２．浏览器从证书中拿到XX的公钥A<br>　　　　　　３．浏览器生成一个只有自己知道的对称密钥B，用公钥A加密，并传给XX<br>　　　　　　４．XX通过私钥解密，拿到对称密钥B<br>　　　　　　５．浏览器、XX之间的数据通信，都通过密钥B进行加密</p>
+<p>　　　　　如此，也解决了非对称密钥加解密效率低的问题。<br>　　　问题2：公钥如何获取，如何保证不被篡改。<strong>HTTPS将公钥放在数字证书中</strong>，只要数字证书是可信的，公钥就是可信的。    <br>　3）数字签名<br>　　　对传输的内容，通过hash算法计算出一段固定长度的串，这段字符串就是“摘要”。然后通过CA的私钥对这段摘要进行加密，加密得到的结果就是数字签名。数字签名用于说明是谁编写的报文，同时证明报文未被篡改过。<br>　　　数字签名通常是用非对称密钥技术产生<br>　4）数字证书<br>　　　包含了由某个受信任组织担保的用户或公司的相关信息，相当于网站的身份证<br>　　　数字证书的主要内容包括：<br>　　　　1. 对象的名称<br>　　　　2. 过期时间<br>　　　　3. 证书发布者<br>　　　　4. 来自证书发布者的数字签名</p>
+<hr>
+<p>参考链接： </p>
+<ol>
+<li><a href="https://segmentfault.com/a/1190000004523659" target="_blank" rel="noopener">HTTPS科普扫盲帖</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2014/02/ssl_tls.html" target="_blank" rel="noopener">SSL&#x2F;TLS协议运行机制的概述</a></li>
+</ol>
+<p>          </p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

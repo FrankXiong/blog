@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            一个优化的快速排序
+        </div>
+        <div class="post-meta">
+            2016-04-17
+        </div>
+    
+
+    <div class="post-md">
+        <p>快速排序是一个最差时间复杂度为O(n²)的排序算法，这种情况通常出现在选择的轴值(pivot)不能将数组划分为两个长度相等的子数组的时候，比如数组逆序排列的时候，如果选择第一个数作为轴值，划分的子数组的大小分别为0和n-1，此时算法的性能最差。</p>
+<p>一个较好的办法是“三数取中”，查看当前数组的第一个、中间一个和最后一个位置的数组，取其中位数，以此来降低轴值选择得不好的可能性。</p>
+<p>JavaScript实现代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Array.prototype.swap = function (i, j) &#123;</span><br><span class="line">  var t = this[i];</span><br><span class="line">  this[i] = this[j];</span><br><span class="line">  this[j] = t;</span><br><span class="line">&#125;;</span><br><span class="line">//三数取中，将开头、中间、结尾三个数中间那个数交换到数组开头</span><br><span class="line">Array.prototype.partionMedianOfThree = function(start,end)&#123;</span><br><span class="line">    var mid = Math.floor(start+(end-start)/2);</span><br><span class="line">    if(this[start]&gt;this[end])&#123;</span><br><span class="line">        this.swap(start,end);</span><br><span class="line">    &#125;</span><br><span class="line">    if(this[mid]&gt;this[end])&#123;</span><br><span class="line">        this.swap(mid,end);</span><br><span class="line">    &#125;</span><br><span class="line">    if(this[mid]&gt;this[start])&#123;</span><br><span class="line">        this.swap(mid,start);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line">Array.prototype.quickSortHelper = function(start,end)&#123;</span><br><span class="line">    if(start&gt;=end)&#123;</span><br><span class="line">        return;</span><br><span class="line">    &#125;</span><br><span class="line">    this.partionMedianOfThree(start,end);</span><br><span class="line">    var pivotIdx = start;</span><br><span class="line">    var pivot = this[pivotIdx];</span><br><span class="line">    var i = start+1;</span><br><span class="line">    var n = end;</span><br><span class="line">    while(i&lt;=n)&#123;</span><br><span class="line">        if(this[i] &lt; pivot)&#123;</span><br><span class="line">           //比轴值小则交换</span><br><span class="line">            this.swap(pivotIdx,i);</span><br><span class="line">            i++;</span><br><span class="line">            pivotIdx = i;</span><br><span class="line">        &#125;else&#123;</span><br><span class="line">            this.swap(n,i);</span><br><span class="line">            n--;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    //递归地对子数组进行排序</span><br><span class="line">    this.quickSortHelper(start,pivotIdx-1);</span><br><span class="line">    this.quickSortHelper(pivotIdx+1,end);</span><br><span class="line">&#125;</span><br><span class="line">Array.prototype.quickSort = function () &#123;</span><br><span class="line">  this.quickSortHelper(0, this.length-1);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>测试一下算法的性能：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function test () &#123;</span><br><span class="line">    var arr = [];</span><br><span class="line">    for (var i = 0; i &lt; 1000000; i++) &#123;</span><br><span class="line">        arr.push(Math.round(Math.random(i) * 10000));</span><br><span class="line">    &#125;</span><br><span class="line">    doTest(arr, 1);</span><br><span class="line">&#125;</span><br><span class="line">function doTest(arr, n) &#123;</span><br><span class="line">    var tStart = (new Date()).getTime();</span><br><span class="line">    var re = arr.quickSort1(0,arr.length-1);</span><br><span class="line">    var tEnd = (new Date()).getTime();</span><br><span class="line">    console.log(&apos;快速排序使用时间是:&apos; + (tEnd - tStart) + &apos;ms&apos;);</span><br><span class="line">    return re;</span><br><span class="line">&#125;</span><br><span class="line">test();//输出：快速排序使用时间是:227ms</span><br></pre></td></tr></table></figure>
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

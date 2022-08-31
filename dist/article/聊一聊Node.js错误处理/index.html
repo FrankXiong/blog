@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            聊一聊 Node.js 错误处理
+        </div>
+        <div class="post-meta">
+            2019-12-26
+        </div>
+    
+
+    <div class="post-md">
+        <h1 id="错误分类"><a href="#错误分类" class="headerlink" title="错误分类"></a>错误分类</h1><p>软件程序中，<strong>我们可以将错误大致分为外部错误和内部错误两大类</strong>。</p>
+<p>外部错误是正确编写的程序在运行时产生的错误。它并不是程序本身的 bug，更多是一些外部原因导致的问题，比如请求超时、服务器返回500、内存不足等。</p>
+<p>而内部错误是程序里的 bug。比如传参类型错误、读取 undefined 的一个属性等。这类问题跟你选择的开发语言、开发者的编程经验、系统复杂度等因素息息相关，虽然无法避免，但可以通过修改代码来修复它。</p>
+<p>对应到 Node.js 程序上，一般遇到以下四类错误：</p>
+<ol>
+<li>标准的 JavaScript 错误。例如 SyntaxError、RangeError、ReferenceError、TypeError等。</li>
+<li>由底层操作系触发的系统错误，例如试图打开不存在的文件。</li>
+<li>用户自定义错误。</li>
+<li>断言错误。这类错误通常来自 assert 模块。</li>
+</ol>
+<p>注：本文中不区分错误和异常，都将其统称为错误。</p>
+<h1 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h1><p>当错误发生后，我们需要第一时间去处理它。针对不同类型的错误，有不同的措施。处理错误的总体原则：</p>
+<ol>
+<li>及时止损，防止系统级崩溃。</li>
+<li>详细记录现场，方便分析原因。</li>
+</ol>
+<h2 id="外部错误"><a href="#外部错误" class="headerlink" title="外部错误"></a>外部错误</h2><p>程序运行过程中，可能会遇到各种外部因素导致的问题，这些问题需要具体问题具体分析。我们没办法保证外部服务提供方的稳定性，但是遇到此类问题时，可以做一些事情，来保证我们的程序不至于直接崩溃。</p>
+<p>举个例子，秒杀场景的业务经常会承受非常大的 QPS，在一波瞬间大流量的冲击，后端服务扛不住的话会报 5XX 错误。在后端服务挂掉后，我们可能会去读 redis 等缓存中的数据，用旧数据来兜底。而当 Node.js 应用也挂掉了，还可以在 Nginx 层进行 CDN 降级，给用户输出一个兜底的静态页。</p>
+<p>还有些来自后端服务的错误，只需要进行简单的重试就能解决。如果要重试的话，要确定重试的次数，以及重试的间隔。</p>
+<p>有人建议在发生错误后直接崩溃掉，防止错误扩散。个人认为其实是不合理的，会降低服务的可用性。我们可以在出现一些严重的错误后，先记录下错误，然后重启进程。在 Node.js 中，未捕获的 JavaScript 异常一直冒泡回到事件循环时，会触发 process.uncaughtException 事件。我们可以在事件回调中做错误上报，然后重启 Node.js 进程。这时，还需要借助 Cluster 来启动多个 Node 进程，保证单进程崩溃重启不会影响整体服务的可用性。实际的生产环境中，使用 PM2 来管理 Node.js 进程是一个更好的选项。</p>
+<p>我们永远也无法阻止外部错误，它跟你的业务场景、用户终端等各种不可控的因素相关。但是我们如果做好监控、告警、日志、缓存等工作，可以方便程序员迅速定位&#x2F;解决问题，从而将损失降至最低。</p>
+<h2 id="内部错误"><a href="#内部错误" class="headerlink" title="内部错误"></a>内部错误</h2><h3 id="同步场景"><a href="#同步场景" class="headerlink" title="同步场景"></a>同步场景</h3><p>对于 JavaScript 错误，我们可以使用 throw 抛出，并用 try catch 来捕获住。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'some error'</span>)</span><br><span class="line">&#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">  <span class="built_in">console</span>.error(e)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而且对于 throw 抛出的异常必须要 try catch 包裹，否则 Node.js 进程会直接退出。这种写法可以获取到完整的错误调用堆栈。比如：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fs.js:<span class="number">115</span></span><br><span class="line">    <span class="keyword">throw</span> err;</span><br><span class="line">    ^</span><br><span class="line"></span><br><span class="line"><span class="built_in">Error</span>: ENOENT: no such file or directory, scandir <span class="string">'/Users/frank/code/work/wxapp/src/componentsa'</span></span><br><span class="line">    at <span class="built_in">Object</span>.readdirSync (fs.js:<span class="number">783</span>:<span class="number">3</span>)</span><br><span class="line">    at getDirFilePaths (<span class="regexp">/Users/</span>frank/code/m/demo/readdir.js:<span class="number">8</span>:<span class="number">22</span>)</span><br><span class="line">    at <span class="built_in">Object</span>.&lt;anonymous&gt; (<span class="regexp">/Users/</span>frank/code/m/demo/readdir.js:<span class="number">27</span>:<span class="number">15</span>)</span><br><span class="line">    at Module._compile (internal/modules/cjs/loader.js:<span class="number">688</span>:<span class="number">30</span>)</span><br><span class="line">    at <span class="built_in">Object</span>.Module._extensions..js (internal/modules/cjs/loader.js:<span class="number">699</span>:<span class="number">10</span>)</span><br><span class="line">    at Module.load (internal/modules/cjs/loader.js:<span class="number">598</span>:<span class="number">32</span>)</span><br><span class="line">    at tryModuleLoad (internal/modules/cjs/loader.js:<span class="number">537</span>:<span class="number">12</span>)</span><br><span class="line">    at <span class="built_in">Function</span>.Module._load (internal/modules/cjs/loader.js:<span class="number">529</span>:<span class="number">3</span>)</span><br><span class="line">    at <span class="built_in">Function</span>.Module.runMain (internal/modules/cjs/loader.js:<span class="number">741</span>:<span class="number">12</span>)</span><br><span class="line">    at startup (internal/bootstrap/node.js:<span class="number">285</span>:<span class="number">19</span>)</span><br></pre></td></tr></table></figure>
+
+<p>众所周知，JS 函数调用会形成一系列的栈帧，为了尽可能的恢复错误发生现场，最好在错误上报时带上堆栈信息。Node.js 中，<code>Error.captureStackTrace()</code> 方法是 v8 引擎暴露出来的，处理错误堆栈信息的 API。</p>
+<blockquote>
+<p>Error.captureStackTrace(targetObject[, constructorOpt])<br>在 targetObject 中添加一个 .stack 属性。对该属性进行访问时，将以字符串的形式返回 Error.captureStackTrace() 语句被调用时的代码位置信息(即：调用栈历史)。</p>
+</blockquote>
+<p>值得注意的是，它的第二个参数可以用来控制栈帧的终点。在一些底层库中，这个参数可以用来向开发者隐藏内部实现细节。</p>
+<p>实际的生产环境中，我们可以使用 <code>nested-error-stacks</code> 这类 npm 包来采集堆栈信息，原理其实也是基于 Error.captureStackTrace()。</p>
+<p>这里有个问题是：<strong>try catch 代码块是同步的，对于异步 API 发生的错误，它不能捕获到</strong>。</p>
+<p>比如下列代码：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  setTimeout(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'some error'</span>)</span><br><span class="line">  &#125;, <span class="number">1000</span>)</span><br><span class="line">&#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">'some error...'</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>错误并不能被捕获住。这个跟 Node.js 的事件循环机制有关，因为异步任务是通过事件队列来实现的，每次从事件队列中取出一个函数来执行时，实际上这个函数是在调用栈的最顶层执行的，如果它抛出了一个异常，也是无法沿着调用栈回溯到这个异步任务的创建者的。</p>
+<p>下面介绍下在异步流程中，我们应该怎么处理错误。</p>
+<h3 id="异步场景"><a href="#异步场景" class="headerlink" title="异步场景"></a>异步场景</h3><p>Node.js 中常见异步场景包括三类：</p>
+<ul>
+<li>Node.js style callback</li>
+<li>Promise</li>
+<li>EventEmitter</li>
+</ul>
+<p>大部分异步 API 都遵循错误回调优先的约定，将 Error 作为 callback 的第一个参数来传递，这种风格比较类似函数式编程中的 <a href="https://en.wikipedia.org/wiki/Continuation-passing_style" target="_blank" rel="noopener">Continuation-passing style</a>。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line">fs.readFile(path, <span class="string">'r'</span>, (err, data) =&gt; &#123;</span><br><span class="line">  <span class="keyword">if</span> (err) &#123;</span><br><span class="line">    <span class="keyword">throw</span> err</span><br><span class="line">  &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">      <span class="comment">// handle data</span></span><br><span class="line">    &#125; <span class="keyword">catch</span>(e) &#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这种写法很容易造成回调地狱。另一方面，对于回调函数中的同步逻辑，我们还需要用 try catch 去单独处理，这导致错误逻辑的处理被分散了两处。Promise 被正式 ES6 标准化后，我们可以用 Promise 的链式调用来处理错误。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    reject(<span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'some error'</span>));</span><br><span class="line">  &#125;)</span><br><span class="line">  .then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;)</span><br><span class="line">  .then(<span class="function"><span class="params">()</span> =&gt;</span> &#123;</span><br><span class="line">    ...</span><br><span class="line">  &#125;)</span><br><span class="line">  .catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">    </span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+<p>这样，Promise 链上的错误都会在 catch 方法上捕获住。对于没有 catch 的 Promise 异常，会一直冒泡到顶层，在 <code>process.unhandledRejection</code> 事件上被捕获住。</p>
+<p>还有一类是 EventEmitter 对象上的错误。它们会被分发到 error 事件上进行处理，比如 Stream 等。我们需要去为每一个流去监听 error 事件，否则会冒泡到process.uncaughtException 事件上去。</p>
+<p>异步场景中，还有个问题就是，会丢失异步回调前的错误堆栈。原因还是上文提到的 Node.js 事件循环机制。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">const</span> foo = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">Error</span>(<span class="string">'some error'</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> bar = <span class="function"><span class="keyword">function</span> (<span class="params"></span>) </span>&#123;</span><br><span class="line">  setTimeout(foo)</span><br><span class="line">&#125;</span><br><span class="line">bar()</span><br></pre></td></tr></table></figure>
+
+<p>输出结果：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">Error</span>: some error</span><br><span class="line">    at Timeout.foo [<span class="keyword">as</span> _onTimeout] (<span class="regexp">/Users/</span>frank/code/m/demo/readdir.js:<span class="number">47</span>:<span class="number">9</span>)</span><br><span class="line">    at ontimeout (timers.js:<span class="number">436</span>:<span class="number">11</span>)</span><br><span class="line">    at tryOnTimeout (timers.js:<span class="number">300</span>:<span class="number">5</span>)</span><br><span class="line">    at listOnTimeout (timers.js:<span class="number">263</span>:<span class="number">5</span>)</span><br><span class="line">    at Timer.processTimers (timers.js:<span class="number">223</span>:<span class="number">10</span>)</span><br></pre></td></tr></table></figure>
+
+<p>可以看到丢失了 bar 的调用栈。然而在 Node.js 中，异步调用场景还挺多的，有什么办法可以将多个异步调用给串起来，获取到完整的调用链信息呢？答案是有的。Node.js v8+ 上提供了 async_hooks 模块，用来完善异步场景的监控。</p>
+<h3 id="async-hooks"><a href="#async-hooks" class="headerlink" title="async_hooks"></a>async_hooks</h3><p>async_hooks 提供了一些 API 用于跟踪 Node.js 中的异步资源的生命周期。有几个概念：</p>
+<ul>
+<li>每个异步函数的作用域，我们称之为 async scope。</li>
+<li>每一个 async scope 中都有一个 asyncId, 用来标记当前作用域。相同 async scope 的 asyncId 也相同。每个异步资源在创建时 asyncId 全量递增的。</li>
+<li>每一个 async scope 中都有一个 triggerAsyncId 表示当前函数是由哪个 async scope 触发生成的。</li>
+<li>通过 asyncId 和 triggerAsyncId，我们可以获取到异步资源的调用链。</li>
+<li>async_hooks.createHooks 函数可以用来给每个异步资源添加 init&#x2F;before&#x2F;after&#x2F;destory 等生命周期钩子函数。</li>
+</ul>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="built_in">console</span>.log(<span class="string">'global.asyncId:'</span>, async_hooks.executionAsyncId());  <span class="comment">// global.asyncId: 1</span></span><br><span class="line"><span class="built_in">console</span>.log(<span class="string">'global.triggerAsyncId:'</span>, async_hooks.triggerAsyncId()); <span class="comment">// global.triggerAsyncId: 0</span></span><br><span class="line">fs.open(<span class="string">'./app.js'</span>, <span class="string">'r'</span>, (err, fd) =&gt; &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'fs.open.asyncId:'</span>, async_hooks.executionAsyncId()); <span class="comment">// fs.open.asyncId: 7</span></span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">'fs.open.triggerAsyncId:'</span>, async_hooks.triggerAsyncId()); <span class="comment">// fs.open.triggerAsyncId: 1</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>回调函数中的 triggerAsyncId 为 1，它等于 global scope 上的 asyncId。这样就可以拿到多个异步调用的调用链。</p>
+<p>国内的赵坤大神写过一个 koa 日志中间件 <a href="https://github.com/nswbmw/koa-await-breakpoint" target="_blank" rel="noopener">koa-await-breakpoint</a>，用于实现在每个 await 执行的语句前后进行自动打点工作。</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// On top of the main file</span></span><br><span class="line"><span class="keyword">const</span> koaAwaitBreakpoint = <span class="built_in">require</span>(<span class="string">'koa-await-breakpoint'</span>)(&#123;</span><br><span class="line">  name: <span class="string">'api'</span>,</span><br><span class="line">  files: [<span class="string">'./routes/*.js'</span>]</span><br><span class="line">&#125;)</span><br><span class="line"><span class="keyword">const</span> Koa = <span class="built_in">require</span>(<span class="string">'koa'</span>)</span><br><span class="line"><span class="keyword">const</span> app = <span class="keyword">new</span> Koa()</span><br><span class="line"><span class="comment">// Generally, above other middlewares</span></span><br><span class="line">app.use(koaAwaitBreakpoint)</span><br><span class="line">...</span><br><span class="line">app.listen(<span class="number">3000</span>)</span><br></pre></td></tr></table></figure>
+
+<p>每个请求到来时，生成一个 requestId 挂载到 ctx 上，通过 requestId 将日志串起来。核心原理是 hack 了模块的 require 方法（重载 Module.prototype._compile），用 esprima 将模块代码转成 AST，找到其中的 awaitExpression 节点，对其用日志函数包裹后重新插入到 AST，最后用 escodegen 将 AST 生成代码。其中还用到了 async_hooks，在日志函数中，基于 async_hooks 的 init 钩子中将异步调用关系存储到一个 Map 中，最终实现函数调用链的自动日志打点。</p>
+<p>不过，使用 async_hooks 在目前有较严重的<a href="https://github.com/bmeurer/async-hooks-performance-impact" target="_blank" rel="noopener">性能损耗</a>。建议生产环境慎用。<br><img src="https://raw.githubusercontent.com/bmeurer/async-hooks-performance-impact/master/results-hapi-koa-node-9.4.0.png"></p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>错误可分为外部错误和内部错误两类。对外部错误的处理主要考验系统架构的设计，只有系统设计的足够健壮，才能够抵御各种外部挑战，并损失降到最低。对于内部错误，本文分别讨论了同步和异步两种场景，介绍了 <code>Error.captureStackTrace()</code>、<code>async_hooks</code> 等 API 在收集错误堆栈、异步调用链上的用途，并结合 koa-await-breakpoint 源码，解释了 Node.js 自动化打点的核心原理。</p>
+<hr>
+<p>参考链接：<br>[1] 胡子大哈. 深入理解 JavaScript Errors 和 Stack Traces. <a href="https://zhuanlan.zhihu.com/p/25338849" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/25338849</a><br>[2] Chuan’s blog. 关于 Error.captureStackTrace. <a href="http://blog.shaochuancs.com/about-error-capturestacktrace" target="_blank" rel="noopener">http://blog.shaochuancs.com/about-error-capturestacktrace</a><br>[3] joyent. Error Handling in Node.js. <a href="https://www.joyent.com/node-js/production/design/errors" target="_blank" rel="noopener">https://www.joyent.com/node-js/production/design/errors</a><br>[4] 王子亭. Node.js 错误处理实践. <a href="https://jysperm.me/2016/10/nodejs-error-handling" target="_blank" rel="noopener">https://jysperm.me/2016/10/nodejs-error-handling</a><br>[5] 张佃鹏. 学习使用 Node.js 中 async-hooks 模块. <a href="https://zhuanlan.zhihu.com/p/53036228" target="_blank" rel="noopener">https://zhuanlan.zhihu.com/p/53036228</a><br>[6] bmeurer. <a href="https://github.com/bmeurer/async-hooks-performance-impact" target="_blank" rel="noopener">https://github.com/bmeurer/async-hooks-performance-impact</a><br>[7] <a href="http://nodejs.cn/api/errors.html#errors_errors" target="_blank" rel="noopener">http://nodejs.cn/api/errors.html#errors_errors</a></p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

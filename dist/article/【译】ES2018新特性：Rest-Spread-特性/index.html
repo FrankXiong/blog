@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            【译】ES2018 新特性：Rest/Spread 特性
+        </div>
+        <div class="post-meta">
+            2018-07-09
+        </div>
+    
+
+    <div class="post-md">
+        <p>Sebastian Markbåge 提出的 Rest&#x2F;Spread Properties 提案包括两部分：</p>
+<ul>
+<li>用于对象解构的 rest 操作符(…)。目前，这个操作符只能在数组解构和参数定义中使用</li>
+<li>对象字面量中的 spread 操作符(…)。目前，这个操作符只能用于数组字面量和在函数方法中调用。</li>
+</ul>
+<h2 id="对象解构中的-rest-操作符-…"><a href="#对象解构中的-rest-操作符-…" class="headerlink" title="对象解构中的 rest 操作符(…)"></a>对象解构中的 rest 操作符(…)</h2><p>在对象解构模式下，rest 操作符会将解构源的除了已经在对象字面量中指明的属性之外的，所有可枚举自有属性拷贝到它的运算对象中。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const obj = &#123;foo: 1, bar: 2, baz: 3&#125;;</span><br><span class="line">const &#123;foo, ...rest&#125; = obj;</span><br><span class="line">    // Same as:</span><br><span class="line">    // const foo = 1;</span><br><span class="line">    // const rest = &#123;bar: 2, baz: 3&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>如果你正在使用对象解构来处理命名参数，rest 操作符让你可以收集所有剩余参数：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function func(&#123;param1, param2, ...rest&#125;) &#123; // rest operator</span><br><span class="line">    console.log(&apos;All parameters: &apos;,&#123;param1, param2, ...rest&#125;); // spread operator</span><br><span class="line">    return param1 + param2;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="语法限制"><a href="#语法限制" class="headerlink" title="语法限制"></a>语法限制</h4><p>在每个对象字面量的顶层，可以使用 rest 操作符最多一次，并且必须只能在末尾出现：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const &#123;...rest, foo&#125; = obj; // SyntaxError</span><br><span class="line">const &#123;foo, ...rest1, ...rest2&#125; = obj; // SyntaxError</span><br></pre></td></tr></table></figure>
+
+<p>如果是嵌套结构，你可以多次使用 rest 操作符：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const obj = &#123;</span><br><span class="line">    foo: &#123;</span><br><span class="line">        a: 1,</span><br><span class="line">        b: 2,</span><br><span class="line">        c: 3,</span><br><span class="line">    &#125;,</span><br><span class="line">    bar: 4,</span><br><span class="line">    baz: 5,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">const &#123;foo: &#123;a, ...rest1&#125;, ...rest2&#125; = obj;</span><br><span class="line"></span><br><span class="line">// Same as:</span><br><span class="line">// const a = 1;</span><br><span class="line">// const rest1 = &#123;b: 2, c: 3&#125;;</span><br><span class="line">// const rest2 = &#123;bar: 4, baz: 5&#125;;</span><br></pre></td></tr></table></figure>
+
+<h2 id="对象字面量中的-spread-操作符"><a href="#对象字面量中的-spread-操作符" class="headerlink" title="对象字面量中的 spread 操作符"></a>对象字面量中的 spread 操作符</h2><p>对象字面量内部，spread 操作符将自身运算对象的所有可枚举的自有属性，插入到通过字面量创建的对象中：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; const obj = &#123;foo: 1, bar: 2, baz: 3&#125;;</span><br><span class="line">&gt; &#123;...obj, qux: 4&#125;</span><br><span class="line">&#123; foo: 1, bar: 2, baz: 3, qux: 4 &#125;</span><br></pre></td></tr></table></figure>
+
+<p>要注意的是顺序问题，即使属性 key 并不冲突，因为对象会记录插入顺序：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; &#123;qux: 4, ...obj&#125;</span><br><span class="line">&#123; qux: 4, foo: 1, bar: 2, baz: 3 &#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果 key 出现了冲突，后面的会覆盖前面的属性：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; const obj = &#123;foo: 1, bar: 2, baz: 3&#125;;</span><br><span class="line">&gt; &#123;...obj, foo: true&#125;</span><br><span class="line">&#123; foo: true, bar: 2, baz: 3 &#125;</span><br><span class="line">&gt; &#123;foo: true, ...obj&#125;</span><br><span class="line">&#123; foo: 1, bar: 2, baz: 3 &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="对象-spread-操作符的使用场景"><a href="#对象-spread-操作符的使用场景" class="headerlink" title="对象 spread 操作符的使用场景"></a>对象 spread 操作符的使用场景</h2><p>这一节，我们会看看 spread 操作符的使用场景。我也会用 Object.assign() 实现一遍，它和 spread 操作符很相似（之后我们会更详细地比较它们）。</p>
+<h4 id="拷贝对象"><a href="#拷贝对象" class="headerlink" title="拷贝对象"></a>拷贝对象</h4><p>拷贝对象 obj 的可枚举自有属性：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const clone1 = &#123;...obj&#125;;</span><br><span class="line">const clone2 = Object.assign(&#123;&#125;, obj);</span><br></pre></td></tr></table></figure>
+
+<p>clone 对象们的原型都是 Object.prototype，它是所有通过对象字面量创建的对象的默认原型：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; Object.getPrototypeOf(clone1) === Object.prototype</span><br><span class="line">true</span><br><span class="line">&gt; Object.getPrototypeOf(clone2) === Object.prototype</span><br><span class="line">true</span><br><span class="line">&gt; Object.getPrototypeOf(&#123;&#125;) === Object.prototype</span><br><span class="line">true</span><br></pre></td></tr></table></figure>
+
+<p>拷贝一个对象 obj，包括它的原型：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const clone1 = &#123;__proto__: Object.getPrototypeOf(obj), ...obj&#125;;</span><br><span class="line">const clone2 = Object.assign(</span><br><span class="line">    Object.create(Object.getPrototypeOf(obj)), obj);</span><br></pre></td></tr></table></figure>
+
+<p>注意，一般来说，对象字面量内部的 <strong>proto</strong> 只是浏览器内置的特性，并非 JavaScript 引擎所有。</p>
+<h4 id="对象的真拷贝"><a href="#对象的真拷贝" class="headerlink" title="对象的真拷贝"></a>对象的真拷贝</h4><p>有时候，你需要老老实实地拷贝对象的所有自有属性(properties)和特性(writable, enumerable, …)，包括 getters 和 setters。这时候 Object.assign() 和 spread 操作符就回天乏术了。你需要使用属性描述符(<a href="http://speakingjs.com/es5/ch17.html#property_attributes" target="_blank" rel="noopener">property descriptors</a>)：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const clone1 = Object.defineProperties(&#123;&#125;,</span><br><span class="line">    Object.getOwnPropertyDescriptors(obj));</span><br></pre></td></tr></table></figure>
+
+<p>如果还希望保留 obj 的原型，可以用 <a href="http://speakingjs.com/es5/ch17.html#Object.create" target="_blank" rel="noopener"><code>Object.create()</code></a>：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const clone2 = Object.create(</span><br><span class="line">    Object.getPrototypeOf(obj),</span><br><span class="line">    Object.getOwnPropertyDescriptors(obj));</span><br></pre></td></tr></table></figure>
+
+<p>“探索 ES2016 and ES2017” 里介绍了 <a href="http://exploringjs.com/es2016-es2017/ch_object-getownpropertydescriptors.html" target="_blank" rel="noopener"><code>Object.getOwnPropertyDescriptors()</code></a></p>
+<h4 id="陷阱：总是浅拷贝"><a href="#陷阱：总是浅拷贝" class="headerlink" title="陷阱：总是浅拷贝"></a>陷阱：总是浅拷贝</h4><p>我们之前见过的所有拷贝对象的方式，都是浅拷贝：如果原始属性值是一个对象，拷贝的对象将指向同一个对象，它不会（递归的、深度的）拷贝自身：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const original = &#123; prop: &#123;&#125; &#125;;</span><br><span class="line">const clone = Object.assign(&#123;&#125;, original);</span><br><span class="line"></span><br><span class="line">console.log(original.prop === clone.prop); // true</span><br><span class="line">original.prop.foo = &apos;abc&apos;;</span><br><span class="line">console.log(clone.prop.foo); // abc</span><br></pre></td></tr></table></figure>
+
+<h4 id="其他使用场景"><a href="#其他使用场景" class="headerlink" title="其他使用场景"></a>其他使用场景</h4><p>合并 obj1 和 obj2 两个对象：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const merged = &#123;...obj1, ...obj2&#125;;</span><br><span class="line">const merged = Object.assign(&#123;&#125;, obj1, obj2);</span><br></pre></td></tr></table></figure>
+
+<p>给用户数据填充默认值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const DEFAULTS = &#123;foo: &apos;a&apos;, bar: &apos;b&apos;&#125;;</span><br><span class="line">const userData = &#123;foo: 1&#125;;</span><br><span class="line"></span><br><span class="line">const data = &#123;...DEFAULTS, ...userData&#125;;</span><br><span class="line">const data = Object.assign(&#123;&#125;, DEFAULTS, userData);</span><br><span class="line">    // &#123;foo: 1, bar: &apos;b&apos;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>安全地更新属性 foo:</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const obj = &#123;foo: &apos;a&apos;, bar: &apos;b&apos;&#125;;</span><br><span class="line">const obj2 = &#123;...obj, foo: 1&#125;;</span><br><span class="line">const obj2 = Object.assign(&#123;&#125;, obj, &#123;foo: 1&#125;);</span><br><span class="line">    // &#123;foo: 1, bar: &apos;b&apos;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>指定属性 foo  和 bar 的默认值：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const userData = &#123;foo: 1&#125;;</span><br><span class="line">const data = &#123;foo: &apos;a&apos;, bar: &apos;b&apos;, ...userData&#125;;</span><br><span class="line">const data = Object.assign(&#123;&#125;, &#123;foo:&apos;a&apos;, bar:&apos;b&apos;&#125;, userData);</span><br><span class="line">    // &#123;foo: 1, bar: &apos;b&apos;&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="展开对象-VS-Object-assign"><a href="#展开对象-VS-Object-assign" class="headerlink" title="展开对象 VS Object.assign()"></a>展开对象 VS Object.assign()</h2><p>spread 操作符和 Object.assign() 很相似。主要的区别在于前者定义了新属性，而后者还进行了赋值。稍后将解释这究竟意味着什么。</p>
+<h4 id="Object-assign-的两种使用方式"><a href="#Object-assign-的两种使用方式" class="headerlink" title="Object.assign() 的两种使用方式"></a>Object.assign() 的两种使用方式</h4><p>Object.assign() 有两种使用方式：<br>第一种，带有破坏性的（修改已有对象）：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Object.assign(target, source1, source2);</span><br></pre></td></tr></table></figure>
+
+<p>这里的 target 对象被修改了；source1 和 source2 被拷贝进去了。<br>第二种，非破坏性的（已有对象不会被修改）：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const result = Object.assign(&#123;&#125;, source1, source2);</span><br></pre></td></tr></table></figure>
+
+<p>新对象是通过将 source1 和 source2 拷贝进一个空对象而生成的。最终，这个新对象被返回并赋值给 result。<br>spread 操作符类似于 Object.assign() 的第二种方式。接下来，我们来看看两者的相似和不同之处。</p>
+<h4 id="都是通过-“get”-操作符读值"><a href="#都是通过-“get”-操作符读值" class="headerlink" title="都是通过 “get” 操作符读值"></a>都是通过 “get” 操作符读值</h4><p>在写对象之前，两者都使用了 ”get“ 操作符去读取源对象的属性值。这一过程会将 getter 被转换成正常的数据属性。<br>来看个例子：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const original = &#123;</span><br><span class="line">    get foo() &#123;</span><br><span class="line">        return 123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>original 有一个 foo getter(它的属性描述符有 get 和 set 属性)</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; Object.getOwnPropertyDescriptor(original, &apos;foo&apos;)</span><br><span class="line">&#123; get: [Function: foo],</span><br><span class="line">  set: undefined,</span><br><span class="line">  enumerable: true,</span><br><span class="line">  configurable: true &#125;</span><br></pre></td></tr></table></figure>
+
+<p>但是在它拷贝的结果 clone1 和 clone2 里，foo 是一个正常的数据属性（属性描述符有value 和 writable 属性）：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; const clone1 = &#123;...original&#125;;</span><br><span class="line">&gt; Object.getOwnPropertyDescriptor(clone1, &apos;foo&apos;)</span><br><span class="line">&#123; value: 123,</span><br><span class="line">  writable: true,</span><br><span class="line">  enumerable: true,</span><br><span class="line">  configurable: true &#125;</span><br><span class="line"></span><br><span class="line">&gt; const clone2 = Object.assign(&#123;&#125;, original);</span><br><span class="line">&gt; Object.getOwnPropertyDescriptor(clone2, &apos;foo&apos;)</span><br><span class="line">&#123; value: 123,</span><br><span class="line">  writable: true,</span><br><span class="line">  enumerable: true,</span><br><span class="line">  configurable: true &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="spread-定义属性，Object-assign-设置属性"><a href="#spread-定义属性，Object-assign-设置属性" class="headerlink" title="spread 定义属性，Object.assign() 设置属性"></a>spread 定义属性，Object.assign() 设置属性</h4><p>spread 操作符在目标对象上定义了新的属性，而Object.assign() 使用了一个 “set” 操作符来创建属性。这会导致两个结果：</p>
+<h6 id="目标对象带有-setter"><a href="#目标对象带有-setter" class="headerlink" title="目标对象带有 setter"></a>目标对象带有 setter</h6><p>首先，Object.assign() 触发 setter，而 spread 不会：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Object.defineProperty(Object.prototype, &apos;foo&apos;, &#123;</span><br><span class="line">    set(value) &#123;</span><br><span class="line">        console.log(&apos;SET&apos;, value);</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;);</span><br><span class="line">const obj = &#123;foo: 123&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>以上代码段设置了一个 foo setter，它会被所有普通对象继承。<br>如果我们通过 Object.assign() 拷贝 obj，继承的 setter  会被触发：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; Object.assign(&#123;&#125;, obj)</span><br><span class="line">SET 123</span><br><span class="line">&#123;&#125;</span><br></pre></td></tr></table></figure>
+
+<p>而 spread 就不会：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; &#123; ...obj &#125;</span><br><span class="line">&#123; foo: 123 &#125;</span><br></pre></td></tr></table></figure>
+
+<p>Object.assign() 在拷贝时还会触发自有 setter，这里并没有发生重写。</p>
+<h6 id="目标对象带有只读属性"><a href="#目标对象带有只读属性" class="headerlink" title="目标对象带有只读属性"></a>目标对象带有只读属性</h6><p>第二，你可以通过继承只读属性，来阻止 Object.assign() 创建自有属性，但 spread 上这是做不到的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Object.defineProperty(Object.prototype, &apos;bar&apos;, &#123;</span><br><span class="line">    writable: false,</span><br><span class="line">    value: &apos;abc&apos;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>以上代码设置了只读属性 bar，它会被所有普通对象继承。<br>这样，你就再也不能使用赋值语句去创建自有属性 bar（严格模式下会抛一个异常，宽松模式会静默失败）：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; const tmp = &#123;&#125;;</span><br><span class="line">&gt; tmp.bar = 123;</span><br><span class="line">TypeError: Cannot assign to read only property &apos;bar&apos;</span><br></pre></td></tr></table></figure>
+
+<p>下列代码，我们使用对象字面量成功地创建了属性 bar。因为对象字面量没有设置属性，它只是定义了它们：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const obj = &#123;bar: 123&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>然而，Object.assign() 使用赋值语句创建属性，这就是不能拷贝 obj 的原因：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; Object.assign(&#123;&#125;, obj)</span><br><span class="line">TypeError: Cannot assign to read only property &apos;bar&apos;</span><br></pre></td></tr></table></figure>
+
+<p>通过 spread 操作符拷贝没有问题：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; &#123; ...obj &#125;</span><br><span class="line">&#123; bar: 123 &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="spread-和-Object-assign-都只拷贝自有可枚举属性"><a href="#spread-和-Object-assign-都只拷贝自有可枚举属性" class="headerlink" title="spread 和 Object.assign() 都只拷贝自有可枚举属性"></a>spread 和 Object.assign() 都只拷贝自有可枚举属性</h4><p>它们都会忽略所有继承的属性和不可枚举的自有属性。<br>对象 obj 从 proto 继承了一个可枚举属性，并且有两个自有属性：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">const proto = &#123;</span><br><span class="line">    inheritedEnumerable: 1,</span><br><span class="line">&#125;;</span><br><span class="line">const obj = Object.create(proto, &#123;</span><br><span class="line">    ownEnumerable: &#123;</span><br><span class="line">        value: 2,</span><br><span class="line">        enumerable: true,</span><br><span class="line">    &#125;,</span><br><span class="line">    ownNonEnumerable: &#123;</span><br><span class="line">        value: 3,</span><br><span class="line">        enumerable: false,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<p>如果拷贝 obj，结果将只有属性 ownEnumerable。属性 inheritedEnumerable 和 ownNonEnumerable 没有被拷贝：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&gt; &#123;...obj&#125;</span><br><span class="line">&#123; ownEnumerable: 2 &#125;</span><br><span class="line">&gt; Object.assign(&#123;&#125;, obj)</span><br><span class="line">&#123; ownEnumerable: 2 &#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p>原文：<a href="http://exploringjs.com/es2018-es2019/ch_rest-spread-properties.html" target="_blank" rel="noopener">http://exploringjs.com/es2018-es2019/ch_rest-spread-properties.html</a></p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

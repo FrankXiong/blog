@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            常用 Git 操作总结
+        </div>
+        <div class="post-meta">
+            2019-03-12
+        </div>
+    
+
+    <div class="post-md">
+        <h3 id="合并远程分支"><a href="#合并远程分支" class="headerlink" title="合并远程分支"></a>合并远程分支</h3><ol>
+<li>git fetch origin branch</li>
+<li>git checkout [your-branch]</li>
+<li>git merge FETCH_HEAD，merge 前可以先git dff [your-branch] [remote-branch]，查看本地分支和远程分支的区别</li>
+</ol>
+<h3 id="使用-rebase-合并分支"><a href="#使用-rebase-合并分支" class="headerlink" title="使用 rebase 合并分支"></a>使用 rebase 合并分支</h3><ol>
+<li>git rebase [origin-branch]</li>
+<li>遇到冲突，解决完冲突后 git add</li>
+<li>git rebase –continue</li>
+</ol>
+<p>rebase 和 merge 的区别<br><img src="http://mares.oss-cn-qingdao.aliyuncs.com/image2018-4-11%2019_43_26.png"></p>
+<h3 id="合并历史commit"><a href="#合并历史commit" class="headerlink" title="合并历史commit"></a>合并历史commit</h3><p>git rebase -i [commit id] commit id是合并的提交的前一个提交节点的commitID，最上的是最早的提交<br>修改需要合并的commit，将pick修改成 squash<br>退出保存 wq<br>git push origin [branch-name] -f<br>rebase 的主要用途一是替代merge，保持分支历史的线性提交；二是方便合并历史提交。</p>
+<h3 id="撤销一次merge"><a href="#撤销一次merge" class="headerlink" title="撤销一次merge"></a>撤销一次merge</h3><ol>
+<li>git reflog 确定回滚的commit id</li>
+<li>git reset –hard [commit id]</li>
+</ol>
+<p>git revert 也可以回退到指定版本，和reset的区别在于，revert会产生一次新的提交,用一次新的提交来消除历史修改。而reset是直接删除历史commit。</p>
+<h3 id="合并时遇到冲突，想取消merge"><a href="#合并时遇到冲突，想取消merge" class="headerlink" title="合并时遇到冲突，想取消merge"></a>合并时遇到冲突，想取消merge</h3><p>git merge –abort</p>
+<h3 id="修改最后一次提交的commit-message"><a href="#修改最后一次提交的commit-message" class="headerlink" title="修改最后一次提交的commit message"></a>修改最后一次提交的commit message</h3><p>git commit –amend</p>
+<h3 id="清空工作区的修改"><a href="#清空工作区的修改" class="headerlink" title="清空工作区的修改"></a>清空工作区的修改</h3><p>git checkout .</p>
+<h3 id="恢复误删分支"><a href="#恢复误删分支" class="headerlink" title="恢复误删分支"></a>恢复误删分支</h3><ol>
+<li>git log -g 找到之前分支提交的 commit id</li>
+<li>git branch recover_branch [commit id]，这时切换到 recover_branch，可以看到原来的文件了。</li>
+</ol>
+<h3 id="修改历史提交信息"><a href="#修改历史提交信息" class="headerlink" title="修改历史提交信息"></a>修改历史提交信息</h3><ol>
+<li>git rebase -i HEAD~10（查看前10次提交信息，也可以直接输入想要修改的commit id）</li>
+<li>将想要的修改的commit前的 pick 修改为 reword，保存并退出。</li>
+<li>在弹出的窗口中，修改commit message，保存。</li>
+</ol>
+<h3 id="删除历史提交"><a href="#删除历史提交" class="headerlink" title="删除历史提交"></a>删除历史提交</h3><ol>
+<li>用 git rebase -i 928582641a 指定 base 为你需要删除的提交的前一个提交。</li>
+<li>删除指定的commit, 保存退出. 之后可能 git 会提示出现 conflict, 根据提示完成处理。</li>
+</ol>
+<h3 id="创建空白分支"><a href="#创建空白分支" class="headerlink" title="创建空白分支"></a>创建空白分支</h3><ol>
+<li>git checkout –orphan new_branch</li>
+<li>git rm -rf .</li>
+</ol>
+<h3 id="查看本地分支和远程分支的差异"><a href="#查看本地分支和远程分支的差异" class="headerlink" title="查看本地分支和远程分支的差异"></a>查看本地分支和远程分支的差异</h3><ol>
+<li>git fetch origin</li>
+<li>git diff master origin&#x2F;master –minimal</li>
+</ol>
+<h3 id="建立远程追踪分支"><a href="#建立远程追踪分支" class="headerlink" title="建立远程追踪分支"></a>建立远程追踪分支</h3><p>git branch -u [remote_branch]</p>
+<h3 id="删除远程分支"><a href="#删除远程分支" class="headerlink" title="删除远程分支"></a>删除远程分支</h3><ol>
+<li>git branch -r -d origin&#x2F;branch-name</li>
+<li>git push origin :branch-name</li>
+</ol>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

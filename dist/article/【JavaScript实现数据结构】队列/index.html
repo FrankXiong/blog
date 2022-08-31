@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            【JavaScript 实现数据结构】队列
+        </div>
+        <div class="post-meta">
+            2016-03-21
+        </div>
+    
+
+    <div class="post-md">
+        <p>队列是一种先进先出（FIFO）的数据结构，其实现方式主要分两种：顺序队列和链式队列，本文将给出顺序队列的JavaScript实现。</p>
+<p>JavaScript提供的数组原生方法：push()可以在数组末尾插入元素，shift()可以删除数组的第一个元素，利用这两个方法可以很容易实现队列的“入队”和“出队”。代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function Queue()&#123;</span><br><span class="line">    this.items = [];</span><br><span class="line">&#125;</span><br><span class="line">Queue.prototype = &#123;</span><br><span class="line">    enqueue:function(data)&#123;</span><br><span class="line">        this.items.push(data);</span><br><span class="line">    &#125;,</span><br><span class="line">    dequeue:function()&#123;</span><br><span class="line">        return this.items.shift();</span><br><span class="line">    &#125;,</span><br><span class="line">    front:function()&#123;</span><br><span class="line">        return this.items[0];</span><br><span class="line">    &#125;,</span><br><span class="line">    rear:function()&#123;</span><br><span class="line">        return this.items[this.items.length-1];</span><br><span class="line">    &#125;,</span><br><span class="line">    clear:function()&#123;</span><br><span class="line">        this.items = [];</span><br><span class="line">    &#125;,</span><br><span class="line">    length:function()&#123;</span><br><span class="line">        return this.items.length;</span><br><span class="line">    &#125;,</span><br><span class="line">    displayAll:function()&#123;</span><br><span class="line">        var str = &apos;&apos;;</span><br><span class="line">        for(var i = 0;i &lt; this.length();i++)&#123;</span><br><span class="line">            str += this.items[i];</span><br><span class="line">        &#125;</span><br><span class="line">        return str;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var queue = new Queue();</span><br><span class="line">queue.enqueue(&apos;aaa&apos;);</span><br><span class="line">queue.enqueue(&apos;bbb&apos;);</span><br><span class="line">console.log(queue.length());//输出2</span><br><span class="line">queue.dequeue();</span><br><span class="line">console.log(queue.displayAll());//输出bbb</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>初学者学习笔记，如有不对，还希望高手指点。如有造成误解，还希望多多谅解。</strong></p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

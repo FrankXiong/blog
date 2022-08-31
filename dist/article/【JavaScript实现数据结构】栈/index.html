@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            【JavaScript 实现数据结构】栈
+        </div>
+        <div class="post-meta">
+            2016-03-21
+        </div>
+    
+
+    <div class="post-md">
+        <p>堆栈可以用链表和数组两种方式实现，这里分别给出这两种实现方式。<br>代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//数组实现</span><br><span class="line">function Stack()&#123;</span><br><span class="line">   this.items = [];</span><br><span class="line">   this.size = 0;</span><br><span class="line">&#125;</span><br><span class="line">Stack.prototype = &#123;</span><br><span class="line">   constructor:Stack,</span><br><span class="line">   push:function(data)&#123;</span><br><span class="line">       this.items[this.size++] = data;</span><br><span class="line">   &#125;,</span><br><span class="line">   pop:function()&#123;</span><br><span class="line">       return this.items[--this.size];</span><br><span class="line">   &#125;,</span><br><span class="line">   clear:function()&#123;</span><br><span class="line">       this.size = 0;</span><br><span class="line">       this.items = [];</span><br><span class="line">   &#125;,</span><br><span class="line">   perk:function()&#123;</span><br><span class="line">       return this.items[this.size-1];</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">//链表实现</span><br><span class="line">    function Stack()&#123;</span><br><span class="line">        this.top = null;</span><br><span class="line">        this.size = 0;</span><br><span class="line">    &#125;</span><br><span class="line">    Stack.prototype = &#123;</span><br><span class="line">        constructor:Stack,</span><br><span class="line">        push:function(data)&#123;</span><br><span class="line">            var node = &#123;</span><br><span class="line">                data:data,</span><br><span class="line">                next:null</span><br><span class="line">            &#125;;</span><br><span class="line">            node.next = this.top;</span><br><span class="line">            this.top = node;</span><br><span class="line">            this.size++;</span><br><span class="line">        &#125;,</span><br><span class="line">        pop:function()&#123;</span><br><span class="line">            if(this.top === null)&#123;</span><br><span class="line">                return null;</span><br><span class="line">            &#125;</span><br><span class="line">            var out = this.top;</span><br><span class="line">            this.top = this.top.next;</span><br><span class="line">            if(this.size &gt; 0)&#123;</span><br><span class="line">                this.size--;    </span><br><span class="line">            &#125;</span><br><span class="line">            return out.data;</span><br><span class="line">        &#125;,</span><br><span class="line">        perk:function()&#123;</span><br><span class="line">            return this.top === null ? null:this.top.data; </span><br><span class="line">        &#125;,</span><br><span class="line">        clear:function()&#123;</span><br><span class="line">            this.top = null;</span><br><span class="line">            this.size = 0;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var stack = new Stack();</span><br><span class="line">stack.push(&apos;k&apos;);</span><br><span class="line">stack.push(&apos;b&apos;);</span><br><span class="line">console.log(stack.perk());//输出b</span><br><span class="line">stack.pop();</span><br><span class="line">console.log(stack.perk());//输出k</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="栈的应用"><a href="#栈的应用" class="headerlink" title="栈的应用"></a>栈的应用</h3><p>例子：数值进制转换<br>算法思想如下：<br>(1)  最高位为 n % b,将此位压入栈。<br>(2)  使用 n&#x2F;b 代替 n。<br>(3)  重复步骤 1 和 2,直到 n 等于 0,且没有余数。<br>(4)  持续将栈内元素弹出,直到栈为空,依次将这些元素排列,就得到转换后数字的字符串形式。</p>
+<p>具体代码实现：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function mulBase(num,base)&#123;</span><br><span class="line">    var stack = new Stack();</span><br><span class="line">    do&#123;</span><br><span class="line">        stack.push(num % base); </span><br><span class="line">        num = Math.floor(num / base);</span><br><span class="line">    &#125;while(num&gt;0);</span><br><span class="line">    var result = &apos;&apos;;</span><br><span class="line">    while(stack.size &gt; 0)&#123;</span><br><span class="line">        result += stack.pop();</span><br><span class="line">    &#125;</span><br><span class="line">    return result;</span><br><span class="line">&#125;</span><br><span class="line">console.log(mulBase(234,2)); //输出11101010</span><br></pre></td></tr></table></figure>
+
+<hr>
+<p><strong>初学者学习笔记，如有不对，还希望高手指点。如有造成误解，还希望多多谅解。</strong></p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            HTTP 状态码大全
+        </div>
+        <div class="post-meta">
+            2016-03-13
+        </div>
+    
+
+    <div class="post-md">
+        <p><strong>HTTP状态码被分成了五类。</strong><br>100-199 用于指定客户端应相应的某些动作。 <br>200-299 用于表示请求成功。 <br>300-399 用于已经移动的文件并且常被包含在定位头信息中指定新的地址信息。 <br>400-499 用于指出客户端的错误。<br> 500-599 用于支持服务器错误。 </p>
+<hr>
+<p><strong>100-199：信息性状态码</strong></p>
+<table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>原因短语</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>100</td>
+<td>continue</td>
+<td>说明收到了请求的初始部分，请客户端继续发送</td>
+</tr>
+<tr>
+<td>101</td>
+<td>switch protocols</td>
+<td>说明服务器正在根据客户端的指定，将协议切换成update首部所列的协议</td>
+</tr>
+</tbody></table>
+<p><strong>200-299：成功状态码</strong></p>
+<table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>原因短语</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>200</td>
+<td>ok</td>
+<td>请求成功</td>
+</tr>
+<tr>
+<td>201</td>
+<td>created</td>
+<td>用于创建服务器对象的请求（比如put）响应的实体主体部分中应该包含了各种引用了已创建的资源的URL。服务器必须在发送这个状态码之前创建好对象</td>
+</tr>
+<tr>
+<td>202</td>
+<td>accepted</td>
+<td>请求已被接收，但服务器还未对其执行任何动作。最终该请求可能会也可能不会被执行。在异步操作的场合下，没有比发送这个状态码更方便的做法了。返回202状态码的响应的目的是允许服务器接受其他过程的请求（例如某个每天只执行一次的基于批处理的操作），而不必让客户端一直保持与服务器的连接直到批处理操作全部完成。</td>
+</tr>
+<tr>
+<td>203</td>
+<td>non-authoritative information</td>
+<td>实体首部包含的信息不是来自于源端服务器，而是来自资源的一份副本。</td>
+</tr>
+<tr>
+<td>204</td>
+<td>no content</td>
+<td>响应报文中包含若干首部和一个状态行，但没有实体的主体部分</td>
+</tr>
+<tr>
+<td>205</td>
+<td>reset content</td>
+<td>负责告知浏览器清除当前页面中所有的HTML表单元素</td>
+</tr>
+</tbody></table>
+<p><strong>300-399：重定向状态码</strong></p>
+<table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>原因短语</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>300</td>
+<td>Multiple choices</td>
+<td>客户端请求一个实际指向多个资源的URL时会返回这个状态码，比如服务器上有某个HTML文档的英语和法语版本。返回这个代码时会带有一个选项列表，这样用户就可以选择他希望使用的那一项。</td>
+</tr>
+<tr>
+<td>301</td>
+<td>move permanently</td>
+<td>被请求的资源已永久移动到新位置，在请求的URL已被移除时使用。响应的location首部中应该包含资源现在所处的URL</td>
+</tr>
+<tr>
+<td>302</td>
+<td>found</td>
+<td>请求的资源现在临时从不同的 URI 响应请求。</td>
+</tr>
+<tr>
+<td>303</td>
+<td>see other</td>
+<td>告知客户端应该用另一个URL来获取资源。新的URL位于响应报文的location首部。其主要目的是允许post请求的响应将客户端定向到某个资源上去</td>
+</tr>
+<tr>
+<td>304</td>
+<td>not modified</td>
+<td>如果客户端发送了一个带条件的 GET 请求且该请求已被允许，而文档的内容（自上次访问以来或者根据请求的条件）并没有改变，则服务器应当返回这个状态码。</td>
+</tr>
+<tr>
+<td>305</td>
+<td>use proxy</td>
+<td>用来说明必须使用一个代理来访问资源，代理的位置由location首部给出。</td>
+</tr>
+<tr>
+<td>307</td>
+<td>temporary redirect</td>
+<td>请求的资源现在临时从不同的URI 响应请求。由于这样的重定向是临时的，客户端应当继续向原有地址发送以后的请求。只有在Cache-Control或Expires中进行了指定的情况下，这个响应才是可缓存的。</td>
+</tr>
+</tbody></table>
+<p><strong>400-499:客户端错误状态码</strong></p>
+<table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>原因短语</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>400</td>
+<td>bad request</td>
+<td>用于告知客户端它发送了一个错误的请求</td>
+</tr>
+<tr>
+<td>401</td>
+<td>unauthorized</td>
+<td>当前请求需要用户验证。该响应必须包含一个适用于被请求资源的 WWW-Authenticate 信息头用以询问用户信息。客户端可以重复提交一个包含恰当的 Authorization 头信息的请求。如果当前请求已经包含了 Authorization 证书，那么401响应代表着服务器验证已经拒绝了那些证书。</td>
+</tr>
+<tr>
+<td>403</td>
+<td>forbidden</td>
+<td>服务器已经理解请求，但是拒绝执行它。如果服务器想说明拒绝原因，可以在包含实体的主体部分来对原因进行描述。但这个状态码通常在服务器不想说明拒绝原因时使用</td>
+</tr>
+<tr>
+<td>404</td>
+<td>not found</td>
+<td>无法找到指定位置的资源。</td>
+</tr>
+<tr>
+<td>405</td>
+<td>Method Not Allowed</td>
+<td>请求方法（GET、POST、HEAD、DELETE、PUT、TRACE等）对指定的资源不适用。</td>
+</tr>
+<tr>
+<td>406</td>
+<td>Not Acceptable</td>
+<td>表示请求资源的MIME类型与客户端中Accept头信息中指定的类型不一致。</td>
+</tr>
+<tr>
+<td>408</td>
+<td>Request Timeout</td>
+<td>请求超时</td>
+</tr>
+<tr>
+<td><strong>500-599:服务器错误状态码</strong></td>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th>状态码</th>
+<th>原因短语</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>500</td>
+<td>Internal Server Error</td>
+<td>服务器遇到一个妨碍它为请求提供服务的错误时，使用此状态码。该状态经常由CGI程序引起也可能（但愿不会如此！）由无法正常运行的或返回头信息格式不正确的servlet引起。</td>
+</tr>
+<tr>
+<td>501</td>
+<td>Not Implemented</td>
+<td>客户端使用了服务器未实现的请求方法</td>
+</tr>
+<tr>
+<td>502</td>
+<td>Bad Gateway</td>
+<td>服务器作为网关或者代理时，为了完成请求访问下一个服务器，但该服务器返回了非法的应答。</td>
+</tr>
+<tr>
+<td>503</td>
+<td>Service Unavailable</td>
+<td>用于说明服务器现在无法为请求提供服务。但将来可以，服务器可提供一个Retry-After头信息告诉客户端什么时候资源可用。</td>
+</tr>
+<tr>
+<td>504</td>
+<td>Gateway Timeout</td>
+<td>该状态也用于充当代理或网关的服务器；它指出接收服务器没有从远端服务器得到及时的响应。</td>
+</tr>
+<tr>
+<td>505</td>
+<td>HTTP Version Not Supported</td>
+<td>服务器不支持在请求中所标明 HTTP 版本。</td>
+</tr>
+</tbody></table>
+<p>参考：<br>    《HTTP权威指南》</p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

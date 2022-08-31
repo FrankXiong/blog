@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            【JavaScript】闭包的概念
+        </div>
+        <div class="post-meta">
+            2015-12-09
+        </div>
+    
+
+    <div class="post-md">
+        <p>背景：</p>
+<ul>
+<li>理解闭包，必须首先要理解变量作用域，关于JavaScript的变量作用域，参见我之前的一篇文章《【JavaScript】变量作用域》</li>
+<li>JavaScript中的函数都是对象</li>
+</ul>
+<p>简而言之，JavaScript函数内部的所有变量对外部是不可见的<br>比如这样的代码会抛出error</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> test = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> i = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">console</span>.log(i); <span class="comment">// undefined error</span></span><br></pre></td></tr></table></figure>
+
+<p>那么怎么让函数访问外部变量呢？<br>JavaScript拥有函数级的作用域，函数内部调用的函数可以访问其外部函数的变量。所以我们可以在一个函数内部再调用一个函数，这样其内部函数就实现了访问外部变量。这就是所谓的闭包。</p>
+<p>闭包的好处是<strong>内部函数可以访问定义它们的外部函数的参数和变量</strong></p>
+<hr>
+<p>闭包示例</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> test = <span class="function"><span class="keyword">function</span>(<span class="params">status</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    getStatus: <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="keyword">return</span> status;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 测试</span></span><br><span class="line"><span class="comment">// 调用test时，它返回一个包含getStatus方法的新对象</span></span><br><span class="line"><span class="keyword">var</span> myQuo = test(<span class="string">'404'</span>);</span><br><span class="line"><span class="built_in">console</span>.log(myQuo.getStatus());</span><br></pre></td></tr></table></figure>
+
+<p>另一个例子：构造一个函数，当点击一个节点时，输出当前节点的编号</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="comment">// 这是一个错误的例子，点击任意节点输出结果都为9</span></span><br><span class="line"><span class="comment">// 这个函数绑定了变量i本身，而不是函数在构造时变量i的值</span></span><br><span class="line"><span class="keyword">var</span> addHandlers = <span class="function"><span class="keyword">function</span>(<span class="params">nodes</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">var</span> i;</span><br><span class="line">  <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; nodes.length; i++) &#123;</span><br><span class="line">    nodes[i].onclick = <span class="function"><span class="keyword">function</span>(<span class="params">e</span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(i);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>正确的例子·</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> addHandlers = <span class="function"><span class="keyword">function</span>(<span class="params">nodes</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> helper = <span class="function"><span class="keyword">function</span>(<span class="params">i</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">      <span class="built_in">console</span>.log(i);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;;</span><br><span class="line">  <span class="keyword">var</span> i; <span class="comment">// 避免在循环中创建函数</span></span><br><span class="line">  <span class="keyword">for</span> (i = <span class="number">0</span>; i &lt; nodes.length; i++) &#123;</span><br><span class="line">    nodes[i].onclick = helper(i);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

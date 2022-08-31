@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            【CSS】文本换行的几个属性
+        </div>
+        <div class="post-meta">
+            2015-11-01
+        </div>
+    
+
+    <div class="post-md">
+        <p><strong>word-wrap:normal | break-word; (内容换行)</strong>         </p>
+<ul>
+<li>normal:默认的属性值（允许内容顶开指定的容器边界）</li>
+<li>break-word:内容将在边界内换行（不截断英文单词换行，截断英文单词下面的属性才具备这个功能）</li>
+</ul>
+<p><strong>word-break:normal | break-all | keep-all (词内换行)</strong></p>
+<ul>
+<li>normal:如果是中文则到边界处的汉字换行,如果是英文整个词换行,注意:如果出现某个英文字符串长度超过边界,则后面的部分将撑开边框,如果边框为固定属性,则后面部分将无法显示。</li>
+<li>break-all : 强行换行,将截断英文单词。</li>
+<li>keep-all : 不允许字断开。如果是中文，将把前后标点符号内的一个汉字短语整个换行，英文单词也整个换行，注意：如果出现某个英文字符串长度超过边界，则后面的部分将撑开边框,如果边框为固定属性，则后面部分将无法显示。</li>
+</ul>
+<p>参数：<br>normal : 依照亚洲语言和非亚洲语言的文本规则，允许在字内换行<br>break-all : 该行为与亚洲语言的normal相同。也允许非亚洲语言文本行的任意字内断开。该值适合包含一些非亚洲文本的亚洲文本</p>
+<p>keep-all : 与所有非亚洲语言的normal相同。对于中文，韩文，日文，不允许字断开。适合包含少量亚洲文本的非亚洲文本。</p>
+<p>说明：<br>设置或检索对象内文本的字内换行行为。尤其在出现多种语言时。对于中文，应该使用break-all 。对应的脚本特性为wordBreak。</p>
+<p><strong>text-overflow:clip | ellipsis (文本溢出)</strong></p>
+<ul>
+<li>clip : 　不显示省略标记（…），而是简单的裁切</li>
+<li>ellipsis : 　当对象内文本溢出时（超过width部分）显示省略标记（…）</li>
+</ul>
+<p><strong>white-space: normal | pre | nowrap (内容不换行)</strong></p>
+<ul>
+<li>normal 默认。空白会被浏览器忽略。 </li>
+<li>pre 空白会被浏览器保留。其行为方式类似 HTML 中的pre 标签。 </li>
+<li>nowrap 文本不会换行，文本会在在同一行上继续，直到遇到 <br> 标签为止。（层中放一个表格，如果层的float：none 则表格和层间会有空隙，这种问题的解决办法是在层的style里面加上white-space: nowrap）</li>
+</ul>
+<hr>
+<p>例子：<br>让文本单行显示，并在溢出时，显示省略标记：</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">white-space</span>: <span class="selector-tag">nowrap</span>;</span><br><span class="line"><span class="selector-tag">text-overflow</span>: <span class="selector-tag">ellipsis</span>;</span><br><span class="line"><span class="selector-tag">overflow</span>: <span class="selector-tag">hidden</span>;</span><br></pre></td></tr></table></figure>
+
+<p>生成效果如下：</p>
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/css-line-break/fe-css-0.png" alt="图0.png"></p>
+<p>另一个腾讯NBA官网的例子（看NBA视频无意间发现的…）</p>
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/css-line-break/fe-css-1.jpg" alt="图1.jpg"><br>在这里，腾讯用了上述的三个属性</p>
+<figure class="highlight css"><table><tr><td class="code"><pre><span class="line"><span class="selector-tag">white-space</span>: <span class="selector-tag">nowrap</span>;</span><br><span class="line"><span class="selector-tag">word-break</span>: <span class="selector-tag">keep-all</span>;</span><br><span class="line"><span class="selector-tag">overflow</span>: <span class="selector-tag">hidden</span>;</span><br></pre></td></tr></table></figure>
+
+<p>　　这里的文本只能单行显示，多余的文本将被截断。其实<code>word-break:keep-all</code>这行在这里是多余的，它的作用是控制所有字不能断开，但在后面加上<code>overflow:hidden</code>后依然会截断超出盒子宽度的文字。<br>　　我把其中一行文本替换为一段英文，可以发现英文单词依然被直接截断。<br><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/css-line-break/fe-css-2.png" alt="图2.png"></p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            apply 方法的妙用
+        </div>
+        <div class="post-meta">
+            2016-03-16
+        </div>
+    
+
+    <div class="post-md">
+        <p>我们可以使用数组的 push() 方法来合并数组</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var a = [1,2,3];</span><br><span class="line">var b = [4,5,6];</span><br><span class="line">Array.prototype.push.apply(a,b);</span><br><span class="line">console.log(a);//输出1,2,3,4,5,6</span><br></pre></td></tr></table></figure>
+
+<p>push方法本身没有提供push一个数组，但它提供了push(param1,parm2…)，支持传入多个参数。<br>而<strong>apply方法可以将一个数组转换为一个参数列表</strong>，apply的第一个参数用于改变this对象，将数组a传给它，也就相当于在a上调用了push方法。第二个参数是一个数组，它将作为参数传给push()方法。</p>
+<p>此外，找出数组中的最大值、最小值也均可使用此方法。<br>如求出数组中的最大值：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var a = [3,4,1,5,9];</span><br><span class="line">var max = Math.max.apply(null,a);</span><br><span class="line">console.log(max);//输出9</span><br></pre></td></tr></table></figure>
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

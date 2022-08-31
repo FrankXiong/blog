@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            【JavaScript】变量作用域
+        </div>
+        <div class="post-meta">
+            2015-12-08
+        </div>
+    
+
+    <div class="post-md">
+        <p>背景知识：</p>
+<ul>
+<li>编程语言中，作用域控制变量与参数的可见性和生命周期</li>
+<li>函数体内，局部变量的优先级高于同名的全局变量</li>
+<li>块级作用域：花括号内的每一段代码都具有各自的作用域</li>
+</ul>
+<p>1.<strong>JavaScript不支持块级作用域</strong><br>JavaScript的<b>函数作用域</b>：变量在声明它们的函数体以及这个函数体嵌套的任意函数体内都是有定义的</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">hello</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; <span class="number">10</span>; i++) &#123;</span><br><span class="line">    <span class="comment">// doSomething...</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">//输出10，在支持块级作用域的语言中这里会报错</span></span><br><span class="line">  <span class="built_in">console</span>.log(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.声明提前：<strong>JavaScript函数里申明的所有变量都被提前至函数体顶部</strong></p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> scope = <span class="string">'global'</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="comment">// 输出undefined，这里scope只是申明，还没有被赋初值</span></span><br><span class="line">  <span class="built_in">console</span>.log(scope);</span><br><span class="line">  <span class="comment">//scope在这里被赋初值，但scoop的申明发生在函数体顶部</span></span><br><span class="line">  <span class="keyword">var</span> scope = <span class="string">'local'</span>;</span><br><span class="line">  <span class="comment">// 输出local</span></span><br><span class="line">  <span class="built_in">console</span>.log(scope);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>该函数等价于：</p>
+<figure class="highlight js"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> scope = <span class="string">'global'</span>;</span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">test</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">  <span class="keyword">var</span> scope;</span><br><span class="line">  <span class="built_in">console</span>.log(scope);</span><br><span class="line">  scope = <span class="string">'local'</span>;</span><br><span class="line">  <span class="built_in">console</span>.log(scope);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

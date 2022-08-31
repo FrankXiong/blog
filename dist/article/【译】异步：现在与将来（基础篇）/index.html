@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            【译】异步：现在与将来（基础篇）
+        </div>
+        <div class="post-meta">
+            2017-04-01
+        </div>
+    
+
+    <div class="post-md">
+        <blockquote>
+<p>原文：<a href="https://github.com/getify/You-Dont-Know-JS/blob/master/async%20%26%20performance/ch1.md" target="_blank" rel="noopener">https://github.com/getify/You-Dont-Know-JS/blob/master/async%20%26%20performance/ch1.md</a><br>译者：<a href="https://github.com/FrankXiong" target="_blank" rel="noopener">熊贤仁</a></p>
+</blockquote>
+<p>使用像 JavaScript 这样的语言编程时，很重要的并且还常被人误解的部分是，如何表达和控制程序在一段时间内分散的行为。</p>
+<p>这不仅是 <code>for</code> 循环的开始到结束，这一过程当然也要花费一些时间（几微妙到几毫秒），而是当你的程序的一部分现在开始运行，而另一部分将来才运行—— “现在” 和 “将来” 之间存在一个程序并未有效执行的间隙。</p>
+<p>几乎所有重要的程序当初在被编写的时候，都不得不以某种方式管理这个间隙。这段间隙可能是存在于等待用户输入，请求数据库或文件系统的数据，通过网络发送数据并等待响应，或者是定时运行一个重复任务（比如动画）之中。在诸如此类的场景中，你的程序必须及时管理这段跨间隙时间的状态。正如伦敦地铁门和站台上贴的很有名的一句话：“小心间隙”。</p>
+<p>事实上，程序中现在和将来的关系是异步编程的核心。</p>
+<p>毫无疑问，自 JS 诞生以来就伴随着异步编程。但是大多数 JS 开发者从未真正思考过程序如何出现异步的，以及为何要出现异步，或者去探索更多的解决之道。普通的回调函数一直以来成为一种足够好的方法。时至今日还有许多人坚持认为回调函数已经够用了。</p>
+<p>但是，为了迎合运行在浏览器和服务器，以及每一种可能的设备上日益拓展的需求，JS 的规模和复杂度日渐增长。管理异步变得越来越困难成了开发者的痛点，我们迫切需要更给力和更合理的方案。</p>
+<p>刚才说的这些可能有些抽象，随着本书的展开，我保证你将对这些概念有更完整具体的理解。我们将在接下来的章节探索各种<br> JavaScript 异步编程的技巧。</p>
+<p>但是在这之前，我们要更深入地理解异步的概念，以及 JS 中异步的运转机制。</p>
+<h3 id="分块的程序"><a href="#分块的程序" class="headerlink" title="分块的程序"></a>分块的程序</h3><p>你可能把 JS 程序写进一个 .js 文件，但是程序多半分成了一些块，其中只有一块现在执行，剩下的在将来执行。最常见的块单位是 <code>function</code>。</p>
+<p>大多数 JS 新手看起来会遇到的问题是，将来执行的部分并没有在现在执行部分结束后立即执行。换句话说，当前不能完成的任务将会异步完成，因此阻塞行为并不会如你直觉所想般发生。</p>
+<p>考虑这个例子：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// ajax(..) is some arbitrary Ajax function given by a library</span><br><span class="line">var data = ajax( &quot;http://some.url.1&quot; );</span><br><span class="line"></span><br><span class="line">console.log( data );</span><br><span class="line">// Oops! `data` generally won&apos;t have the Ajax results</span><br></pre></td></tr></table></figure>
+
+<p>你可能注意到标准的 Ajax 请求没有同步的完成，这意味着 <code>ajax(..)</code> 函数现在还没有任何可以赋给 <code>data</code> 变量的返回值。如果 <code>ajax(..)</code> 可以在返回响应之前一直阻塞，那么 <code>data = .. </code> 赋值将正常运行。</p>
+<p>但是我们并不是这么使用 Ajax 的。“现在” 发起一个异步的 Ajax 请求，“将来” 才得到返回的结果。</p>
+<p>从“现在” 一直等待到“将来”，最简单的方式（但绝不是唯一，甚至也不是最好的）是使用一个函数，通常被称为回调函数：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// ajax(..) is some arbitrary Ajax function given by a library</span><br><span class="line">ajax( &quot;http://some.url.1&quot;, function myCallbackFunction(data)&#123;</span><br><span class="line"></span><br><span class="line">	console.log( data ); // Yay, I gots me some `data`!</span><br><span class="line"></span><br><span class="line">&#125; );</span><br></pre></td></tr></table></figure>
+
+<p><strong>警告：</strong> 你可能也听说过可以使 Ajax 请求同步化。然而即使技术上可行，你也绝不应该在任何情况下这样做，因为这会锁住浏览器的 UI（按钮，菜单，滚动等等），会阻塞所有的用户交互。这个想法很糟糕，应该永远避免。</p>
+<p>你可能想提出抗议，千万别，你希望避免回调函数带来的混乱，然而这并不足以成为使用阻塞式同步 Ajax 的理由。</p>
+<p>举个例子，考虑下列代码：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function now() &#123;</span><br><span class="line">	return 21;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function later() &#123;</span><br><span class="line">	answer = answer * 2;</span><br><span class="line">	console.log( &quot;Meaning of life:&quot;, answer );</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var answer = now();</span><br><span class="line"></span><br><span class="line">setTimeout( later, 1000 ); // Meaning of life: 42</span><br></pre></td></tr></table></figure>
+
+<p>这段程序分为两块：现在执行的部分和将来执行的部分。这两块的内容显而易见，但我们还是明确地指出来：<br>现在：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">function now() &#123;</span><br><span class="line">	return 21;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">function later() &#123; .. &#125;</span><br><span class="line"></span><br><span class="line">var answer = now();</span><br><span class="line"></span><br><span class="line">setTimeout( later, 1000 );</span><br></pre></td></tr></table></figure>
+
+<p>将来：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">answer = answer * 2;</span><br><span class="line">console.log( &quot;Meaning of life:&quot;, answer );</span><br></pre></td></tr></table></figure>
+
+<p>现在这一块在程序运行后立刻执行。但是 <code>setTimeout(...)</code> 还设置了一个在将来执行的事件（定时），所以 <code>later()</code> 函数的内容会在之后的某个时间（从现在之后 1000 毫秒）。</p>
+<p>任何时候将一部分代码包裹进 <code>function</code> ，并指定它在响应某个事件（定时器，鼠标点击，Ajax响应等待）时执行，你就在创建一个 “将来” 执行的代码块，这样就在程序中引入了异步。</p>
+<h3 id="异步控制台"><a href="#异步控制台" class="headerlink" title="异步控制台"></a>异步控制台</h3><p>关于 <code>console.*</code> 方法的工作原理，现在还没有规范或者需求集——因为它们不属于正式的 JavaScript，而是通过宿主环境（见本书的类型和语法章节）被加入到 JS 中来。</p>
+<p>因此，不同的浏览器和 JS 环境各行其是，有时导致出现令人困惑的行为。</p>
+<p>特别是，在某些条件下，一些浏览器的 <code>console.log(...)</code> 并没有按照给定的内容立即输出。主要原因可能是因为 I&#x2F;O 在很多程序（不只是 JS ）中是一个很慢并且阻塞的部分。所以，浏览器在后台异步处理 <code>console</code> I&#x2F;O ，性能可能会更好， 这时甚至你可能都察觉不到发生了 I&#x2F;O。</p>
+<p>一个不算很常见，但可能出现的场景是， 这一过程是可观察的（不是从代码本身，而是从外部）：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">var a = &#123;</span><br><span class="line">	index: 1</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">// later</span><br><span class="line">console.log( a ); // ??</span><br><span class="line"></span><br><span class="line">// even later</span><br><span class="line">a.index++;</span><br></pre></td></tr></table></figure>
+
+<p>我们通常会认为 <code>a</code> 对象在 <code>console.log(...)</code> 语句执行的时候生成了快照，打印出像 <code>{ like: 1}</code> 这样的内容，然后当 <code>a.index++</code> 执行， 对其进行了修改，这句会严格的在输出  <code>a</code> 之后才执行。</p>
+<p>多数时候，前面的代码很可能在开发者控制台中生成了一个与你期望一致的对象表示。但是，当浏览器将控制台 I&#x2F;O 推迟到后台进行，同样这段代码可能在浏览器控制台输出对象的时候，<code>a.index++</code> 已经执行过了，因此会输出 <code>{ index: 2}</code>。</p>
+<p>究竟何时 <code>console</code> I&#x2F;O 会被推迟，或者是否可观察，这些都是不确定的。只是在调试时遇到在 <code>console.log(...)</code> 语句后，对象被修改了，你要意识到这可能是 I&#x2F;O 中的异步化造成的。</p>
+<p><strong>注意：</strong> 如果你遇到这种特殊情况，不要依赖 <code>console</code> 输出，最好是在 JS debugger 中使用断点。另一个不错的选择是把对象序列化为一个字符串，以强制执行一次 “快照”，比如使用 <code>JSON.stringify(...)</code>。</p>
+<h3 id="事件循环"><a href="#事件循环" class="headerlink" title="事件循环"></a>事件循环</h3><p>我们来澄清一件事（可能很震惊）：尽管 JS 支持异步代码（比如我们刚才见过的 timeout ）是显而易见的，然而直到最近（ES6）,JavaScript 还没有内建任何直接的异步概念。</p>
+<p>什么！？这看起来很疯狂，对吧？事实上，这是真的。JS 引擎本身当需要的时候，在给定任意时刻都只在执行程序中的单个块。</p>
+<p>“需要”。谁需要？这就是重点所在！</p>
+<p>JS 引擎并不运行于隔离的环境中。它在宿主环境下运行，对于多数开发者而言，这个宿主环境就是 Web 浏览器。在过去几年中（但肯定不完全是），JS 已经超出了浏览器的范围，进入到其他环境中，比如通过 Node.js 打入了服务器领域。事实上，现在 JavaScript 已经嵌入到各种设备中，从机器人到灯泡。</p>
+<p>但是所有这些环境都有一个共同 “点”（无论如何，这都不是一个精妙的异步笑话），它们都有一个机制来处理程序中多个块的执行，并与此同时调用 JS 引擎，这被称之为 “事件循环”。</p>
+<p>换句话说，JS 引擎对时间并不敏感，但是有一个按需执行任意 JS 代码的环境。“事件”调度（JS 代码执行）总是在其所在的环境进行。</p>
+<p>举个例子，当 JS 程序发起一个 Ajax 请求，从服务器上拉取一些数据，你把 “响应” 代码写在一个函数（通常被称为 “回调函数”）中，然后 JS 引擎告知宿主环境， “嘿，我现在要将代码执行挂起，但是一旦你完成了网络请求并拿到数据，请调用这个函数”。</p>
+<p>浏览器将为网络请求建立监听，当一些数据过来后，它会将回调函数插入到事件循环中，以实现回调函数的调度执行。</p>
+<p>那么什么是事件循环？</p>
+<p>我们首先通过一些伪代码来说明：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">// `eventLoop` is an array that acts as a queue (first-in, first-out)</span><br><span class="line">var eventLoop = [ ];</span><br><span class="line">var event;</span><br><span class="line"></span><br><span class="line">// keep going &quot;forever&quot;</span><br><span class="line">while (true) &#123;</span><br><span class="line">	// perform a &quot;tick&quot;</span><br><span class="line">	if (eventLoop.length &gt; 0) &#123;</span><br><span class="line">		// get the next event in the queue</span><br><span class="line">		event = eventLoop.shift();</span><br><span class="line"></span><br><span class="line">		// now, execute the next event</span><br><span class="line">		try &#123;</span><br><span class="line">			event();</span><br><span class="line">		&#125;</span><br><span class="line">		catch (err) &#123;</span><br><span class="line">			reportError(err);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>当然，这是为了说明概念而写的非常简化的伪代码。但这也足以帮助我们更好的理解事件循环了。</p>
+<p>正如你所看到的，<code>while</code> 循环不断运行，循环的每次迭代被称为一次 “tick”。对于每个 tick，如果一个事件在队列中等待，它会被取出来并执行。这些事件就是回调函数。</p>
+<p>需要注意的是，<code>setTimeout(..)</code> 并没有把回调函数放进事件循环队列中。它做的是建立一个定时器；当定时器过期后，执行环境将回调函数放进事件循环，一些将来的 tick 会将其取出来并执行。</p>
+<p>如果这时事件循环中已经有20个事件了呢？回调函数将会等待。它会排在其他事件之后——通常不能插队。这解释了为什么 <code>setTimeout(..)</code> 定时器的时间精度不高。只能保证（大体来说）回调函数不会在你指定的时间间隔之前执行，但可以在那个时间点或者之后才执行，这取决于事件队列的状态。</p>
+<p>换句话说，你的程序通常被分为许多小块，在事件循环队列中一个接一个的执行。其他和你的程序不直接相关的事件也可以被插入到队列中。</p>
+<p><strong>注意：</strong> 我们提到的 “直到最近” 是说ES6 从本质上改变了从何处管理事件循环队列。这主要是一个正式的技术细则，ES6 现在指明了事件循环的工作原理，这意味着从技术上来说，事件循环属于 JS 引擎的范畴，而不仅仅是宿主环境。这项改变的一个主要原因是 ES6 Promise 的引入，我们将在第三章讨论它，因为这项技术要去在事件循环队列的任务调度上做直接、细粒度的控制（见 “协作” 部分对 <code>setTimeout(..0)</code> 的讨论 ）。</p>
+<hr>
+<p>本系列下一部分将介绍并行线程。</p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

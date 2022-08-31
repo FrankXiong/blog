@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            localStorage 详解
+        </div>
+        <div class="post-meta">
+            2016-03-07
+        </div>
+    
+
+    <div class="post-md">
+        <blockquote>
+<p>前言：在HTML5出现之前，为了保存用户在网站中一些操作状态，以便于下次打开页面时恢复到上次访问时的一些状态，在浏览器端常常使用Cookie来存储一些信息。最典型的应用是判断用户是否登录过网站。但是，Cookie的大小受限，每个Cookie的大小不超过4KB，浏览器一般只允许存放300个Cookie，而且Cookie也存在安全性问题。</p>
+</blockquote>
+<p>好在HTML5为我们带来了全新的本地存储方式：localStorage，有5M大小，而且从IE8就开始支持了。也就是说IE6、7是不支持localStorage的，Cookie可以成为IE6、7下的一种替代方案。</p>
+<p>以一个留言板为例,直接上代码：</p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE html&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">"utf-8"</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">title</span>&gt;</span>localStorage demo<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h3</span>&gt;</span>简单的web存储留言板<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">textarea</span> <span class="attr">id</span>=<span class="string">"textarea"</span>&gt;</span><span class="tag">&lt;/<span class="name">textarea</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">onclick</span>=<span class="string">"addInfo()"</span> <span class="attr">value</span>=<span class="string">"留言"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">"button"</span> <span class="attr">onclick</span>=<span class="string">"cleanInfo()"</span> <span class="attr">value</span>=<span class="string">"清除留言"</span> /&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">"text/javascript"</span>&gt;</span><span class="undefined"></span></span><br><span class="line"><span class="javascript">        <span class="function"><span class="keyword">function</span> <span class="title">upInfo</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">if</span>(<span class="built_in">window</span>.localStorage)&#123;</span></span><br><span class="line"><span class="javascript">                <span class="keyword">var</span> lStorage = <span class="built_in">window</span>.localStorage;</span></span><br><span class="line"><span class="javascript">                <span class="keyword">var</span> textarea = <span class="built_in">window</span>.document.getElementById(<span class="string">"textarea"</span>);</span></span><br><span class="line"><span class="javascript">                <span class="keyword">var</span> text = lStorage.getItem(<span class="string">"text"</span>);</span></span><br><span class="line"><span class="javascript">                <span class="keyword">if</span> (text) &#123;</span></span><br><span class="line"><span class="undefined">                    textarea.value = text;</span></span><br><span class="line"><span class="javascript">                &#125;<span class="keyword">else</span> &#123;</span></span><br><span class="line"><span class="javascript">                    textarea.value = <span class="string">"还没有留言"</span>;</span></span><br><span class="line"><span class="undefined">                &#125;</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="javascript">        <span class="function"><span class="keyword">function</span> <span class="title">addInfo</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">            <span class="keyword">if</span>(<span class="built_in">window</span>.localStorage)&#123;</span></span><br><span class="line"><span class="javascript">                <span class="keyword">var</span> textarea = <span class="built_in">window</span>.document.getElementById(<span class="string">"textarea"</span>);</span></span><br><span class="line"><span class="javascript">                <span class="keyword">var</span> lStorage = <span class="built_in">window</span>.localStorage;</span></span><br><span class="line"><span class="javascript">                lStorage.setItem(<span class="string">"text"</span>,textarea.value);</span></span><br><span class="line"><span class="undefined">                upInfo();</span></span><br><span class="line"><span class="undefined">            &#125;</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="javascript">        <span class="function"><span class="keyword">function</span> <span class="title">cleanInfo</span>(<span class="params"></span>) </span>&#123;</span></span><br><span class="line"><span class="javascript">            <span class="built_in">window</span>.localStorage.removeItem(<span class="string">"text"</span>);</span></span><br><span class="line"><span class="undefined">            upInfo();</span></span><br><span class="line"><span class="undefined">        &#125;</span></span><br><span class="line"><span class="undefined">        upInfo();</span></span><br><span class="line"><span class="undefined">  </span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>这是用localStorage实现的一个简易留言板，留言板上的信息可以永久保存，即使关闭页面后再次打开。同时也可以清除留言板的内容。</p>
+<p>这里我调用了setItem()方法，将对应的名值对传进去，实现数据的存储。调用getItem()方法，将名字传进去，可以获取到对应的值。调用removeItem()方法，将名字传进去，可以删除对应的数据。除此之外，如果想要删除存储对象的所有键值对的话，可以调用removeItem()方法。</p>
+<p>目前浏览器似乎只支持存储字符串类型的数据，所以我们想要存储其他类型的数据，不得不自己手动进行编码和解码。</p>
+<p>实现了“Web存储”标准的浏览器在window对象上定义了两个属性：localStorage和sessionStorage，这两个属性都代表同一个Storage对象,因此他们具有相同的API。Storage对象的属性值为字符串。</p>
+<p><strong>localStorage和sessionStorage的主要区别在于存储的有效期和作用域不同</strong>。<strong>localStorage存储的数据是永久性的</strong>，其作用域限定在文档源级别（只要URL的协议、端口、主机名三者中有一个不同，就属于不同的文档源）。除此之外，localStorage也受浏览器供应商限制，如果使用chrome访问一个网站，下次用firefox再次访问是获取不到上次存储的数据的。</p>
+<p>而<strong>sessionStorage的有效期仅存在于浏览器的标签页</strong>。也就是说如果关闭标签页后，通过sessionStorage存储的数据就都被删除了。<strong>sessionStorage的作用域不仅被限制在文档源，还被限定在窗口中</strong>，也就是同一标签页中。注意，这里说的窗口是指顶级窗口，若果同一标签页中包含多个iframe元素，这两者之间也是可以共享sessionStorage的。</p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

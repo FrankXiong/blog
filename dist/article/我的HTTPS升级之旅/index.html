@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            我的 HTTPS 升级之旅
+        </div>
+        <div class="post-meta">
+            2017-05-11
+        </div>
+    
+
+    <div class="post-md">
+        <blockquote>
+<p>本文将介绍我是如何将一个 HTTP 网站升级到 HTTPS。系统环境：CentOS 7.0 + Nginx 1.12.0</p>
+</blockquote>
+<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>先贴一个福利，也作为没有启用 HTTPS 的反面教材：</p>
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/https-upgrade/1.png" alt="福利.png"><br>这是我参与开发过的一个外包网站，没有启用 HTTPS，网站页面被中间人劫持，并插入了一些奇怪的东西。下面是正文。</p>
+<h1 id="预备条件"><a href="#预备条件" class="headerlink" title="预备条件"></a>预备条件</h1><p>本文假定你已经拥有一个正确解析到服务器IP的域名，服务器上已安装 Nginx。Nginx 可以通过源码编译安装，也可以使用系统提供的包管理器安装，比如 RH 系的 yum 或者 Debian 系的 apt-get，具体步骤自行Google。</p>
+<h1 id="获取证书"><a href="#获取证书" class="headerlink" title="获取证书"></a>获取证书</h1><p>HTTPS 证书分三类：1. DV 域名验证证书 2. OV 组织机构验证证书 3. EV 增强的组织机构验证证书。每类证书的审核要求不同，在浏览器地址栏也会有区分，对于个人网站而言，使用免费的 DV 证书就足够了。</p>
+<p>我使用了大名鼎鼎的 Let’s Encrypt 来生成证书。</p>
+<h2 id="1-安装-certbot"><a href="#1-安装-certbot" class="headerlink" title="1. 安装 certbot"></a>1. 安装 certbot</h2><p>certbot 是 Let’s Encrypt 提供的一套自动化工具。 </p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install epel-release</span><br><span class="line">yum install certbot</span><br></pre></td></tr></table></figure>
+
+<h2 id="2-生成证书"><a href="#2-生成证书" class="headerlink" title="2. 生成证书"></a>2. 生成证书</h2><p>这里采用 webroot 作为 Let’s Encrypt 的认证方式。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">certbot certonly -a webroot --webroot-path=/your/project/path -d example.com -d www.example.com</span><br></pre></td></tr></table></figure>
+
+<p>webroot-path就是你的项目路径，使用 -d 可以添加多个域名。这时证书就已经生成成功了，默认保存在 &#x2F;etc&#x2F;letsencrypt&#x2F;live&#x2F;example.com&#x2F; 下。证书文件包括：</p>
+<ul>
+<li>cert.pem: 服务端证书</li>
+<li>chain.pem: 浏览器需要的所有证书但不包括服务端证书，比如根证书和中间证书</li>
+<li>fullchain.pem: 包括了cert.pem和chain.pem的内容</li>
+<li>privkey.pem: 证书私钥</li>
+</ul>
+<h2 id="3-生成迪菲-赫尔曼密钥交换组（-Strong-Diffie-Hellman-Group）"><a href="#3-生成迪菲-赫尔曼密钥交换组（-Strong-Diffie-Hellman-Group）" class="headerlink" title="3. 生成迪菲-赫尔曼密钥交换组（ Strong Diffie-Hellman Group）"></a>3. 生成迪菲-赫尔曼密钥交换组（ Strong Diffie-Hellman Group）</h2><p>为了进一步提高安全性，你也可以生成一个 Strong Diffie-Hellman Group。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048</span><br></pre></td></tr></table></figure>
+
+<p>如果没有安装 openssl，这里要先安装一下。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">yum install openssl</span><br></pre></td></tr></table></figure>
+
+<h1 id="配置-Nginx"><a href="#配置-Nginx" class="headerlink" title="配置 Nginx"></a>配置 Nginx</h1><p>编辑 Nginx 配置文件，如果你不知道配置文件在哪，可以用 locate &#x2F;nginx.conf 命令查找。添加以下内容，具体参数以你的实际情况为准。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 443 ssl;</span><br><span class="line">    # 启用http2</span><br><span class="line">    # 需要安装 Nginx Http2 Module</span><br><span class="line">    # listen 443 http2 ssl;</span><br><span class="line">    server_name example.com www.example.com;</span><br><span class="line">    #证书文件</span><br><span class="line">    ssl_certificate /etc/letsencrypt/live/example.com/fullchain.pem;</span><br><span class="line">    #私钥文件</span><br><span class="line">    ssl_certificate_key /etc/letsencrypt/live/example.com/privkey.pem;</span><br><span class="line"></span><br><span class="line">    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">    # 优先采取服务器算法</span><br><span class="line">    ssl_prefer_server_ciphers on;</span><br><span class="line">    # 定义算法</span><br><span class="line">    ssl_ciphers &quot;EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH&quot;;</span><br><span class="line">    ssl_ecdh_curve secp384r1;</span><br><span class="line">    ssl_session_cache shared:SSL:10m;</span><br><span class="line">    ssl_session_tickets off;</span><br><span class="line">    ssl_stapling on;</span><br><span class="line">    ssl_stapling_verify on;</span><br><span class="line">    resolver 8.8.8.8 8.8.4.4 valid=300s;</span><br><span class="line">    resolver_timeout 5s;</span><br><span class="line">   </span><br><span class="line">    add_header Strict-Transport-Security &quot;max-age=63072000; includeSubdomains&quot;;</span><br><span class="line">    add_header X-Frame-Options DENY;</span><br><span class="line">    add_header X-Content-Type-Options nosniff;</span><br><span class="line">    # 使用DH文件</span><br><span class="line">    ssl_dhparam /etc/ssl/certs/dhparam.pem;</span><br><span class="line"></span><br><span class="line">    location ~ /.well-known &#123;</span><br><span class="line">        allow all;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    root /your/project/path;</span><br><span class="line">    index index.html index.htm;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        try_files $uri $uri/ =404;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>解释一下其中几项配置：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ssl_stapling on;</span><br></pre></td></tr></table></figure>
+
+<p>开启 OCSP Stapling，使服务端主动获取 OCSP 查询结果并随着证书一起发送给客户端，从而让客户端跳过自己去验证的过程，提高 TLS 握手效率。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">add_header Strict-Transport-Security &quot;max-age=63072000; includeSubdomains&quot;;</span><br></pre></td></tr></table></figure>
+
+<p>启用 HSTS 策略，强制浏览器使用 HTTPS 连接，max-age设置单位时间内強制使用 HTTPS 连接；includeSubDomains 可选，设置所有子域同时生效。浏览器在获取该响应头后，在 max-age 的时间内，如果遇到 HTTP 连接，就会通过 307 跳转強制使用 HTTPS 进行连接</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">add_header X-Frame-Options DENY;</span><br></pre></td></tr></table></figure>
+
+<p>添加 X-Frame-Options 响应头，可以禁止网站被嵌入到 iframe 中，减少<a href="https://blogs.msdn.microsoft.com/ie/2009/01/27/ie8-security-part-vii-clickjacking-defenses/" target="_blank" rel="noopener">点击劫持 (clickjacking)攻击</a>。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">add_header X-Content-Type-Options nosniff;</span><br></pre></td></tr></table></figure>
+
+<p>添加 X-Content-Type-Options 响应头，防止 <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Basics_of_HTTP/MIME_types#MIME_sniffing" target="_blank" rel="noopener">MIME 类型嗅探攻击</a></p>
+<p>解释完毕。继续，来测试 nginx.conf 是否有语法错误</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nginx -t</span><br></pre></td></tr></table></figure>
+
+<p>重启 Nginx</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">nginx -s reload</span><br></pre></td></tr></table></figure>
+
+<h1 id="重定向-HTTP-到-HTTPS"><a href="#重定向-HTTP-到-HTTPS" class="headerlink" title="重定向 HTTP 到 HTTPS"></a>重定向 HTTP 到 HTTPS</h1><p>修改原来 HTTP 网站的 Nginx 配置。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line">    server_name example.com www.example.com;</span><br><span class="line">    access_log /var/log/example/access.log;</span><br><span class="line">    error_log /var/log/example/error.log;</span><br><span class="line">    # 301 永久重定向</span><br><span class="line">    return 301 https://$host$request_uri;</span><br><span class="line">    location / &#123;</span><br><span class="line">        root /your/project/path;</span><br><span class="line">        index index.html index.htm;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这时再访问网站，浏览器地址栏就会出现一把小锁。<br><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/https-upgrade/2.png" alt="https.png"></p>
+<p>一旦升级 HTTPS，网站内的所有资源文件和请求的协议也必须为 HTTPS，你需要在前端代码里修改一下。</p>
+<p>最后可以使用 <a href="https://www.ssllabs.com/ssltest/analyze.html" target="_blank" rel="noopener">ssllabs</a> 测试一下网站的安全性，我的网站得了 A+😁</p>
+<hr>
+<p>参考链接：</p>
+<ol>
+<li><a href="https://aotu.io/notes/2016/08/16/nginx-https/" target="_blank" rel="noopener">Nginx 配置 HTTPS 服务器</a></li>
+<li><a href="https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-centos-7" target="_blank" rel="noopener">How To Secure Nginx with Let’s Encrypt on CentOS 7</a></li>
+</ol>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>

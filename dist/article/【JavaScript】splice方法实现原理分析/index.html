@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport" />
+    <link rel="alternate icon" type="image/jpg" href="//mares.oss-cn-qingdao.aliyuncs.com/avatar.jpg">
+    <title>Lynx | 小熊写字的地方</title>
+    <meta name="description" content="熊贤仁的个人博客">
+    <meta name="keywords" content="Node.js,Vue,React,JavaScript,Git,软件开发,web前端,技术,程序员,思考">
+    <link rel="stylesheet" href="/css/reset.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/markdown.css">
+    <link rel="stylesheet" href="/css/fonts.css">
+<link rel="alternate" href="/atom.xml" title="Lynx" type="application/atom+xml">
+</head>
+    <body>
+        <div class="paper">
+            <div class="paper-main">
+                
+                    <div class="post-header">
+    <a class="logo" href="/">Lynx</a>
+    <a class="go-home" href="/">
+        <svg width="8" height="14" viewBox="0 0 8 14">
+            <path d="M7 1L1 7l6 6" stroke="#000" stroke-width="2" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+    </a>
+</div>
+                
+                <div class="post-main">
+
+    
+        <div class="post-main-title">
+            【JavaScript】splice 方法实现原理分析
+        </div>
+        <div class="post-meta">
+            2017-01-09
+        </div>
+    
+
+    <div class="post-md">
+        <blockquote>
+<p>近日在<a href="https://leetcode.com/problems/ransom-note/" target="_blank" rel="noopener">LeetCode</a>上刷题，一个题目提交代码后提示Time Limit Exceeded，分析了下发现是splice()方法拖慢了执行速度。之前经常使用这个方法去操作数组，但从未思考过它的底层实现，于是借此机会揭开splice()的庐山真面目。</p>
+</blockquote>
+<p><strong>函数原型：Array.prototype.splice (start, deleteCount, item1, item2, …  )</strong></p>
+<p>　splice至少有2个参数，第一个参数start是开始插入或删除处的元素索引，deleteCount是要删除的元素个数，从start开始，包含start处的元素。如果deleteCount为0，那表示就是插入元素，将后面参数值插入到start位置后。比如：[1,2,3].splice(1,2)会删除原数组的arr[1],arr[2]处的元素，并将其返回。<br>　那么JavaScript究竟是如何做到这一切的呢？通过翻阅<a href="http://www.ecma-international.org/ecma-262/5.1/#sec-15.4.1" target="_blank" rel="noopener">ECMA5.1文档</a>，我找到了答案。以下是splice()运行时执行的具体步骤：<br>0. Let A &#x3D; new Array()</p>
+<ol>
+<li>将’length’作为参数传递给[[Get]]内建方法，得到数组的长度len</li>
+<li>Let <em>relativeStart</em> be <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-9.4" target="_blank" rel="noopener">ToInteger</a>(<em>start</em>).</li>
+<li>如果relativeStart &lt; 0，那么actualStart &#x3D; max((<em>len</em> + <em>relativeStart</em>),0)。也就是说，<strong>当第一个参数start为负时，实际上是从右往左开始计算的</strong>。否则，actualStart &#x3D; min(<em>relativeStart</em>, <em>len</em>)。</li>
+<li>Let <em>actualDeleteCount</em> &#x3D; min(max(<a href="http://www.ecma-international.org/ecma-262/5.1/#sec-9.4" target="_blank" rel="noopener">ToInteger</a>(<em>deleteCount</em>),0), <em>len</em> – <em>actualStart</em>).这一步的作用和上一步是一样的，都是为了确保我们要操作的元素在一个合理的范围内，<strong>防止出现数组越界操作</strong>。</li>
+<li>Let <em>k</em> &#x3D; 0</li>
+<li>Repeat, while(k &lt; actualDeleteCount)<br>　a. 获取数组在当前位置的元素值fromValue<br>　b.将fromValue添加到数组A中。具体实现上，是通过调用A的内建方法<a href="http://www.ecma-international.org/ecma-262/5.1/#sec-8.12.9" target="_blank" rel="noopener">DefineOwnProperty()</a>，这个方法有三个参数：ToString(k)、 <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-8.10" target="_blank" rel="noopener">Property Descriptor</a>、false。在 <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-8.10" target="_blank" rel="noopener">Property Descriptor</a>里，将fromValue设置为该属性的值，同时设置property的配置属性 Writable: <strong>true</strong>, Enumerable: <strong>true</strong>, Configurable: <strong>true</strong>。用过Object.defineProperty()的同学应该对这些不陌生。<br>　c. k++</li>
+</ol>
+<p><strong>这一步是为了将所有删除的元素添加到一个新的数组中，以便最后将其返回</strong>。<br>7. 定义items为一个内部List，将item1及以后的所有参数（也就是我们要插入到数组中的元素）添加到items中。<br>8. 令itemCount 为 items的元素个数<br>9. If itemCount &lt; actualDeleteCount, then<br>　a. Let k &#x3D; actualStart.<br>　b. Repeat, while k &lt; (len - actualDeleteCount)<br>　　ⅰ Let *from* &#x3D; <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-9.8" target="_blank" rel="noopener">ToString</a>(*k*+*actualDeleteCount*).<br>　　ⅱ Let *to* &#x3D; <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-9.8" target="_blank" rel="noopener">ToString</a>(*k*+*itemCount*).<br>　　ⅲ 将from作为参数传递给内建方法HasProperty，fromPresent为其返回的结果<br>　　ⅳ 如果 fromPresent 为 true，获取数组在当前位置的元素值fromValue。然后调用数组内建方法[[Put]]，将to、fromValue、true作为参数传入。这样就实现了数组元素的移动。<br>　　ⅴ 如果 fromPresent 为 false，调用数组的内建方法[[Delete]]，将to处的元素删除。<br>　　ⅵ  k++<br>　c. Let k &#x3D; len<br>　d. Repeat, while k &gt; (len - actualDeleteCount + itemCount)<br>　　ⅰ 调用数组内建方法[[Delete]]来删除k-1位置上的元素<br>　　ⅱ k–<br>　这里可能有点不太好理解，我们可以画图分析一下。splice()的运行可能出现三种情况：</p>
+<ol>
+<li>只删除元素</li>
+<li>只插入元素</li>
+<li>同时删除和插入元素</li>
+</ol>
+<p><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/splice/1.png" alt="只删除元素"><br>　如果itemCount &#x3D; 0且actualDeleteCount &gt; 0，即不插入元素，只删除元素，那么from及其后面的所有元素会被移动的k位置后面，因为此时to &#x3D; k。<br><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/splice/2.png" alt="只插入元素"><br>　如果itemCount &gt; 0 且 actualDeleteCount &#x3D; 0，即只插入元素的情况。此时from &#x3D; k，即把k后面的所有元素移动到to后面，to &#x3D; k + itemCount。<br><img src="https://mares.oss-cn-qingdao.aliyuncs.com/blog/splice/3.jpg" alt="同时删除和插入"><br>　如果itemCount &gt; 0 且 actualDeleteCount &gt; 0，既删除元素，也在插入元素。将from后面的元素移动到to后面。<br>可以看到，这一步就是在插入元素数少于删除元素数时，进行元素的移动。</p>
+<p>11 . Else if <em>itemCount</em> &gt; <em>actualDeleteCount</em><br>　a. Let <em>k</em> &#x3D; (<em>len</em> – <em>actualDeleteCount</em>).<br>　b. Repeat, while <em>k</em> &gt; <em>actualStart</em><br>　　ⅰ Let <em>from</em> &#x3D; <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-9.8" target="_blank" rel="noopener">ToString</a>(<em>k</em> + <em>actualDeleteCount</em> – 1).<br>　　ⅱ Let <em>to</em> &#x3D; <a href="http://www.ecma-international.org/ecma-262/5.1/#sec-9.8" target="_blank" rel="noopener">ToString</a>(<em>k</em> + <em>itemCount</em> – 1)<br>　　ⅲ 将from作为参数传递给内建方法HasProperty，fromPresent为其返回的结果　<br>　　ⅳ 如果 fromPresent 为 true，获取数组在当前位置的元素值fromValue。然后调用数组内建方法[[Put]]，将to、fromValue、true作为参数传入。<br>　　ⅴ 如果 fromPresent 为 false，调用数组的内建方法[[Delete]]，将to处的元素删除。<br>　　ⅵ  k–<br>这一步处理的是插入元素多于删除元素时，进行元素的位置移动。思路和上一步差不多。</p>
+<p>12 . Let k &#x3D; actualStart<br>13 . Repeat, while items is not empty<br>　a. 删除items的第一个元素E<br>　b. 调用数组的内建方法[[Put]]，将k位置的元素更新为E<br>　c. k++<br>这一步实现了元素的插入。items实际上是一个队列，按照FIFO的顺序依次插入到actualStart后面。<br>14 . 再次调用数组的内建方法[[Put]]来更新数组的’length’属性，length &#x3D; <em>len</em> – <em>actualDeleteCount</em> + <em>itemCount</em><br>15 . 返回数组A</p>
+<p>　以上就是splice()方法的工作原理。看到这里，你应该明白splice()效率不高的原因了吧。<strong>它的每次删除操作都涉及到大量元素的重新排列，而在插入元素时，引入了一个队列来管理。</strong>splice()只要涉及到删除操作，它的返回值都是一个包含所有删除元素的<strong>新数组</strong>。<br>　在分析过程中，我对JavaScript中Array是对象这一概念也有了更深的了解。数组通过**DefineOwnProperty()**这一内建方法来为自己添加元素，它的 <strong>Property Descriptor中Writable、Enumerable、Configurable等属性都为true</strong>，其实就和普通的对象属性是一样的，因此数组元素的值都可以被动态地修改。<br>　另外，splice()的所有操作都是在原数组上进行的。JavaScript还提供了一个数组方法slice()，它不会修改原数组，函数式编程爱好者比较喜欢它。</p>
+<p>　</p>
+
+    </div>
+
+</div>
+                <div class="footer">
+    <span>Copyright © 2022 Lynx</span>
+    <span>Theme Designed By <a target="_blank" href="https://zheli.design/one-paper">這Li</a></span>
+</div>
+
+<link rel="stylesheet" href="/css/a11y-dark.min.css">
+<script src="/js/highlight.min.js"></script>
+<script src="/js/highlightjs-line-numbers.js"></script>
+
+<script>
+    hljs.initHighlightingOnLoad();
+    hljs.initLineNumbersOnLoad();
+</script>
+
+            </div>
+        </div>
+        <script>
+            var _hmt = _hmt || [];
+            (function() {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?be4f38e2c43dbecf025baf47c07262a6";
+                var s = document.getElementsByTagName("script")[0]; 
+                s.parentNode.insertBefore(hm, s);
+            })();
+        </script>
+    </body>
+</html>
